@@ -6,8 +6,8 @@ import { useRouter, usePathname } from "next/navigation";
 export default function SessionManager({ children }: { children: React.ReactNode }) {
     const router = useRouter();
     const pathname = usePathname();
-    const INACTIVITY_LIMIT = 15 * 60 * 1000; // 15 minutes in ms
-    const REFRESH_INTERVAL = 10 * 60 * 1000; // 10 minutes in ms
+    const INACTIVITY_LIMIT = 24 * 60 * 60 * 1000; // 24 hours in ms
+    const REFRESH_INTERVAL = 6 * 60 * 60 * 1000; // 6 hours in ms
 
     const handleLogout = useCallback(() => {
         localStorage.removeItem("accessToken");

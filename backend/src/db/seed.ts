@@ -6,9 +6,9 @@ async function seed() {
     console.log("🌱 Seeding database...");
 
     // 1. Create Default Roles
-    const [superAdminRole] = await db.insert(roles).values({ name: "Super Admin", code: "super_admin" }).returning();
-    const [adminRole] = await db.insert(roles).values({ name: "Admin Prodi", code: "admin" }).returning();
-    const [studentRole] = await db.insert(roles).values({ name: "Student", code: "student" }).returning();
+    const [superAdminRole] = await db.insert(roles).values({ name: "Super Admin", code: "super_admin", permissions: ["*"] }).returning();
+    const [adminRole] = await db.insert(roles).values({ name: "Admin Prodi", code: "admin", permissions: ["dashboard:view", "prodi:view", "prodi:edit", "materi:view", "materi:edit", "video:view", "video:edit", "responsi:view", "responsi:edit"] }).returning();
+    const [studentRole] = await db.insert(roles).values({ name: "Student", code: "student", permissions: ["dashboard:view"] }).returning();
     console.log("✅ Roles created");
 
     // 2. Create Fakultas

@@ -166,6 +166,16 @@ export default function BerandaLayout({ children }: BerandaLayoutProps) {
       path: "/dashboard",
     },
     {
+      name: "Manajemen Konten",
+      icon: "/Assets/icons/manajemen-icon.svg",
+      hasSubmenu: true,
+      submenu: [
+        { name: "Materi", path: "/manajemen/materi" },
+        { name: "Video", path: "/manajemen/video" },
+        { name: "Responsi", path: "/manajemen/responsi" },
+      ],
+    },
+    {
       name: "Setelan",
       icon: "/Assets/icons/setting-icon.svg",
       hasSubmenu: false,
@@ -173,10 +183,12 @@ export default function BerandaLayout({ children }: BerandaLayoutProps) {
     },
   ];
 
-  // Super Admin: show all menus; Admin/others: show only Dashboard + Setelan
+  // Super Admin: show all menus; Admin: show admin menus; Others: minimal
   const menuItems: MenuItem[] = userPermissions.includes("*")
     ? superAdminMenu
-    : adminMenu;
+    : userRole === "admin"
+      ? adminMenu
+      : adminMenu;
 
   const isActive = (path?: string) => {
     if (!path) return false;

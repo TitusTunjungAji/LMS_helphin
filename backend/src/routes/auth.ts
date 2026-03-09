@@ -60,7 +60,7 @@ export const authRoutes = new Elysia({ prefix: "/auth" })
             const accessToken = await jwt.sign({
                 sub: newUser.id,
                 role: newUser.role,
-                exp: Math.floor(Date.now() / 1000) + 15 * 60, // 15 min
+                exp: Math.floor(Date.now() / 1000) + 12 * 60 * 60, // 12 hours
             });
 
             const refreshToken = await jwt.sign({
@@ -127,7 +127,7 @@ export const authRoutes = new Elysia({ prefix: "/auth" })
             const accessToken = await jwt.sign({
                 sub: user.id,
                 role: user.role,
-                exp: Math.floor(Date.now() / 1000) + 15 * 60,
+                exp: Math.floor(Date.now() / 1000) + 12 * 60 * 60, // 12 hours
             });
 
             const refreshToken = await jwt.sign({
@@ -191,7 +191,7 @@ export const authRoutes = new Elysia({ prefix: "/auth" })
             const newAccessToken = await jwt.sign({
                 sub: user.id,
                 role: user.role,
-                exp: Math.floor(Date.now() / 1000) + 15 * 60,
+                exp: Math.floor(Date.now() / 1000) + 12 * 60 * 60, // 12 hours
             });
 
             const newRefreshToken = await jwt.sign({
