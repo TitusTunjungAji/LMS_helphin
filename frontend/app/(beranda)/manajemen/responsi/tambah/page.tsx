@@ -17,6 +17,8 @@ export default function BuatResponsi() {
     const [loading, setLoading] = useState(false);
     const [listProdi, setListProdi] = useState<any[]>([]);
     const [prodiId, setProdiId] = useState("");
+    const [listMatkul, setListMatkul] = useState<any[]>([]);
+    const [mataKuliahId, setMataKuliahId] = useState("");
     const router = useRouter();
 
     useEffect(() => {
@@ -47,6 +49,30 @@ export default function BuatResponsi() {
         fetchProdi();
     }, []);
 
+    useEffect(() => {
+        if (prodiId) {
+            fetchMatkul(prodiId);
+        } else {
+            setListMatkul([]);
+            setMataKuliahId("");
+        }
+    }, [prodiId]);
+
+    const fetchMatkul = async (prodiId: string) => {
+        try {
+            const token = localStorage.getItem("accessToken");
+            const res = await fetch(`http://localhost:8000/api/mata-kuliah?prodiId=${prodiId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const data = await res.json();
+            if (data.success) {
+                setListMatkul(data.data);
+            }
+        } catch (e) {
+            console.error("Fetch matkul error", e);
+        }
+    };
+
     const handleSimpan = async () => {
         if (!judulResponsi || !tanggal || !waktu || !prodiId) {
             alert("Harap isi Judul, Tanggal, Waktu Pelaksanaan, dan pilih Prodi!");
@@ -70,6 +96,7 @@ export default function BuatResponsi() {
                 status,
                 prodiId,
             };
+            if (mataKuliahId) payload.mataKuliahId = mataKuliahId;
             if (namaPemateri) payload.speaker = namaPemateri;
             if (linkResponsi) payload.meetingLink = linkResponsi;
             if (linkRequestMateri) payload.requestMaterialLink = linkRequestMateri;
@@ -193,6 +220,21 @@ export default function BuatResponsi() {
                             <option value="">Pilih Prodi</option>
                             {listProdi.map((p) => (
                                 <option key={p.id} value={p.id}>{p.name}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="flex flex-col gap-1.5 w-full mb-4">
+                        <label className="text-sm font-bold text-gray-900">Mata Kuliah</label>
+                        <select
+                            value={mataKuliahId}
+                            onChange={(e) => setMataKuliahId(e.target.value)}
+                            disabled={!prodiId}
+                            className="w-full h-[45px] px-[12px] bg-white border border-[#E6E6E6] rounded-[4px] shadow-[0px_2px_8px_rgba(6,141,255,0.08)] text-[14px] text-[#1D1D1D] outline-none focus:border-[#068DFF] transition-all font-normal cursor-pointer disabled:opacity-50"
+                        >
+                            <option value="">Pilih Mata Kuliah (Opsional)</option>
+                            {listMatkul.map((m) => (
+                                <option key={m.id} value={m.id}>({m.code}) {m.name}</option>
                             ))}
                         </select>
                     </div>

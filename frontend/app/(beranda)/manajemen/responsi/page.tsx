@@ -114,6 +114,7 @@ export default function ManajemenResponsi() {
                                 <tr>
                                     <th className="p-4 border-b">No</th>
                                     <th className="p-4 border-b">Judul Responsi</th>
+                                    <th className="p-4 border-b">Mata Kuliah</th>
                                     <th className="p-4 border-b">Nama Pemateri</th>
                                     <th className="p-4 border-b">Tanggal</th>
                                     <th className="p-4 border-b">Waktu</th>
@@ -126,12 +127,13 @@ export default function ManajemenResponsi() {
                             </thead>
                             <tbody className="text-sm">
                                 {loading ? (
-                                    <tr><td colSpan={10} className="p-10 text-center text-gray-400 italic">Memuat data...</td></tr>
+                                    <tr><td colSpan={11} className="p-10 text-center text-gray-400 italic">Memuat data...</td></tr>
                                 ) : dataResponsi.length > 0 ? (
                                     dataResponsi.map((row, index) => (
                                         <tr key={row.id} className="hover:bg-gray-50 transition-colors">
                                             <td className="p-4 border-b">{index + 1}</td>
                                             <td className="p-4 border-b font-medium">{row.title || "-"}</td>
+                                            <td className="p-4 border-b font-semibold text-blue-600">{row.mataKuliahName || "-"}</td>
                                             <td className="p-4 border-b text-gray-600">{row.speaker || "-"}</td>
                                             <td className="p-4 border-b text-gray-400 text-xs">{formatTanggal(row.scheduleDate)}</td>
                                             <td className="p-4 border-b text-gray-400 text-xs">{formatWaktu(row.scheduleDate)}</td>
@@ -168,7 +170,7 @@ export default function ManajemenResponsi() {
                                         </tr>
                                     ))
                                 ) : (
-                                    <tr><td colSpan={10} className="p-10 text-center text-gray-400 italic">Belum ada data responsi.</td></tr>
+                                    <tr><td colSpan={11} className="p-10 text-center text-gray-400 italic">Belum ada data responsi.</td></tr>
                                 )}
                             </tbody>
                         </table>

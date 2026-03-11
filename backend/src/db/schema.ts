@@ -130,6 +130,8 @@ export const responsi = pgTable("responsi", {
     requestMaterialLink: varchar("request_material_link", { length: 500 }),
     communityLink: varchar("community_link", { length: 500 }),
     status: responsiStatusEnum("status").notNull().default("upcoming"),
+    mataKuliahId: uuid("mata_kuliah_id")
+        .references(() => mataKuliah.id, { onDelete: "cascade" }),
     prodiId: uuid("prodi_id")
         .references(() => prodi.id, { onDelete: "cascade" })
         .notNull(),
@@ -181,4 +183,24 @@ export const activityLogs = pgTable("activity_logs", {
     details: jsonb("details"),
     ipAddress: varchar("ip_address", { length: 45 }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Bank Soal
+export const bankSoal = pgTable("bank_soal", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    title: varchar("title", { length: 255 }).notNull(),
+    description: text("description"),
+    fileUrl: varchar("file_url", { length: 500 }).notNull(),
+    fileType: varchar("file_type", { length: 50 }).notNull(),
+    tahunAjaran: varchar("tahun_ajaran", { length: 20 }).notNull(),
+    mataKuliahId: uuid("mata_kuliah_id")
+        .references(() => mataKuliah.id, { onDelete: "cascade" })
+        .notNull(),
+    prodiId: uuid("prodi_id")
+        .references(() => prodi.id, { onDelete: "cascade" })
+        .notNull(),
+    uploadedBy: uuid("uploaded_by")
+        .references(() => users.id, { onDelete: "set null" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

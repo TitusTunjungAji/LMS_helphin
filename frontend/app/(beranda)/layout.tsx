@@ -144,6 +144,13 @@ export default function BerandaLayout({ children }: BerandaLayoutProps) {
       ],
     },
     {
+      name: "Bank Soal",
+      icon: "/Assets/icons/manajemen-icon.svg",
+      hasSubmenu: false,
+      path: "/bank-soal",
+      permission: "bank_soal:view",
+    },
+    {
       name: "Log Activity",
       icon: "/Assets/icons/log_activity-icon.svg",
       hasSubmenu: false,
@@ -176,12 +183,20 @@ export default function BerandaLayout({ children }: BerandaLayoutProps) {
       ],
     },
     {
+      name: "Bank Soal",
+      icon: "/Assets/icons/manajemen-icon.svg",
+      hasSubmenu: false,
+      path: "/bank-soal",
+      permission: "bank_soal:view",
+    },
+    {
       name: "Setelan",
       icon: "/Assets/icons/setting-icon.svg",
       hasSubmenu: false,
       path: "/setelan",
     },
   ];
+
 
   // Super Admin: show all menus; Admin: show admin menus; Others: minimal
   const menuItems: MenuItem[] = userPermissions.includes("*")

@@ -11,7 +11,7 @@ async function fixPermissions() {
     console.log('✅ super_admin → permissions: ["*"]');
 
     await db.update(roles)
-        .set({ permissions: ["dashboard:view", "materi:view", "materi:edit", "materi:create", "materi:delete", "video:view", "video:edit", "video:create", "video:delete", "responsi:view", "responsi:edit", "responsi:create", "responsi:delete"] })
+        .set({ permissions: ["dashboard:view", "materi:view", "materi:edit", "materi:create", "materi:delete", "video:view", "video:edit", "video:create", "video:delete", "responsi:view", "responsi:edit", "responsi:create", "responsi:delete", "bank_soal:view", "bank_soal:manage"] })
         .where(eq(roles.code, "admin"));
     console.log("✅ admin → permissions updated");
 

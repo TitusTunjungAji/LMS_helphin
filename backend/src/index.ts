@@ -13,6 +13,7 @@ import { materialRoutes } from "./routes/materials";
 import { videoRoutes } from "./routes/videos";
 import { responsiRoutes } from "./routes/responsi";
 import { exerciseRoutes } from "./routes/exercises";
+import { bankSoalRoutes } from "./routes/bank-soal";
 import { requestRoutes } from "./routes/requests";
 import { roleRoutes } from "./routes/roles";
 import { activityLogRoutes } from "./routes/activity-logs";
@@ -91,6 +92,7 @@ const app = new Elysia()
             .use(videoRoutes)
             .use(responsiRoutes)
             .use(exerciseRoutes)
+            .use(bankSoalRoutes)
             .use(requestRoutes)
             .use(roleRoutes)
             .use(activityLogRoutes)

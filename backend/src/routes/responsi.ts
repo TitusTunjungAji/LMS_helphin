@@ -1,6 +1,6 @@
 import { Elysia, t } from "elysia";
 import { db } from "../db";
-import { responsi, videos, prodi } from "../db/schema";
+import { responsi, videos, prodi, mataKuliah } from "../db/schema";
 import { eq, and } from "drizzle-orm";
 import { authMiddleware } from "../middleware/auth";
 import { requireRole, requirePermission, requireProdiAccessOrAdmin } from "../middleware/rbac";
@@ -29,6 +29,8 @@ export const responsiRoutes = new Elysia({ prefix: "/responsi" })
                 requestMaterialLink: responsi.requestMaterialLink,
                 communityLink: responsi.communityLink,
                 status: responsi.status,
+                mataKuliahId: responsi.mataKuliahId,
+                mataKuliahName: mataKuliah.name,
                 prodiId: responsi.prodiId,
                 prodiName: prodi.name,
                 createdBy: responsi.createdBy,
@@ -36,6 +38,7 @@ export const responsiRoutes = new Elysia({ prefix: "/responsi" })
             })
             .from(responsi)
             .leftJoin(prodi, eq(responsi.prodiId, prodi.id))
+            .leftJoin(mataKuliah, eq(responsi.mataKuliahId, mataKuliah.id))
             .where(conditions.length > 0 ? and(...conditions) : undefined)
             .orderBy(responsi.scheduleDate);
 
@@ -58,6 +61,8 @@ export const responsiRoutes = new Elysia({ prefix: "/responsi" })
                 requestMaterialLink: responsi.requestMaterialLink,
                 communityLink: responsi.communityLink,
                 status: responsi.status,
+                mataKuliahId: responsi.mataKuliahId,
+                mataKuliahName: mataKuliah.name,
                 prodiId: responsi.prodiId,
                 prodiName: prodi.name,
                 createdBy: responsi.createdBy,
@@ -65,6 +70,7 @@ export const responsiRoutes = new Elysia({ prefix: "/responsi" })
             })
             .from(responsi)
             .leftJoin(prodi, eq(responsi.prodiId, prodi.id))
+            .leftJoin(mataKuliah, eq(responsi.mataKuliahId, mataKuliah.id))
             .where(eq(responsi.id, params.id))
             .limit(1);
 
@@ -105,6 +111,7 @@ export const responsiRoutes = new Elysia({ prefix: "/responsi" })
                     requestMaterialLink: body.requestMaterialLink || null,
                     communityLink: body.communityLink || null,
                     status: body.status || "upcoming",
+                    mataKuliahId: body.mataKuliahId || null,
                     prodiId,
                     createdBy: user.id,
                 })
@@ -133,6 +140,7 @@ export const responsiRoutes = new Elysia({ prefix: "/responsi" })
                         t.Literal("completed"),
                     ])
                 ),
+                mataKuliahId: t.Optional(t.String()),
                 prodiId: t.Optional(t.String()),
             }),
         }
@@ -171,6 +179,7 @@ export const responsiRoutes = new Elysia({ prefix: "/responsi" })
             if (body.requestMaterialLink !== undefined) updateData.requestMaterialLink = body.requestMaterialLink;
             if (body.communityLink !== undefined) updateData.communityLink = body.communityLink;
             if (body.status) updateData.status = body.status;
+            if (body.mataKuliahId !== undefined) updateData.mataKuliahId = body.mataKuliahId;
 
             const [updated] = await db
                 .update(responsi)
@@ -199,6 +208,7 @@ export const responsiRoutes = new Elysia({ prefix: "/responsi" })
                         t.Literal("completed"),
                     ])
                 ),
+                mataKuliahId: t.Optional(t.Nullable(t.String())),
             }),
         }
     )

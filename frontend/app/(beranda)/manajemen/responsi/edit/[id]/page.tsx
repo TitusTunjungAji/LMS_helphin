@@ -16,6 +16,9 @@ export default function EditResponsi() {
     const [status, setStatus] = useState("upcoming");
     const [loading, setLoading] = useState(false);
     const [initialLoading, setInitialLoading] = useState(true);
+    const [listMatkul, setListMatkul] = useState<any[]>([]);
+    const [mataKuliahId, setMataKuliahId] = useState("");
+    const [prodiId, setProdiId] = useState("");
 
     const router = useRouter();
     const params = useParams();
@@ -44,6 +47,12 @@ export default function EditResponsi() {
                 setLinkRequestMateri(r.requestMaterialLink || "");
                 setLinkKomunitas(r.communityLink || "");
                 setStatus(r.status || "upcoming");
+                setMataKuliahId(r.mataKuliahId || "");
+                setProdiId(r.prodiId || "");
+
+                if (r.prodiId) {
+                    fetchMatkul(r.prodiId);
+                }
 
                 if (r.scheduleDate) {
                     const dateObj = new Date(r.scheduleDate);
@@ -71,6 +80,21 @@ export default function EditResponsi() {
         }
     };
 
+    const fetchMatkul = async (pId: string) => {
+        try {
+            const token = localStorage.getItem("accessToken");
+            const res = await fetch(`http://localhost:8000/api/mata-kuliah?prodiId=${pId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const data = await res.json();
+            if (data.success) {
+                setListMatkul(data.data);
+            }
+        } catch (e) {
+            console.error("Fetch matkul error", e);
+        }
+    };
+
     const handleSimpan = async () => {
         if (!judulResponsi || !tanggal || !waktu) {
             alert("Harap isi Judul, Tanggal, dan Waktu Pelaksanaan!");
@@ -86,6 +110,7 @@ export default function EditResponsi() {
                 title: judulResponsi,
                 scheduleDate,
                 status,
+                mataKuliahId: mataKuliahId || null,
             };
             if (namaPemateri) payload.speaker = namaPemateri;
             payload.meetingLink = linkResponsi || null;
@@ -201,6 +226,21 @@ export default function EditResponsi() {
                             <option value="upcoming">Upcoming</option>
                             <option value="live">Live</option>
                             <option value="completed">Completed</option>
+                        </select>
+                    </div>
+
+                    <div className="flex flex-col gap-1.5 w-full mb-4">
+                        <label className="text-sm font-bold text-gray-900">Mata Kuliah</label>
+                        <select
+                            value={mataKuliahId}
+                            onChange={(e) => setMataKuliahId(e.target.value)}
+                            disabled={!prodiId}
+                            className="w-full h-[45px] px-[12px] bg-white border border-[#E6E6E6] rounded-[4px] shadow-[0px_2px_8px_rgba(6,141,255,0.08)] text-[14px] text-[#1D1D1D] outline-none focus:border-[#068DFF] transition-all font-normal cursor-pointer disabled:opacity-50"
+                        >
+                            <option value="">Pilih Mata Kuliah (Opsional)</option>
+                            {listMatkul.map((m) => (
+                                <option key={m.id} value={m.id}>({m.code}) {m.name}</option>
+                            ))}
                         </select>
                     </div>
 
