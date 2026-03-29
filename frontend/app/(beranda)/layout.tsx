@@ -46,7 +46,7 @@ export default function BerandaLayout({ children }: BerandaLayoutProps) {
         const token = localStorage.getItem("accessToken");
         if (!token) return;
         const res = await fetch("http://localhost:8000/api/auth/me", {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
         if (data.success) {
@@ -79,7 +79,9 @@ export default function BerandaLayout({ children }: BerandaLayoutProps) {
         if (nameParts.length >= 2) {
           setUserInitials(`${nameParts[0][0]}${nameParts[1][0]}`.toUpperCase());
         } else {
-          setUserInitials(nameParts[0] ? nameParts[0].substring(0, 2).toUpperCase() : "U");
+          setUserInitials(
+            nameParts[0] ? nameParts[0].substring(0, 2).toUpperCase() : "U",
+          );
         }
       } catch (e) {
         console.error("Failed to parse user data", e);
@@ -96,9 +98,9 @@ export default function BerandaLayout({ children }: BerandaLayoutProps) {
   };
 
   const toggleMenu = (menuName: string) => {
-    setOpenMenus(prev => ({
+    setOpenMenus((prev) => ({
       ...prev,
-      [menuName]: !prev[menuName]
+      [menuName]: !prev[menuName],
     }));
   };
 
@@ -206,7 +208,6 @@ export default function BerandaLayout({ children }: BerandaLayoutProps) {
     },
   ];
 
-
   // Super Admin: show all menus; Admin: show admin menus; Others: minimal
   const menuItems: MenuItem[] = userPermissions.includes("*")
     ? superAdminMenu
@@ -222,7 +223,9 @@ export default function BerandaLayout({ children }: BerandaLayoutProps) {
 
   const isSubmenuActive = (submenu?: SubMenuItem[]) => {
     if (!submenu) return false;
-    return submenu.some((sub) => pathname === sub.path || pathname.startsWith(sub.path + "/"));
+    return submenu.some(
+      (sub) => pathname === sub.path || pathname.startsWith(sub.path + "/"),
+    );
   };
 
   return (
@@ -250,10 +253,11 @@ export default function BerandaLayout({ children }: BerandaLayoutProps) {
                   <div key={item.name}>
                     <button
                       onClick={() => toggleMenu(item.name)}
-                      className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-colors ${activeParent
-                        ? "bg-blue-50 text-blue-600"
-                        : "text-gray-700 hover:bg-gray-100"
-                        }`}
+                      className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-colors ${
+                        activeParent
+                          ? "bg-blue-50 text-blue-600"
+                          : "text-gray-700 hover:bg-gray-100"
+                      }`}
                     >
                       <div className="flex items-center gap-3">
                         <Image
@@ -278,10 +282,11 @@ export default function BerandaLayout({ children }: BerandaLayoutProps) {
                           <button
                             key={sub.name}
                             onClick={() => router.push(sub.path)}
-                            className={`w-full text-left px-4 py-2.5 rounded-lg transition-colors ${isActive(sub.path)
-                              ? "bg-blue-500 text-white font-medium"
-                              : "text-gray-600 hover:bg-gray-100"
-                              }`}
+                            className={`w-full text-left px-4 py-2.5 rounded-lg transition-colors ${
+                              isActive(sub.path)
+                                ? "bg-blue-500 text-white font-medium"
+                                : "text-gray-600 hover:bg-gray-100"
+                            }`}
                           >
                             {sub.name}
                           </button>
@@ -296,10 +301,11 @@ export default function BerandaLayout({ children }: BerandaLayoutProps) {
                 <button
                   key={item.name}
                   onClick={() => item.path && router.push(item.path)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive(item.path)
-                    ? "bg-blue-500 text-white"
-                    : "text-gray-700 hover:bg-gray-100"
-                    }`}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                    isActive(item.path)
+                      ? "bg-blue-500 text-white"
+                      : "text-gray-700 hover:bg-gray-100"
+                  }`}
                 >
                   <Image
                     src={item.icon}
@@ -336,7 +342,9 @@ export default function BerandaLayout({ children }: BerandaLayoutProps) {
                   className="flex items-center gap-3 px-3 py-2 hover:bg-gray-100 rounded-lg transition-colors"
                 >
                   <div className="w-10 h-10 bg-orange-400 rounded-full flex items-center justify-center">
-                    <span className="text-white font-semibold">{userInitials}</span>
+                    <span className="text-white font-semibold">
+                      {userInitials}
+                    </span>
                   </div>
                   <div className="text-left hidden sm:block">
                     <p className="text-sm font-semibold text-gray-800">

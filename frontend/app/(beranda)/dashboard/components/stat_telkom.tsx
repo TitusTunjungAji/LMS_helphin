@@ -47,25 +47,39 @@ export default function StatTelkom() {
 
   return (
     <div className="pl-5 w-full grid grid-cols-2 gap-4">
-      <div className="bg-white h-auto p-4 rounded-xl border border-gray-100 shadow-sm">
+      <div className="bg-white h-auto p-4 rounded-xl border border-gray-100 shadow-xs">
         <h2 className="text-sm text-gray-500 mb-2">Total Mahasiswa</h2>
-        <h1 className="font-bold text-3xl text-gray-800">{stats?.totalStudents || 0}</h1>
-        <h3 className="text-xs font-light text-gray-400 mt-2">Seluruh mahasiswa terdaftar</h3>
+        <h1 className="font-bold text-3xl text-gray-800">
+          {stats?.totalStudents || 0}
+        </h1>
+        <h3 className="text-xs font-light text-gray-400 mt-2">
+          90% Meningkat dalam 15 hari sebelumnya
+        </h3>
       </div>
-      <div className="bg-white h-auto p-4 rounded-xl border border-gray-100 shadow-sm">
+      <div className="bg-white h-auto p-4 rounded-xl border border-gray-100 shadow-xs">
         <h2 className="text-sm text-gray-500 mb-2">Total Course</h2>
-        <h1 className="font-bold text-3xl text-gray-800">{stats?.totalCourses || 0}</h1>
-        <h3 className="text-xs font-light text-gray-400 mt-2">Mata kuliah aktif</h3>
+        <h1 className="font-bold text-3xl text-gray-800">
+          {stats?.totalCourses || 0}
+        </h1>
+        <h3 className="text-xs font-light text-gray-400 mt-2">
+          94% Meningkat dalam 15 hari sebelumnya
+        </h3>
       </div>
-      <div className="bg-white h-auto p-4 rounded-xl border border-gray-100 shadow-sm">
+      <div className="bg-white h-auto p-4 rounded-xl border border-gray-100 shadow-xs">
         <h2 className="text-sm text-gray-500 mb-2">Total Prodi</h2>
-        <h1 className="font-bold text-3xl text-gray-800">{stats?.totalProdi || 0}</h1>
-        <h3 className="text-xs font-light text-gray-400 mt-2">Program studi terdaftar</h3>
+        <h1 className="font-bold text-3xl text-gray-800">
+          {stats?.totalProdi || 0}
+        </h1>
+        <h3 className="text-xs font-light text-gray-400 mt-2">prodi aktif</h3>
       </div>
-      <div className="bg-white h-auto p-4 rounded-xl border border-gray-100 shadow-sm">
+      <div className="bg-white h-auto p-4 rounded-xl border border-gray-100 shadow-xs">
         <h2 className="text-sm text-gray-500 mb-2">Total Materi</h2>
-        <h1 className="font-bold text-3xl text-gray-800">{stats?.totalMaterials || 0}</h1>
-        <h3 className="text-xs font-light text-gray-400 mt-2">File materi diunggah</h3>
+        <h1 className="font-bold text-3xl text-gray-800">
+          {stats?.totalMaterials || 0}
+        </h1>
+        <h3 className="text-xs font-light text-gray-400 mt-2">
+          94% Meningkat dalam 15 hari sebelumnya
+        </h3>
       </div>
     </div>
   );

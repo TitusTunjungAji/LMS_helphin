@@ -26,7 +26,9 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || "Gagal login. Periksa email & password.");
+        throw new Error(
+          data.message || "Gagal login. Periksa email & password.",
+        );
       }
 
       // Simpan credentials
@@ -63,12 +65,13 @@ export default function LoginPage() {
 
           {/* Teks */}
           <p className="text-black text-center mt-2 mb-8">
-            Masukkan alamat email dan kata sandi Anda<br />di bawah ini untuk masuk ke akun Anda
+            Masukkan alamat email dan kata sandi Anda
+            <br />
+            di bawah ini untuk masuk ke akun Anda
           </p>
 
           {/* Form */}
           <form className="flex flex-col gap-4" onSubmit={handleLogin}>
-
             {error && (
               <div className="p-3 text-sm text-red-500 bg-red-50 border border-red-200 rounded-lg text-center">
                 {error}
