@@ -7,6 +7,7 @@ import ChartStatisLoginUser from "./components/chart_statis_login_user";
 import StatTelkom from "./components/stat_telkom";
 import Leaderboard from "./components/leaderboard";
 import AdminDashboard from "./components/admin_dashboard";
+import FooterCSDashboard from "./components/footer_cs_dashboard";
 
 export default function Dashboard() {
   const [userRole, setUserRole] = useState<string>("");
@@ -47,6 +48,7 @@ export default function Dashboard() {
         <StatTelkom />
       </div>
       <Leaderboard />
+      <FooterCSDashboard />
       <FooterDashboard />
     </div>
   );
