@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 export default function ManajemenRequestMateri() {
     const [dataRequests, setDataRequests] = useState<any[]>([]);
@@ -21,7 +22,7 @@ export default function ManajemenRequestMateri() {
     const fetchRequests = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch("http://localhost:8000/api/requests", {
+            const res = await fetch(`${API_URL}/api/requests`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             const json = await res.json();
@@ -40,7 +41,7 @@ export default function ManajemenRequestMateri() {
 
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/requests/${id}`, {
+            const res = await fetch(`${API_URL}/api/requests/${id}`, {
                 method: "DELETE",
                 headers: { Authorization: `Bearer ${token}` },
             });

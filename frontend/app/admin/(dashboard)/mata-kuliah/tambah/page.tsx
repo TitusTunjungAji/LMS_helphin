@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import LogoUpload from "@/app/components/akun-prodi/logo-upload";
 import { useTheme } from "@/context/ThemeContext";
+import { API_URL } from "@/lib/api";
 
 export default function TambahMatkulAdmin() {
     const { theme } = useTheme();
@@ -31,7 +32,7 @@ export default function TambahMatkulAdmin() {
         setLoading(true);
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch("http://localhost:8000/api/mata-kuliah", {
+            const res = await fetch(`${API_URL}/api/mata-kuliah`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

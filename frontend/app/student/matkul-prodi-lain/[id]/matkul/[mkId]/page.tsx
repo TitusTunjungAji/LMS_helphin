@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { Search, BookOpen, ChevronRight, Filter, Calendar, ArrowLeft } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -57,14 +58,14 @@ export default function MatkulProdiLainMkDetail() {
       if (!token) return;
 
       // Fetch Prodi name
-      const prodiRes = await fetch(`http://localhost:8000/api/prodi/${prodiId}`, {
+      const prodiRes = await fetch(`${API_URL}/api/prodi/${prodiId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const prodiData = await prodiRes.json();
       if (prodiData.success) setProdiName(prodiData.data.name);
 
       // Fetch Mata Kuliah Detail
-      const mkRes = await fetch(`http://localhost:8000/api/mata-kuliah/${mkId}`, {
+      const mkRes = await fetch(`${API_URL}/api/mata-kuliah/${mkId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const mkData = await mkRes.json();
@@ -95,11 +96,11 @@ export default function MatkulProdiLainMkDetail() {
       };
 
       const [soal, materi, video, quiz, responsiData] = await Promise.all([
-        fetchTopik(`http://localhost:8000/api/bank-soal`, "bank-soal", "bank-soal"),
-        fetchTopik(`http://localhost:8000/api/materials`, "e-materi", "materi"),
-        fetchTopik(`http://localhost:8000/api/videos`, "smart-video", "smart-video"),
-        fetchTopik(`http://localhost:8000/api/exercises`, "quiz", "quiz"),
-        fetchTopik(`http://localhost:8000/api/responsi?mataKuliahId=${mkId}`, "responsi", "responsi")
+        fetchTopik(`${API_URL}/api/bank-soal`, "bank-soal", "bank-soal"),
+        fetchTopik(`${API_URL}/api/materials`, "e-materi", "materi"),
+        fetchTopik(`${API_URL}/api/videos`, "smart-video", "smart-video"),
+        fetchTopik(`${API_URL}/api/exercises`, "quiz", "quiz"),
+        fetchTopik(`${API_URL}/api/responsi?mataKuliahId=${mkId}`, "responsi", "responsi")
       ]);
 
       setTopikList([...soal, ...materi, ...video, ...quiz, ...responsiData]);

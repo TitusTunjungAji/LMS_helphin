@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 export default function ManajemenAkun() {
   const [dataAdmin, setDataAdmin] = useState<any[]>([]);
@@ -32,7 +33,7 @@ export default function ManajemenAkun() {
     try {
       const token = localStorage.getItem("accessToken");
       if (!token) return;
-      const res = await fetch("http://localhost:8000/api/roles", {
+      const res = await fetch(`${API_URL}/api/roles`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
@@ -48,7 +49,7 @@ export default function ManajemenAkun() {
     try {
       const token = localStorage.getItem("accessToken");
       if (!token) return;
-      const res = await fetch("http://localhost:8000/api/prodi", {
+      const res = await fetch(`${API_URL}/api/prodi`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
@@ -69,7 +70,7 @@ export default function ManajemenAkun() {
         return;
       }
       // Fetch all users and let frontend filter or rely on the fact that these are the "admin" types we care about
-      const res = await fetch("http://localhost:8000/api/users", {
+      const res = await fetch(`${API_URL}/api/users`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -112,7 +113,7 @@ export default function ManajemenAkun() {
     setOpenMenuId(null);
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await fetch(`http://localhost:8000/api/users/${id}`, {
+      const res = await fetch(`${API_URL}/api/users/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`

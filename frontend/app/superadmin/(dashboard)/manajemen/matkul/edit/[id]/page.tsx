@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import LogoUpload from "@/app/components/akun-prodi/logo-upload";
+import { API_URL } from "@/lib/api";
 
 export default function EditMatkul() {
     const { id } = useParams();
@@ -27,7 +28,7 @@ export default function EditMatkul() {
     const fetchProdi = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch("http://localhost:8000/api/prodi", {
+            const res = await fetch(`${API_URL}/api/prodi`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -40,7 +41,7 @@ export default function EditMatkul() {
     const fetchMatkul = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/mata-kuliah/${id}`, {
+            const res = await fetch(`${API_URL}/api/mata-kuliah/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -70,7 +71,7 @@ export default function EditMatkul() {
         setSaving(true);
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/mata-kuliah/${id}`, {
+            const res = await fetch(`${API_URL}/api/mata-kuliah/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

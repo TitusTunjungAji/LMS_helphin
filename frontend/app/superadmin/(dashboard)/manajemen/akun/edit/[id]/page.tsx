@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
+import { API_URL } from "@/lib/api";
 
 export default function EditAkunPage() {
     const [nama, setNama] = useState("");
@@ -30,7 +31,7 @@ export default function EditAkunPage() {
         try {
             const token = localStorage.getItem("accessToken");
             if (!token) return;
-            const res = await fetch("http://localhost:8000/api/roles", {
+            const res = await fetch(`${API_URL}/api/roles`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -46,7 +47,7 @@ export default function EditAkunPage() {
         try {
             const token = localStorage.getItem("accessToken");
             if (!token) return;
-            const res = await fetch("http://localhost:8000/api/prodi", {
+            const res = await fetch(`${API_URL}/api/prodi`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -65,7 +66,7 @@ export default function EditAkunPage() {
                 router.push("/login");
                 return;
             }
-            const res = await fetch(`http://localhost:8000/api/users/${id}`, {
+            const res = await fetch(`${API_URL}/api/users/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -119,7 +120,7 @@ export default function EditAkunPage() {
                 payload.password = password;
             }
 
-            const res = await fetch(`http://localhost:8000/api/users/${id}`, {
+            const res = await fetch(`${API_URL}/api/users/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 export default function ManajemenMatkul() {
     const [dataMatkul, setDataMatkul] = useState<any[]>([]);
@@ -27,7 +28,7 @@ export default function ManajemenMatkul() {
                 router.push("/login");
                 return;
             }
-            const res = await fetch("http://localhost:8000/api/mata-kuliah", {
+            const res = await fetch(`${API_URL}/api/mata-kuliah`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -47,7 +48,7 @@ export default function ManajemenMatkul() {
 
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/mata-kuliah/${id}`, {
+            const res = await fetch(`${API_URL}/api/mata-kuliah/${id}`, {
                 method: "DELETE",
                 headers: { Authorization: `Bearer ${token}` }
             });

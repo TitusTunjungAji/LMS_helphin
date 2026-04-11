@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Bell, Moon, Sun, ChevronDown, User, LogOut, Calendar, Clock, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "../context/ThemeContext";
+import { API_URL } from "@/lib/api";
 
 interface NavbarProps {
   user?: {
@@ -68,7 +69,7 @@ export default function Navbar({ user: initialUser }: NavbarProps) {
 
   const fetchNotifications = async (prodiId: string) => {
     try {
-      const res = await fetch(`http://localhost:8000/api/responsi?prodiId=${prodiId}&limit=5&sort=createdAt`);
+      const res = await fetch(`${API_URL}/api/responsi?prodiId=${prodiId}&limit=5&sort=createdAt`);
       const data = await res.json();
       if (data.success && data.data.length > 0) {
         setNotifications(data.data);

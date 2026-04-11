@@ -17,6 +17,7 @@ import {
   Edit
 } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -54,7 +55,7 @@ export default function AdminMaterialDetail() {
       const token = localStorage.getItem("accessToken");
       if (!token) return;
 
-      const res = await fetch(`http://localhost:8000/api/materials/${materiId}`, {
+      const res = await fetch(`${API_URL}/api/materials/${materiId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
@@ -74,7 +75,7 @@ export default function AdminMaterialDetail() {
 
   const getFileUrl = (path: string) => {
     if (!path) return "";
-    return `http://localhost:8000${path}`;
+    return `${API_URL}${path}`;
   };
 
   if (isLoading) {

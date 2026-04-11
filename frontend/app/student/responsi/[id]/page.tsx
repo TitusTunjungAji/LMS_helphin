@@ -17,6 +17,7 @@ import {
   ExternalLink
 } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -86,12 +87,12 @@ export default function StudentResponsiDetail() {
       const headers: Record<string, string> = {};
       if (token) headers["Authorization"] = `Bearer ${token}`;
 
-      const res = await fetch(`http://localhost:8000/api/responsi/${id}`, { headers });
+      const res = await fetch(`${API_URL}/api/responsi/${id}`, { headers });
       const json = await res.json();
 
       if (json.success) {
         setData(json.data);
-        const listRes = await fetch(`http://localhost:8000/api/responsi?prodiId=${json.data.prodiId}`, { headers });
+        const listRes = await fetch(`${API_URL}/api/responsi?prodiId=${json.data.prodiId}`, { headers });
         const listJson = await listRes.json();
         if (listJson.success) {
           setOtherResponsi(listJson.data.filter((r: ResponsiDetail) => r.id !== id));

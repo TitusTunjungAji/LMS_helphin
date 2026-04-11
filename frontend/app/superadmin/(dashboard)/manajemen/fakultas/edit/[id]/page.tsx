@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import InputFakultas from "@/app/components/akun-fakultas/input-fakultas";
+import { API_URL } from "@/lib/api";
 
 export default function EditFakultasPage() {
     const [namaUniversitas, setNamaUniversitas] = useState("Telkom University");
@@ -25,7 +26,7 @@ export default function EditFakultasPage() {
                 router.push("/login");
                 return;
             }
-            const res = await fetch(`http://localhost:8000/api/fakultas/${id}`, {
+            const res = await fetch(`${API_URL}/api/fakultas/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -54,7 +55,7 @@ export default function EditFakultasPage() {
         setLoading(true);
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/fakultas/${id}`, {
+            const res = await fetch(`${API_URL}/api/fakultas/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

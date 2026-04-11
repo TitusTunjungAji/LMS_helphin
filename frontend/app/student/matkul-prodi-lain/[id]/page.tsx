@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Inter } from "next/font/google";
 import { ArrowLeft, BookOpen, Search } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -38,7 +39,7 @@ export default function MatkulProdiLainDetail() {
       if (!token) return;
 
       // 1. Fetch nama prodi
-      const prodiRes = await fetch(`http://localhost:8000/api/prodi/${prodiId}`, {
+      const prodiRes = await fetch(`${API_URL}/api/prodi/${prodiId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const prodiData = await prodiRes.json();
@@ -47,7 +48,7 @@ export default function MatkulProdiLainDetail() {
       }
 
       // 2. Fetch mata kuliah berdasarkan prodiId
-      const mkRes = await fetch(`http://localhost:8000/api/mata-kuliah?prodiId=${prodiId}`, {
+      const mkRes = await fetch(`${API_URL}/api/mata-kuliah?prodiId=${prodiId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const mkData = await mkRes.json();

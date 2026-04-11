@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import SessionManager from "@/app/components/SessionManager";
 import { useTheme } from "../../context/ThemeContext";
+import { API_URL } from "@/lib/api";
 
 interface BerandaLayoutProps {
   children: ReactNode;
@@ -52,7 +53,7 @@ export default function BerandaLayout({ children }: BerandaLayoutProps) {
       try {
         const token = localStorage.getItem("accessToken");
         if (!token) return;
-        const res = await fetch("http://localhost:8000/api/auth/me", {
+        const res = await fetch(`${API_URL}/api/auth/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();

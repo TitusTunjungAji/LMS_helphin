@@ -4,6 +4,7 @@ import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 export default function EditBankSoal() {
     const { id } = useParams();
@@ -27,7 +28,7 @@ export default function EditBankSoal() {
     const fetchBankSoal = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/bank-soal/${id}`, {
+            const res = await fetch(`${API_URL}/api/bank-soal/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const json = await res.json();
@@ -63,7 +64,7 @@ export default function EditBankSoal() {
                 fd.append("file", file);
             }
 
-            const res = await fetch(`http://localhost:8000/api/bank-soal/${id}`, {
+            const res = await fetch(`${API_URL}/api/bank-soal/${id}`, {
                 method: "PATCH",
                 headers: {
                     Authorization: `Bearer ${token}`

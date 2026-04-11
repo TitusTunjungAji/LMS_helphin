@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
+import { API_URL } from "@/lib/api";
 
 export default function EditBankSoalAdmin() {
     const params = useParams();
@@ -22,7 +23,7 @@ export default function EditBankSoalAdmin() {
             setIsFetching(true);
             try {
                 const token = localStorage.getItem("accessToken");
-                const res = await fetch(`http://localhost:8000/api/bank-soal/${itemId}`, {
+                const res = await fetch(`${API_URL}/api/bank-soal/${itemId}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 const data = await res.json();
@@ -48,7 +49,7 @@ export default function EditBankSoalAdmin() {
         setLoading(true);
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/bank-soal/${itemId}`, {
+            const res = await fetch(`${API_URL}/api/bank-soal/${itemId}`, {
                 method: "PATCH",
                 headers: { 
                     "Content-Type": "application/json",

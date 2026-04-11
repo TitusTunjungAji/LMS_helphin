@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { Search, BookOpen, ChevronRight, Filter, Calendar } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -57,7 +58,7 @@ export default function StudentMataKuliahDetail() {
       if (!token) return;
 
       // 1. Fetch Mata Kuliah Detail
-      const mkRes = await fetch(`http://localhost:8000/api/mata-kuliah/${id}`, {
+      const mkRes = await fetch(`${API_URL}/api/mata-kuliah/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const mkData = await mkRes.json();
@@ -89,11 +90,11 @@ export default function StudentMataKuliahDetail() {
       };
 
       const [soal, materi, video, quiz, responsiData] = await Promise.all([
-        fetchTopik(`http://localhost:8000/api/bank-soal?mataKuliahId=${id}`, "bank-soal", "bank-soal"),
-        fetchTopik(`http://localhost:8000/api/materials?mataKuliahId=${id}`, "e-materi", "materi"),
-        fetchTopik(`http://localhost:8000/api/videos?mataKuliahId=${id}`, "smart-video", "smart-video"),
-        fetchTopik(`http://localhost:8000/api/exercises?mataKuliahId=${id}`, "quiz", "quiz"),
-        fetchTopik(`http://localhost:8000/api/responsi?mataKuliahId=${id}`, "responsi", "responsi")
+        fetchTopik(`${API_URL}/api/bank-soal?mataKuliahId=${id}`, "bank-soal", "bank-soal"),
+        fetchTopik(`${API_URL}/api/materials?mataKuliahId=${id}`, "e-materi", "materi"),
+        fetchTopik(`${API_URL}/api/videos?mataKuliahId=${id}`, "smart-video", "smart-video"),
+        fetchTopik(`${API_URL}/api/exercises?mataKuliahId=${id}`, "quiz", "quiz"),
+        fetchTopik(`${API_URL}/api/responsi?mataKuliahId=${id}`, "responsi", "responsi")
       ]);
       
       setTopikList([...soal, ...materi, ...video, ...quiz, ...responsiData]);

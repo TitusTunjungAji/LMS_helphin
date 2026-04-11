@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
+import { API_URL } from "@/lib/api";
 
 export default function EditMateriAdmin() {
     const params = useParams();
@@ -23,7 +24,7 @@ export default function EditMateriAdmin() {
             setIsFetching(true);
             try {
                 const token = localStorage.getItem("accessToken");
-                const res = await fetch(`http://localhost:8000/api/materials/${itemId}`, {
+                const res = await fetch(`${API_URL}/api/materials/${itemId}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 const data = await res.json();
@@ -51,7 +52,7 @@ export default function EditMateriAdmin() {
         try {
             const token = localStorage.getItem("accessToken");
             
-            const res = await fetch(`http://localhost:8000/api/materials/${itemId}`, {
+            const res = await fetch(`${API_URL}/api/materials/${itemId}`, {
                 method: "PATCH",
                 headers: { 
                     "Content-Type": "application/json",

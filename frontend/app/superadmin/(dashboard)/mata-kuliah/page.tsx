@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 interface MataKuliah {
   id: string;
@@ -40,7 +41,7 @@ export default function MataKuliahPage() {
         if (!userStr) return;
         const user = JSON.parse(userStr);
         if (user.prodiId) {
-          const res = await fetch(`http://localhost:8000/api/prodi/${user.prodiId}`, {
+          const res = await fetch(`${API_URL}/api/prodi/${user.prodiId}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           const data = await res.json();
@@ -55,7 +56,7 @@ export default function MataKuliahPage() {
 
     const fetchMataKuliah = async () => {
       try {
-        const res = await fetch("http://localhost:8000/api/mata-kuliah", {
+        const res = await fetch(`${API_URL}/api/mata-kuliah`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();

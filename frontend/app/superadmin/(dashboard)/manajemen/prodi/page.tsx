@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 export default function ManajemenProdi() {
   const [dataProdi, setDataProdi] = useState<any[]>([]);
@@ -23,7 +24,7 @@ export default function ManajemenProdi() {
         router.push("/login");
         return;
       }
-      const res = await fetch("http://localhost:8000/api/prodi", {
+      const res = await fetch(`${API_URL}/api/prodi`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -50,7 +51,7 @@ export default function ManajemenProdi() {
     setOpenMenuId(null);
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await fetch(`http://localhost:8000/api/prodi/${id}`, {
+      const res = await fetch(`${API_URL}/api/prodi/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`

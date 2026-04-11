@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -49,7 +50,7 @@ export default function StudentProfile() {
       const storedUser = JSON.parse(userStr);
       
       // Get latest profile data from backend
-      const res = await fetch("http://localhost:8000/api/auth/me", {
+      const res = await fetch(`${API_URL}/api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
@@ -69,7 +70,7 @@ export default function StudentProfile() {
         });
 
         if (remoteUser.prodiId) {
-          const prodiRes = await fetch(`http://localhost:8000/api/prodi/${remoteUser.prodiId}`, {
+          const prodiRes = await fetch(`${API_URL}/api/prodi/${remoteUser.prodiId}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           const prodiData = await prodiRes.json();
@@ -107,7 +108,7 @@ export default function StudentProfile() {
         body.password = formData.newPassword;
       }
 
-      const res = await fetch("http://localhost:8000/api/users/profile", {
+      const res = await fetch(`${API_URL}/api/users/profile`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

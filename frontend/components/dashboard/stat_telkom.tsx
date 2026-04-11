@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { API_URL } from "@/lib/api";
 
 export default function StatTelkom() {
   const [stats, setStats] = useState<any>(null);
@@ -16,7 +17,7 @@ export default function StatTelkom() {
           return;
         }
 
-        const res = await fetch("http://localhost:8000/api/dashboard/stats", {
+        const res = await fetch(`${API_URL}/api/dashboard/stats`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

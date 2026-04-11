@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
+import { API_URL } from "@/lib/api";
 
 export default function EditResponsiAdmin() {
     const params = useParams();
@@ -31,7 +32,7 @@ export default function EditResponsiAdmin() {
             setIsFetching(true);
             try {
                 const token = localStorage.getItem("accessToken");
-                const res = await fetch(`http://localhost:8000/api/responsi/${itemId}`, {
+                const res = await fetch(`${API_URL}/api/responsi/${itemId}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 const data = await res.json();
@@ -86,7 +87,7 @@ export default function EditResponsiAdmin() {
                 status: formData.status
             };
 
-            const res = await fetch(`http://localhost:8000/api/responsi/${itemId}`, {
+            const res = await fetch(`${API_URL}/api/responsi/${itemId}`, {
                 method: "PATCH",
                 headers: { 
                     "Content-Type": "application/json",

@@ -18,6 +18,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -117,7 +118,7 @@ export default function PusatLayanan() {
       const token = localStorage.getItem("accessToken");
       console.log("[PusatLayanan] Sending support ticket...", { category: formData.category, subject: formData.subject });
       
-      const res = await fetch("http://localhost:8000/api/support/send", {
+      const res = await fetch(`${API_URL}/api/support/send`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

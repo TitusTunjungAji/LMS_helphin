@@ -13,6 +13,7 @@ import {
   Building2
 } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -43,7 +44,7 @@ export default function AdminProfile() {
       if (!token || !userStr) return;
       
       // Get latest profile data from backend
-      const res = await fetch("http://localhost:8000/api/auth/me", {
+      const res = await fetch(`${API_URL}/api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
@@ -62,7 +63,7 @@ export default function AdminProfile() {
         });
 
         if (remoteUser.prodiId) {
-          const prodiRes = await fetch(`http://localhost:8000/api/prodi/${remoteUser.prodiId}`, {
+          const prodiRes = await fetch(`${API_URL}/api/prodi/${remoteUser.prodiId}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           const prodiData = await prodiRes.json();
@@ -99,7 +100,7 @@ export default function AdminProfile() {
         body.password = formData.newPassword;
       }
 
-      const res = await fetch("http://localhost:8000/api/users/profile", {
+      const res = await fetch(`${API_URL}/api/users/profile`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

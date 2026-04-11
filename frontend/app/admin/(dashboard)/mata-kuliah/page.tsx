@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Search, BookOpen, ChevronRight, MoreVertical, Edit2, Trash2, Plus } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 interface MataKuliah {
   id: string;
@@ -48,7 +49,7 @@ export default function MataKuliahAdminPage() {
         if (!userStr) return;
         const user = JSON.parse(userStr);
         if (user.prodiId) {
-          const res = await fetch(`http://localhost:8000/api/prodi/${user.prodiId}`, {
+          const res = await fetch(`${API_URL}/api/prodi/${user.prodiId}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           const data = await res.json();
@@ -63,7 +64,7 @@ export default function MataKuliahAdminPage() {
 
     const fetchMataKuliah = async () => {
       try {
-        const res = await fetch("http://localhost:8000/api/mata-kuliah", {
+        const res = await fetch(`${API_URL}/api/mata-kuliah`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -87,7 +88,7 @@ export default function MataKuliahAdminPage() {
     
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await fetch(`http://localhost:8000/api/mata-kuliah/${id}`, {
+      const res = await fetch(`${API_URL}/api/mata-kuliah/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` }
       });

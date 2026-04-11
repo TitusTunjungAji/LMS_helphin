@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { API_URL } from "@/lib/api";
 
 export default function TambahRole() {
     const [formData, setFormData] = useState({ name: "", code: "" });
@@ -58,7 +59,7 @@ export default function TambahRole() {
         setLoading(true);
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch("http://localhost:8000/api/roles", {
+            const res = await fetch(`${API_URL}/api/roles`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

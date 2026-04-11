@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 export default function EditRole() {
     const { id } = useParams();
@@ -57,7 +58,7 @@ export default function EditRole() {
     const fetchRole = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/roles/${id}`, {
+            const res = await fetch(`${API_URL}/api/roles/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -84,7 +85,7 @@ export default function EditRole() {
         setSaving(true);
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/roles/${id}`, {
+            const res = await fetch(`${API_URL}/api/roles/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

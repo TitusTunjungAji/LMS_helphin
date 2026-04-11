@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import LogoUpload from "@/app/components/akun-prodi/logo-upload";
+import { API_URL } from "@/lib/api";
 
 export default function BuatAkunProdi() {
     const [namaProdi, setNamaProdi] = useState("");
@@ -19,7 +20,7 @@ export default function BuatAkunProdi() {
             try {
                 const token = localStorage.getItem("accessToken");
                 if (!token) return;
-                const res = await fetch("http://localhost:8000/api/fakultas", {
+                const res = await fetch(`${API_URL}/api/fakultas`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 const data = await res.json();
@@ -48,7 +49,7 @@ export default function BuatAkunProdi() {
                 return;
             }
 
-            const res = await fetch("http://localhost:8000/api/prodi", {
+            const res = await fetch(`${API_URL}/api/prodi`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

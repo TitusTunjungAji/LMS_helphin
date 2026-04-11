@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 export default function ManajemenLatihanSoal() {
     const [dataExercises, setDataExercises] = useState<any[]>([]);
@@ -23,7 +24,7 @@ export default function ManajemenLatihanSoal() {
     const fetchExercises = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch("http://localhost:8000/api/exercises", {
+            const res = await fetch(`${API_URL}/api/exercises`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             const json = await res.json();
@@ -42,7 +43,7 @@ export default function ManajemenLatihanSoal() {
 
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/exercises/${id}`, {
+            const res = await fetch(`${API_URL}/api/exercises/${id}`, {
                 method: "DELETE",
                 headers: { Authorization: `Bearer ${token}` },
             });

@@ -15,6 +15,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 interface ResponsiItem {
   id: string;
@@ -95,7 +96,7 @@ export default function StudentDashboard() {
       const token = localStorage.getItem("accessToken");
       if (!token) return;
 
-      const res = await fetch("http://localhost:8000/api/dashboard/stats?view=student", {
+      const res = await fetch(`${API_URL}/api/dashboard/stats?view=student`, {
         headers: { Authorization: `Bearer ${token}` },
         cache: "no-store"
       });

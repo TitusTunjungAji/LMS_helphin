@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import LogoUpload from "@/app/components/akun-prodi/logo-upload";
 import { useTheme } from "@/context/ThemeContext";
+import { API_URL } from "@/lib/api";
 
 export default function EditMatkulAdmin() {
     const { theme } = useTheme();
@@ -24,7 +25,7 @@ export default function EditMatkulAdmin() {
             const token = localStorage.getItem("accessToken");
             if (!token) return;
 
-            const res = await fetch(`http://localhost:8000/api/mata-kuliah/${id}`, {
+            const res = await fetch(`${API_URL}/api/mata-kuliah/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -46,7 +47,7 @@ export default function EditMatkulAdmin() {
         setLoading(true);
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/mata-kuliah/${id}`, {
+            const res = await fetch(`${API_URL}/api/mata-kuliah/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
+import { API_URL } from "@/lib/api";
 
 export default function EditQuizAdmin() {
     const params = useParams();
@@ -24,7 +25,7 @@ export default function EditQuizAdmin() {
             setIsFetching(true);
             try {
                 const token = localStorage.getItem("accessToken");
-                const res = await fetch(`http://localhost:8000/api/exercises/${itemId}`, {
+                const res = await fetch(`${API_URL}/api/exercises/${itemId}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 const data = await res.json();
@@ -52,7 +53,7 @@ export default function EditQuizAdmin() {
         setLoading(true);
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/exercises/${itemId}`, {
+            const res = await fetch(`${API_URL}/api/exercises/${itemId}`, {
                 method: "PATCH",
                 headers: { 
                     "Content-Type": "application/json",

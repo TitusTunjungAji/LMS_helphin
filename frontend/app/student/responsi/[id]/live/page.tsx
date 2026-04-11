@@ -22,6 +22,7 @@ import {
   MessageCircle
 } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 declare global {
   interface Window {
@@ -93,7 +94,7 @@ export default function LiveResponsiDetail() {
           return;
       }
 
-      const res = await fetch(`http://localhost:8000/api/responsi/${id}`, {
+      const res = await fetch(`${API_URL}/api/responsi/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();

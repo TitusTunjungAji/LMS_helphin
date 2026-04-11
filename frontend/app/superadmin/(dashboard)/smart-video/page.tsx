@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 interface Chapter {
     id: string;
@@ -64,7 +65,7 @@ export default function SmartVideoPage() {
         const fetchVideo = async () => {
             try {
                 const res = await fetch(
-                    `http://localhost:8000/api/smart-video/${topikId}`,
+                    `${API_URL}/api/smart-video/${topikId}`,
                     { headers: { Authorization: `Bearer ${token ?? ""}` } }
                 );
                 const data = await res.json();

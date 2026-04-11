@@ -14,6 +14,7 @@ import {
   Edit,
   Trash2,
 } from "lucide-react";
+import { API_URL } from "@/lib/api";
 
 type FilterType = "all" | "e-materi" | "video" | "bank-soal" | "responsi";
 
@@ -105,11 +106,11 @@ export default function MataKuliahDetailPage() {
       const headers = { Authorization: `Bearer ${token}` };
 
       const [mkRes, matRes, vidRes, exRes, resRes] = await Promise.all([
-        fetch(`http://localhost:8000/api/mata-kuliah/${matkulId}`, { headers }),
-        fetch(`http://localhost:8000/api/materials?mataKuliahId=${matkulId}`, { headers }),
-        fetch(`http://localhost:8000/api/videos?mataKuliahId=${matkulId}`, { headers }),
-        fetch(`http://localhost:8000/api/exercises?mataKuliahId=${matkulId}`, { headers }),
-        fetch(`http://localhost:8000/api/responsi?mataKuliahId=${matkulId}`, { headers }),
+        fetch(`${API_URL}/api/mata-kuliah/${matkulId}`, { headers }),
+        fetch(`${API_URL}/api/materials?mataKuliahId=${matkulId}`, { headers }),
+        fetch(`${API_URL}/api/videos?mataKuliahId=${matkulId}`, { headers }),
+        fetch(`${API_URL}/api/exercises?mataKuliahId=${matkulId}`, { headers }),
+        fetch(`${API_URL}/api/responsi?mataKuliahId=${matkulId}`, { headers }),
       ]);
 
       const [mkData, matData, vidData, exData, resData] = await Promise.all([
@@ -132,7 +133,7 @@ export default function MataKuliahDetailPage() {
     if (!confirm("Apakah Anda yakin ingin menghapus item ini?")) return;
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await fetch(`http://localhost:8000/api/${type}/${id}`, {
+      const res = await fetch(`${API_URL}/api/${type}/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -147,7 +148,7 @@ export default function MataKuliahDetailPage() {
   const handleDownload = async (id: string, fileName: string) => {
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await fetch(`http://localhost:8000/api/materials/${id}/download`, {
+      const res = await fetch(`${API_URL}/api/materials/${id}/download`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Download failed");

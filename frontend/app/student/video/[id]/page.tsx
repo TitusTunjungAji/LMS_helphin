@@ -20,6 +20,7 @@ import {
   FastForward
 } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 declare global {
   interface Window {
@@ -84,7 +85,7 @@ export default function StudentVideoDetail() {
     setIsLoading(true);
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await fetch(`http://localhost:8000/api/videos/${id}`, {
+      const res = await fetch(`${API_URL}/api/videos/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
@@ -104,7 +105,7 @@ export default function StudentVideoDetail() {
   const fetchChapters = async () => {
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await fetch(`http://localhost:8000/api/videos/${id}/chapters`, {
+      const res = await fetch(`${API_URL}/api/videos/${id}/chapters`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();

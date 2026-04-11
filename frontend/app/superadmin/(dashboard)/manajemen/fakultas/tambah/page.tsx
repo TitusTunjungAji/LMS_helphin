@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import InputFakultas from "@/app/components/akun-fakultas/input-fakultas";
+import { API_URL } from "@/lib/api";
 
 export default function BuatAkunFakultas() {
     const [namaUniversitas, setNamaUniversitas] = useState("");
@@ -25,7 +26,7 @@ export default function BuatAkunFakultas() {
                 return;
             }
 
-            const res = await fetch("http://localhost:8000/api/fakultas", {
+            const res = await fetch(`${API_URL}/api/fakultas`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

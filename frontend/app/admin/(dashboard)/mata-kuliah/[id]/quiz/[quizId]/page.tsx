@@ -19,6 +19,7 @@ import {
   Edit
 } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -56,7 +57,7 @@ export default function AdminQuizDetail() {
       const token = localStorage.getItem("accessToken");
       if (!token) return;
 
-      const res = await fetch(`http://localhost:8000/api/exercises/${quizId}`, {
+      const res = await fetch(`${API_URL}/api/exercises/${quizId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();

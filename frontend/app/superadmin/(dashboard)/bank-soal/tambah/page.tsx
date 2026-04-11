@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { API_URL } from "@/lib/api";
 
 export default function TambahBankSoal() {
     const [formData, setFormData] = useState({
@@ -42,7 +43,7 @@ export default function TambahBankSoal() {
     const fetchProdi = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch("http://localhost:8000/api/prodi", {
+            const res = await fetch(`${API_URL}/api/prodi`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -55,7 +56,7 @@ export default function TambahBankSoal() {
     const fetchMatkul = async (prodiId: string) => {
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/mata-kuliah?prodiId=${prodiId}`, {
+            const res = await fetch(`${API_URL}/api/mata-kuliah?prodiId=${prodiId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -82,7 +83,7 @@ export default function TambahBankSoal() {
             fd.append("tahunAjaran", formData.tahunAjaran);
             fd.append("file", file);
 
-            const res = await fetch("http://localhost:8000/api/bank-soal", {
+            const res = await fetch(`${API_URL}/api/bank-soal`, {
                 method: "POST",
                 headers: { Authorization: `Bearer ${token}` },
                 body: fd

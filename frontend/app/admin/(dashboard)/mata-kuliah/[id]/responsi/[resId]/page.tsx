@@ -18,6 +18,7 @@ import {
   ExternalLink
 } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -85,14 +86,14 @@ export default function AdminResponsiDetail() {
       const token = localStorage.getItem("accessToken");
       if (!token) return;
 
-      const res = await fetch(`http://localhost:8000/api/responsi/${resId}`, {
+      const res = await fetch(`${API_URL}/api/responsi/${resId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const json = await res.json();
 
       if (json.success) {
         setData(json.data);
-        const listRes = await fetch(`http://localhost:8000/api/responsi?mataKuliahId=${json.data.mataKuliahId}`, {
+        const listRes = await fetch(`${API_URL}/api/responsi?mataKuliahId=${json.data.mataKuliahId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const listJson = await listRes.json();

@@ -23,6 +23,7 @@ import {
   List
 } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 declare global {
   interface Window {
@@ -91,7 +92,7 @@ export default function AdminVideoDetail() {
       const token = localStorage.getItem("accessToken");
       if (!token) return;
 
-      const res = await fetch(`http://localhost:8000/api/videos/${videoId}`, {
+      const res = await fetch(`${API_URL}/api/videos/${videoId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
@@ -114,7 +115,7 @@ export default function AdminVideoDetail() {
     try {
       const token = localStorage.getItem("accessToken");
       if (!token) return;
-      const res = await fetch(`http://localhost:8000/api/videos/${videoId}/chapters`, {
+      const res = await fetch(`${API_URL}/api/videos/${videoId}/chapters`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();

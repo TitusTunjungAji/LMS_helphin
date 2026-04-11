@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import LogoUpload from "@/app/components/akun-prodi/logo-upload";
+import { API_URL } from "@/lib/api";
 
 export default function EditProdiPage() {
     const [namaUniversitas, setNamaUniversitas] = useState("Telkom University");
@@ -29,7 +30,7 @@ export default function EditProdiPage() {
         try {
             const token = localStorage.getItem("accessToken");
             if (!token) return;
-            const res = await fetch("http://localhost:8000/api/fakultas", {
+            const res = await fetch(`${API_URL}/api/fakultas`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -48,7 +49,7 @@ export default function EditProdiPage() {
                 router.push("/login");
                 return;
             }
-            const res = await fetch(`http://localhost:8000/api/prodi/${id}`, {
+            const res = await fetch(`${API_URL}/api/prodi/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -85,7 +86,7 @@ export default function EditProdiPage() {
         setLoading(true);
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/prodi/${id}`, {
+            const res = await fetch(`${API_URL}/api/prodi/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

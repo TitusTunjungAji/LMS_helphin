@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 export default function ManajemenVideo() {
     const [dataVideo, setDataVideo] = useState<any[]>([]);
@@ -24,7 +25,7 @@ export default function ManajemenVideo() {
         setLoading(true);
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch("http://localhost:8000/api/videos", {
+            const res = await fetch(`${API_URL}/api/videos`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -42,7 +43,7 @@ export default function ManajemenVideo() {
         if (!window.confirm("Yakin ingin menghapus video ini?")) return;
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/videos/${id}`, {
+            const res = await fetch(`${API_URL}/api/videos/${id}`, {
                 method: "DELETE",
                 headers: { Authorization: `Bearer ${token}` }
             });

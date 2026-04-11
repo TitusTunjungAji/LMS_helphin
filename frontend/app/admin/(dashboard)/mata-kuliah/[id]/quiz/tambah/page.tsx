@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
+import { API_URL } from "@/lib/api";
 
 export default function TambahQuizAdmin() {
     const params = useParams();
@@ -34,7 +35,7 @@ export default function TambahQuizAdmin() {
         const fetchDetail = async () => {
             try {
                 const token = localStorage.getItem("accessToken");
-                const res = await fetch(`http://localhost:8000/api/mata-kuliah/${id}`, {
+                const res = await fetch(`${API_URL}/api/mata-kuliah/${id}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 const data = await res.json();
@@ -69,7 +70,7 @@ export default function TambahQuizAdmin() {
                 googleFormUrl: formData.googleFormUrl
             };
 
-            const res = await fetch("http://localhost:8000/api/exercises", {
+            const res = await fetch(`${API_URL}/api/exercises`, {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json",

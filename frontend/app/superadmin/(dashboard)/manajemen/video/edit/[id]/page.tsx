@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 export default function EditVideo() {
     const { id } = useParams();
@@ -44,7 +45,7 @@ export default function EditVideo() {
     const fetchProdi = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch("http://localhost:8000/api/prodi", {
+            const res = await fetch(`${API_URL}/api/prodi`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -57,7 +58,7 @@ export default function EditVideo() {
     const fetchMatkul = async (prodiId: string) => {
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/mata-kuliah?prodiId=${prodiId}`, {
+            const res = await fetch(`${API_URL}/api/mata-kuliah?prodiId=${prodiId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -70,7 +71,7 @@ export default function EditVideo() {
     const fetchVideoDetail = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/videos/${id}`, {
+            const res = await fetch(`${API_URL}/api/videos/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -110,7 +111,7 @@ export default function EditVideo() {
         setSaving(true);
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/videos/${id}`, {
+            const res = await fetch(`${API_URL}/api/videos/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

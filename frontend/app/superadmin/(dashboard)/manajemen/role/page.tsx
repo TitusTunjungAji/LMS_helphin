@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 export default function ManajemenRole() {
     const [dataRole, setDataRole] = useState<any[]>([]);
@@ -22,7 +23,7 @@ export default function ManajemenRole() {
                 router.push("/login");
                 return;
             }
-            const res = await fetch("http://localhost:8000/api/roles", {
+            const res = await fetch(`${API_URL}/api/roles`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -42,7 +43,7 @@ export default function ManajemenRole() {
 
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/roles/${id}`, {
+            const res = await fetch(`${API_URL}/api/roles/${id}`, {
                 method: "DELETE",
                 headers: { Authorization: `Bearer ${token}` }
             });

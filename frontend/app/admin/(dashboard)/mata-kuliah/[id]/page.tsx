@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Inter } from "next/font/google";
 import { useParams } from "next/navigation";
+import { API_URL } from "@/lib/api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -56,7 +57,7 @@ export default function MataKuliahDetail() {
       if (!token) return;
 
       // 1. Fetch Mata Kuliah Detail
-      const mkRes = await fetch(`http://localhost:8000/api/mata-kuliah/${id}`, {
+      const mkRes = await fetch(`${API_URL}/api/mata-kuliah/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const mkData = await mkRes.json();
@@ -86,11 +87,11 @@ export default function MataKuliahDetail() {
       };
 
       const [soal, materi, video, quiz, responsiData] = await Promise.all([
-        fetchTopik(`http://localhost:8000/api/bank-soal?courseId=${id}`, "bank-soal", "bank-soal"),
-        fetchTopik(`http://localhost:8000/api/materials?courseId=${id}`, "e-materi", "materi"),
-        fetchTopik(`http://localhost:8000/api/videos?courseId=${id}`, "smart-video", "video"),
-        fetchTopik(`http://localhost:8000/api/exercises?courseId=${id}`, "quiz", "quiz"),
-        fetchTopik(`http://localhost:8000/api/responsi?mataKuliahId=${id}`, "responsi", "responsi")
+        fetchTopik(`${API_URL}/api/bank-soal?courseId=${id}`, "bank-soal", "bank-soal"),
+        fetchTopik(`${API_URL}/api/materials?courseId=${id}`, "e-materi", "materi"),
+        fetchTopik(`${API_URL}/api/videos?courseId=${id}`, "smart-video", "video"),
+        fetchTopik(`${API_URL}/api/exercises?courseId=${id}`, "quiz", "quiz"),
+        fetchTopik(`${API_URL}/api/responsi?mataKuliahId=${id}`, "responsi", "responsi")
       ]);
       
       setTopikList([...soal, ...materi, ...video, ...quiz, ...responsiData]);
@@ -492,11 +493,11 @@ function TopikCard({ item, onRefresh }: { item: TopikItem; onRefresh: () => void
 
   const getDeleteUrl = () => {
     switch (item.type) {
-      case "e-materi": return `http://localhost:8000/api/materials/${item.realId}`;
-      case "bank-soal": return `http://localhost:8000/api/bank-soal/${item.realId}`;
-      case "quiz": return `http://localhost:8000/api/exercises/${item.realId}`;
-      case "responsi": return `http://localhost:8000/api/responsi/${item.realId}`;
-      case "smart-video": return `http://localhost:8000/api/videos/${item.realId}`;
+      case "e-materi": return `${API_URL}/api/materials/${item.realId}`;
+      case "bank-soal": return `${API_URL}/api/bank-soal/${item.realId}`;
+      case "quiz": return `${API_URL}/api/exercises/${item.realId}`;
+      case "responsi": return `${API_URL}/api/responsi/${item.realId}`;
+      case "smart-video": return `${API_URL}/api/videos/${item.realId}`;
       default: return "";
     }
   };

@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Inter } from "next/font/google";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -43,7 +44,7 @@ export default function StudentMatkulProdiLain() {
       if (!user.prodiId) return;
 
       // 1. Dapatkan detail Prodi asal student
-      const userProdiRes = await fetch(`http://localhost:8000/api/prodi/${user.prodiId}`, {
+      const userProdiRes = await fetch(`${API_URL}/api/prodi/${user.prodiId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const userProdiData = await userProdiRes.json();
@@ -56,7 +57,7 @@ export default function StudentMatkulProdiLain() {
         if (userProdiData.data?.fakultasId) {
           const fakultasId = userProdiData.data.fakultasId;
 
-          const res = await fetch(`http://localhost:8000/api/prodi?fakultasId=${fakultasId}`, {
+          const res = await fetch(`${API_URL}/api/prodi?fakultasId=${fakultasId}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           const data = await res.json();

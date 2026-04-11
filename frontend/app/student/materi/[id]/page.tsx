@@ -16,6 +16,7 @@ import {
   Info
 } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -52,7 +53,7 @@ export default function StudentMaterialDetail() {
       const token = localStorage.getItem("accessToken");
       if (!token) return;
 
-      const res = await fetch(`http://localhost:8000/api/materials/${id}`, {
+      const res = await fetch(`${API_URL}/api/materials/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
@@ -72,7 +73,7 @@ export default function StudentMaterialDetail() {
 
   const getFileUrl = (path: string) => {
     if (!path) return "";
-    return `http://localhost:8000${path}`;
+    return `${API_URL}${path}`;
   };
 
   if (isLoading) {
@@ -185,7 +186,7 @@ export default function StudentMaterialDetail() {
                 <div className="w-full h-full bg-white relative">
                   {/* The Viewer - Works on Production/Live URL */}
                   <iframe 
-                    src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(getFileUrl(material.fileUrl).replace('localhost:8000', 'YOUR_PUBLIC_TUNNEL_URL'))}`} 
+                    src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(getFileUrl(material.fileUrl))}`} 
                     width="100%" 
                     height="100%" 
                     frameBorder="0"
@@ -196,7 +197,7 @@ export default function StudentMaterialDetail() {
                   </iframe>
                   
                   {/* Local Testing Overlay - Helpful for Developer */}
-                  {getFileUrl(material.fileUrl).includes('localhost') && (
+                  {API_URL.includes('localhost') && (
                     <div className="absolute inset-0 bg-white/95 backdrop-blur-sm flex items-center justify-center p-12 text-center">
                       <div className="max-w-md">
                         <div className="w-20 h-20 bg-orange-100 text-orange-600 rounded-3xl flex items-center justify-center mx-auto mb-8 animate-pulse shadow-lg shadow-orange-200/50">

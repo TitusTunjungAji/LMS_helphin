@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { API_URL } from "@/lib/api";
 
 export default function TambahLatihanSoal() {
     const [formData, setFormData] = useState({
@@ -58,7 +59,7 @@ export default function TambahLatihanSoal() {
     const fetchProdi = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch("http://localhost:8000/api/prodi", {
+            const res = await fetch(`${API_URL}/api/prodi`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -71,7 +72,7 @@ export default function TambahLatihanSoal() {
     const fetchMatkul = async (prodiId: string) => {
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/mata-kuliah?prodiId=${prodiId}`, {
+            const res = await fetch(`${API_URL}/api/mata-kuliah?prodiId=${prodiId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -103,7 +104,7 @@ export default function TambahLatihanSoal() {
                 googleFormUrl: formData.googleFormUrl
             };
 
-            const res = await fetch("http://localhost:8000/api/exercises", {
+            const res = await fetch(`${API_URL}/api/exercises`, {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json",

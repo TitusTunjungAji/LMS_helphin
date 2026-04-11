@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import { API_URL } from "@/lib/api";
 
 export default function BuatAkunPage() {
     const router = useRouter();
@@ -21,7 +22,7 @@ export default function BuatAkunPage() {
             try {
                 const token = localStorage.getItem("accessToken");
                 if (!token) return;
-                const res = await fetch("http://localhost:8000/api/prodi", {
+                const res = await fetch(`${API_URL}/api/prodi`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 const data = await res.json();
@@ -36,7 +37,7 @@ export default function BuatAkunPage() {
             try {
                 const token = localStorage.getItem("accessToken");
                 if (!token) return;
-                const res = await fetch("http://localhost:8000/api/roles", {
+                const res = await fetch(`${API_URL}/api/roles`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 const data = await res.json();
@@ -80,7 +81,7 @@ export default function BuatAkunPage() {
             for (const anggota of daftarAnggota) {
                 const fullEmail = `${anggota.email}.helphian@gmail.com`;
 
-                const res = await fetch("http://localhost:8000/api/users", {
+                const res = await fetch(`${API_URL}/api/users`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

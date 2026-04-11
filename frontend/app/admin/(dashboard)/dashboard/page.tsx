@@ -9,6 +9,7 @@ import {
   ResponsiveContainer, 
   Tooltip 
 } from "recharts";
+import { API_URL } from "@/lib/api";
 
 // Mock Data for Trendlines
 const trendData = [
@@ -55,7 +56,7 @@ export default function AdminDashboard() {
     try {
       setLoading(true);
       console.log(`[Dashboard] Fetching stats from backend... (Retry: ${retryCount})`);
-      const res = await fetch("http://localhost:8000/api/dashboard/stats", {
+      const res = await fetch(`${API_URL}/api/dashboard/stats`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 export default function ManajemenBankSoal() {
     const [dataBankSoal, setDataBankSoal] = useState<any[]>([]);
@@ -25,7 +26,7 @@ export default function ManajemenBankSoal() {
     const fetchBankSoal = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch("http://localhost:8000/api/bank-soal", {
+            const res = await fetch(`${API_URL}/api/bank-soal`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             const json = await res.json();
@@ -44,7 +45,7 @@ export default function ManajemenBankSoal() {
 
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/bank-soal/${id}`, {
+            const res = await fetch(`${API_URL}/api/bank-soal/${id}`, {
                 method: "DELETE",
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -63,7 +64,7 @@ export default function ManajemenBankSoal() {
     const handleDownload = async (id: string, fileName: string) => {
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/bank-soal/${id}/download`, {
+            const res = await fetch(`${API_URL}/api/bank-soal/${id}/download`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -85,7 +86,7 @@ export default function ManajemenBankSoal() {
     const handlePreview = async (id: string) => {
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/bank-soal/${id}/preview`, {
+            const res = await fetch(`${API_URL}/api/bank-soal/${id}/preview`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 

@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
+import { API_URL } from "@/lib/api";
 
 export default function EditVideoAdmin() {
     const params = useParams();
@@ -25,7 +26,7 @@ export default function EditVideoAdmin() {
             setIsFetching(true);
             try {
                 const token = localStorage.getItem("accessToken");
-                const res = await fetch(`http://localhost:8000/api/videos/${itemId}`, {
+                const res = await fetch(`${API_URL}/api/videos/${itemId}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 const data = await res.json();
@@ -54,7 +55,7 @@ export default function EditVideoAdmin() {
         try {
             const token = localStorage.getItem("accessToken");
             
-            const res = await fetch(`http://localhost:8000/api/videos/${itemId}`, {
+            const res = await fetch(`${API_URL}/api/videos/${itemId}`, {
                 method: "PATCH",
                 headers: { 
                     "Content-Type": "application/json",

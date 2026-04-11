@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import InputFakultas from "@/app/components/akun-fakultas/input-fakultas";
+import { API_URL } from "@/lib/api";
 
 export default function EditResponsi() {
     const [judulResponsi, setJudulResponsi] = useState("");
@@ -40,7 +41,7 @@ export default function EditResponsi() {
                 router.push("/login");
                 return;
             }
-            const res = await fetch(`http://localhost:8000/api/responsi/${id}`, {
+            const res = await fetch(`${API_URL}/api/responsi/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -89,7 +90,7 @@ export default function EditResponsi() {
     const fetchMatkul = async (pId: string) => {
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/mata-kuliah?prodiId=${pId}`, {
+            const res = await fetch(`${API_URL}/api/mata-kuliah?prodiId=${pId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -124,7 +125,7 @@ export default function EditResponsi() {
             payload.communityLink = linkKomunitas || null;
             payload.liveChatLink = linkLiveChat || null;
 
-            const res = await fetch(`http://localhost:8000/api/responsi/${id}`, {
+            const res = await fetch(`${API_URL}/api/responsi/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

@@ -18,6 +18,7 @@ import {
   AlertCircle
 } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -54,7 +55,7 @@ export default function StudentQuizDetail() {
       const token = localStorage.getItem("accessToken");
       if (!token) return;
 
-      const res = await fetch(`http://localhost:8000/api/exercises/${id}`, {
+      const res = await fetch(`${API_URL}/api/exercises/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();

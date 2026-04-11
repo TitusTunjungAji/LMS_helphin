@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Search, BookOpen, Clock, Users, Pin } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 interface MataKuliah {
   id: string;
@@ -43,7 +44,7 @@ export default function StudentMataKuliahPage() {
         // Note: Students fetching from /api/mata-kuliah will typically only get
         // courses available for their prodi based on backend RBAC filtering.
         // We can also fetch from dashboard stats if needed, but let's use the standard API.
-        const res = await fetch("http://localhost:8000/api/mata-kuliah", {
+        const res = await fetch(`${API_URL}/api/mata-kuliah`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -85,7 +86,7 @@ export default function StudentMataKuliahPage() {
         return mk;
       }));
 
-      const res = await fetch(`http://localhost:8000/api/mata-kuliah/${id}/pin`, {
+      const res = await fetch(`${API_URL}/api/mata-kuliah/${id}/pin`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });

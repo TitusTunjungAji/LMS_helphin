@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 interface MataKuliah {
   id: string;
@@ -34,7 +35,7 @@ export default function AdminDashboard() {
         const token = localStorage.getItem("accessToken");
         if (!token) return;
 
-        const res = await fetch("http://localhost:8000/api/dashboard/stats", {
+        const res = await fetch(`${API_URL}/api/dashboard/stats`, {
           headers: { Authorization: `Bearer ${token}` },
           cache: "no-store"
         });

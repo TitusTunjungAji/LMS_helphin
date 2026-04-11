@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { API_URL } from "@/lib/api";
 
 interface Prodi {
   id: string;
@@ -26,7 +27,7 @@ export default function StudentRegisterPage() {
   useEffect(() => {
     const fetchProdi = async () => {
       try {
-        const res = await fetch("http://localhost:8000/api/prodi");
+        const res = await fetch(`${API_URL}/api/prodi`);
         const data = await res.json();
         if (data.success) {
           setProdiList(data.data);
@@ -50,7 +51,7 @@ export default function StudentRegisterPage() {
     }
 
     try {
-      const res = await fetch("http://localhost:8000/api/auth/register", {
+      const res = await fetch(`${API_URL}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, nim, email, password, prodiId }),

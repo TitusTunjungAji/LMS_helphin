@@ -17,6 +17,7 @@ import {
   Archive
 } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -53,7 +54,7 @@ export default function StudentBankSoalDetail() {
       const token = localStorage.getItem("accessToken");
       if (!token) return;
 
-      const res = await fetch(`http://localhost:8000/api/bank-soal/${id}`, {
+      const res = await fetch(`${API_URL}/api/bank-soal/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
@@ -73,7 +74,7 @@ export default function StudentBankSoalDetail() {
 
   const getFileUrl = (path: string) => {
     if (!path) return "";
-    return `http://localhost:8000${path}`;
+    return `${API_URL}${path}`;
   };
 
   if (isLoading) {
@@ -185,7 +186,7 @@ export default function StudentBankSoalDetail() {
               ) : item.fileType?.match(/(pptx|docx|xlsx|ppt|doc|xls)/i) ? (
                 <div className="w-full h-full bg-white relative">
                   <iframe 
-                    src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(getFileUrl(item.fileUrl).replace('localhost:8000', 'YOUR_PUBLIC_TUNNEL_URL'))}`} 
+                    src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(getFileUrl(item.fileUrl))}`} 
                     width="100%" 
                     height="100%" 
                     frameBorder="0"
@@ -196,7 +197,7 @@ export default function StudentBankSoalDetail() {
                   </iframe>
                   
                   {/* Local Testing Overlay */}
-                  {getFileUrl(item.fileUrl).includes('localhost') && (
+                  {API_URL.includes('localhost') && (
                     <div className="absolute inset-0 bg-white/95 backdrop-blur-xl flex items-center justify-center p-16 text-center">
                       <div className="max-w-md">
                         <div className="w-24 h-24 bg-blue-50 text-blue-600 rounded-[32px] flex items-center justify-center mx-auto mb-8 shadow-xl shadow-blue-100 flex-col gap-1 ring-1 ring-blue-100">

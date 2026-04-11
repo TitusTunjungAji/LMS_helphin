@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
 import Link from "next/link";
+import { API_URL } from "@/lib/api";
 
 export default function EditLatihanSoal() {
     const { id } = useParams();
@@ -27,7 +28,7 @@ export default function EditLatihanSoal() {
     const fetchExercise = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/exercises/${id}`, {
+            const res = await fetch(`${API_URL}/api/exercises/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const json = await res.json();
@@ -69,7 +70,7 @@ export default function EditLatihanSoal() {
         setSaving(true);
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/exercises/${id}`, {
+            const res = await fetch(`${API_URL}/api/exercises/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

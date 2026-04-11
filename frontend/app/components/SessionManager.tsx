@@ -2,6 +2,7 @@
 
 import { useEffect, useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { API_URL } from "@/lib/api";
 
 export default function SessionManager({ children }: { children: React.ReactNode }) {
     const router = useRouter();
@@ -30,7 +31,7 @@ export default function SessionManager({ children }: { children: React.ReactNode
             const refreshToken = localStorage.getItem("refreshToken");
             if (!refreshToken) return;
 
-            const res = await fetch("http://localhost:8000/api/auth/refresh", {
+            const res = await fetch(`${API_URL}/api/auth/refresh`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ refreshToken })

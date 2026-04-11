@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { API_URL } from "@/lib/api";
 
 export default function ProfilePage() {
     const [name, setName] = useState("");
@@ -23,7 +24,7 @@ export default function ProfilePage() {
                 router.push("/login");
                 return;
             }
-            const res = await fetch("http://localhost:8000/api/auth/me", {
+            const res = await fetch(`${API_URL}/api/auth/me`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -55,7 +56,7 @@ export default function ProfilePage() {
                 payload.password = password;
             }
 
-            const res = await fetch("http://localhost:8000/api/users/profile", {
+            const res = await fetch(`${API_URL}/api/users/profile`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

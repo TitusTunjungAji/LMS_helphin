@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import InputFakultas from "@/app/components/akun-fakultas/input-fakultas";
+import { API_URL } from "@/lib/api";
 
 export default function BuatResponsi() {
     const [judulResponsi, setJudulResponsi] = useState("");
@@ -53,7 +54,7 @@ export default function BuatResponsi() {
                     console.warn("No token found for prodi fetch");
                     return;
                 }
-                const res = await fetch("http://localhost:8000/api/prodi", {
+                const res = await fetch(`${API_URL}/api/prodi`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 if (!res.ok) {
@@ -85,7 +86,7 @@ export default function BuatResponsi() {
     const fetchMatkul = async (prodiId: string) => {
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/mata-kuliah?prodiId=${prodiId}`, {
+            const res = await fetch(`${API_URL}/api/mata-kuliah?prodiId=${prodiId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -127,7 +128,7 @@ export default function BuatResponsi() {
             if (linkKomunitas) payload.communityLink = linkKomunitas;
             if (linkLiveChat) payload.liveChatLink = linkLiveChat;
 
-            const res = await fetch("http://localhost:8000/api/responsi", {
+            const res = await fetch(`${API_URL}/api/responsi`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import { API_URL } from "@/lib/api";
 
 export default function ManajemenMateri() {
     const [dataMateri, setDataMateri] = useState<any[]>([]);
@@ -23,7 +24,7 @@ export default function ManajemenMateri() {
     const fetchMaterials = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch("http://localhost:8000/api/materials", {
+            const res = await fetch(`${API_URL}/api/materials`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             const json = await res.json();
@@ -42,7 +43,7 @@ export default function ManajemenMateri() {
 
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/materials/${id}`, {
+            const res = await fetch(`${API_URL}/api/materials/${id}`, {
                 method: "DELETE",
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -61,7 +62,7 @@ export default function ManajemenMateri() {
     const handleDownload = async (id: string, fileName: string) => {
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch(`http://localhost:8000/api/materials/${id}/download`, {
+            const res = await fetch(`${API_URL}/api/materials/${id}/download`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 

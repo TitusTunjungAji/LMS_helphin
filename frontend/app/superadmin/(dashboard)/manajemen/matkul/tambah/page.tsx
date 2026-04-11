@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import LogoUpload from "@/app/components/akun-prodi/logo-upload";
+import { API_URL } from "@/lib/api";
 
 export default function TambahMatkul() {
     const [formData, setFormData] = useState({ name: "", coverUrl: "", prodiId: "" });
@@ -27,7 +28,7 @@ export default function TambahMatkul() {
     const fetchProdi = async () => {
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch("http://localhost:8000/api/prodi", {
+            const res = await fetch(`${API_URL}/api/prodi`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -46,7 +47,7 @@ export default function TambahMatkul() {
         setLoading(true);
         try {
             const token = localStorage.getItem("accessToken");
-            const res = await fetch("http://localhost:8000/api/mata-kuliah", {
+            const res = await fetch(`${API_URL}/api/mata-kuliah`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
