@@ -237,7 +237,7 @@ export default function AdminBankSoalDetail() {
               ].map((m, idx) => (
                 <div key={idx} className="flex items-start gap-5 p-4 rounded-[28px] hover:bg-slate-50 dark:bg-slate-800 dark:bg-slate-900/50 transition-colors group">
                   <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100 group-hover:scale-110 transition-transform">
-                    {React.cloneElement(m.icon as React.ReactElement, { size: 24 })}
+                    {React.isValidElement(m.icon) ? React.cloneElement(m.icon as React.ReactElement<any>, { size: 24 }) : m.icon}
                   </div>
                   <div>
                     <div className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1 opacity-70">{m.label}</div>

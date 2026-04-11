@@ -235,7 +235,7 @@ export default function AdminMaterialDetail() {
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-5 p-2 hover:bg-slate-50 dark:bg-slate-800 dark:bg-slate-900/50 transition-all rounded-3xl group">
                   <div className={`w-14 h-14 rounded-2xl bg-${item.color}-50 text-${item.color}-500 flex items-center justify-center shrink-0 shadow-sm dark:shadow-none border border-${item.color}-100/50 group-hover:scale-110 transition-transform`}>
-                    {React.cloneElement(item.icon as React.ReactElement, { size: 24 })}
+                    {React.isValidElement(item.icon) ? React.cloneElement(item.icon as React.ReactElement<any>, { size: 24 }) : item.icon}
                   </div>
                   <div>
                     <div className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">{item.label}</div>
