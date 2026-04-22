@@ -13,6 +13,10 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Helphin - Platform Pembelajaran Digital",
   description: "Platform pembelajaran inovatif untuk mahasiswa",
+  icons: {
+    icon: "/Assets/P icon 3.png",
+    apple: "/Assets/P icon 3.png",
+  },
 };
 
 export default function RootLayout({
