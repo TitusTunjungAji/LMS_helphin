@@ -448,8 +448,8 @@ export default function LiveResponsiDetail() {
   if (externalMeetingUrl && responsi) {
     return (
       <div className={`min-h-screen bg-[#F8FBFF] dark:bg-slate-950 ${inter.className} pb-10 flex flex-col transition-colors duration-300`}>
-        <header className="px-6 py-8 max-w-[1400px] mx-auto w-full">
-          <div className="flex flex-wrap items-center gap-2 mb-6 text-xs font-black text-slate-400 dark:text-slate-500 tracking-widest uppercase">
+        <header className="px-4 sm:px-6 py-6 sm:py-8 max-w-[1400px] mx-auto w-full">
+          <div className="flex flex-wrap items-center gap-2 mb-4 sm:mb-6 text-[10px] sm:text-xs font-black text-slate-400 dark:text-slate-500 tracking-widest uppercase">
             <Link href="/student/mata-kuliah" className="hover:text-red-500 transition-colors">Mata Kuliah</Link>
             <ChevronRight size={14} className="opacity-50" />
             <Link href={`/student/mata-kuliah/${responsi.mataKuliahId}`} className="hover:text-red-500 transition-colors">{responsi.mataKuliahName}</Link>
@@ -465,25 +465,39 @@ export default function LiveResponsiDetail() {
               Live Responsi — {meetingPlatform}
             </div>
           </div>
-          <h1 className="text-3xl md:text-5xl font-black text-slate-800 dark:text-slate-100 tracking-tighter leading-none">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-black text-slate-800 dark:text-slate-100 tracking-tighter leading-none">
             Responsi {responsi.mataKuliahName}
           </h1>
         </header>
-        <main className="px-6 flex-1 max-w-[1400px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12">
+
+        {/* MOBILE: Tombol besar di atas (hanya tampil di HP) */}
+        <div className="lg:hidden px-4 sm:px-6 mb-6 max-w-[1400px] mx-auto w-full">
+          <button
+            onClick={() => window.open(externalMeetingUrl, "_blank")}
+            className="w-full py-5 bg-green-500 hover:bg-green-600 text-white rounded-2xl font-black text-lg shadow-2xl shadow-green-500/30 hover:shadow-green-500/50 transition-all active:scale-[0.98] flex items-center justify-center gap-3"
+          >
+            <Play size={24} className="fill-white" />
+            Gabung {meetingPlatform}
+          </button>
+        </div>
+
+        <main className="px-4 sm:px-6 flex-1 max-w-[1400px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 mb-12">
           <div className="lg:col-span-8">
-            <div className="bg-slate-900 rounded-[32px] border border-slate-800 shadow-2xl ring-4 md:ring-8 ring-white dark:ring-slate-900 shadow-red-200/50 dark:shadow-none aspect-video flex items-center justify-center relative overflow-hidden">
+            <div className="bg-slate-900 rounded-[20px] sm:rounded-[32px] border border-slate-800 shadow-2xl ring-2 sm:ring-4 md:ring-8 ring-white dark:ring-slate-900 shadow-red-200/50 dark:shadow-none aspect-[4/3] sm:aspect-video flex items-center justify-center relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-900/50 via-slate-900 to-purple-900/50"></div>
-              <div className="relative z-10 text-center px-8">
-                <div className="w-24 h-24 bg-white/10 backdrop-blur-xl rounded-full flex items-center justify-center mx-auto mb-6 border border-white/20">
-                  <ShieldCheck size={40} className="text-green-400" />
+              <div className="relative z-10 text-center px-6 sm:px-8">
+                <div className="w-16 h-16 sm:w-24 sm:h-24 bg-white/10 backdrop-blur-xl rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 border border-white/20">
+                  <ShieldCheck size={28} className="sm:hidden text-green-400" />
+                  <ShieldCheck size={40} className="hidden sm:block text-green-400" />
                 </div>
-                <h2 className="text-2xl md:text-3xl font-black text-white mb-3">Sesi Live via {meetingPlatform}</h2>
-                <p className="text-slate-400 text-sm mb-8 max-w-md mx-auto leading-relaxed">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white mb-2 sm:mb-3">Sesi Live via {meetingPlatform}</h2>
+                <p className="text-slate-400 text-xs sm:text-sm mb-6 sm:mb-8 max-w-md mx-auto leading-relaxed">
                   Klik tombol di bawah untuk bergabung ke sesi responsi live.
                 </p>
+                {/* DESKTOP: Tombol di dalam panel (hanya tampil di desktop) */}
                 <button
                   onClick={() => window.open(externalMeetingUrl, "_blank")}
-                  className="px-10 py-4 bg-green-500 hover:bg-green-600 text-white rounded-2xl font-black text-lg shadow-2xl shadow-green-500/30 hover:shadow-green-500/50 transition-all hover:scale-105 flex items-center gap-3 mx-auto"
+                  className="hidden lg:flex px-10 py-4 bg-green-500 hover:bg-green-600 text-white rounded-2xl font-black text-lg shadow-2xl shadow-green-500/30 hover:shadow-green-500/50 transition-all hover:scale-105 items-center gap-3 mx-auto"
                 >
                   <Play size={22} className="fill-white" />
                   Gabung {meetingPlatform}
@@ -492,21 +506,21 @@ export default function LiveResponsiDetail() {
             </div>
           </div>
           <div className="lg:col-span-4 space-y-6">
-            <div className="bg-white dark:bg-slate-900 rounded-[40px] border border-slate-100 dark:border-slate-800 p-8 shadow-2xl shadow-slate-200/50 dark:shadow-none">
-              <h3 className="text-lg font-black text-slate-800 dark:text-slate-100 mb-8 flex items-center gap-2"><Info size={20} className="text-red-500" /> Informasi Siaran</h3>
-              <div className="space-y-6">
+            <div className="bg-white dark:bg-slate-900 rounded-[28px] sm:rounded-[40px] border border-slate-100 dark:border-slate-800 p-6 sm:p-8 shadow-2xl shadow-slate-200/50 dark:shadow-none">
+              <h3 className="text-base sm:text-lg font-black text-slate-800 dark:text-slate-100 mb-6 sm:mb-8 flex items-center gap-2"><Info size={20} className="text-red-500" /> Informasi Siaran</h3>
+              <div className="space-y-4 sm:space-y-6">
                 {[
                   { icon: <User />, label: "Pemateri", value: responsi.speaker || "Pemateri Prodi", color: "emerald text-emerald-500 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30" },
                   { icon: <BookOpen />, label: "Mata Kuliah", value: responsi.mataKuliahName, color: "purple text-purple-500 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30" },
                   { icon: <Calendar />, label: "Tanggal", value: new Date(responsi.scheduleDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }), color: "blue text-blue-500 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30" }
                 ].map((item, idx) => (
-                  <div key={idx} className="flex items-start gap-4 p-4 rounded-[24px] hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${item.color}`}>
-                      {React.isValidElement(item.icon) ? React.cloneElement(item.icon as React.ReactElement<any>, { size: 22 }) : item.icon}
+                  <div key={idx} className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-[20px] sm:rounded-[24px] hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                    <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0 ${item.color}`}>
+                      {React.isValidElement(item.icon) ? React.cloneElement(item.icon as React.ReactElement<any>, { size: 20 }) : item.icon}
                     </div>
                     <div>
-                      <div className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-0.5 opacity-70">{item.label}</div>
-                      <div className="text-base font-black text-slate-700 dark:text-slate-200">{item.value}</div>
+                      <div className="text-[10px] sm:text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-0.5 opacity-70">{item.label}</div>
+                      <div className="text-sm sm:text-base font-black text-slate-700 dark:text-slate-200">{item.value}</div>
                     </div>
                   </div>
                 ))}
@@ -514,7 +528,7 @@ export default function LiveResponsiDetail() {
             </div>
           </div>
         </main>
-        <div className="mt-auto px-6"><FooterDashboard /></div>
+        <div className="mt-auto px-4 sm:px-6"><FooterDashboard /></div>
       </div>
     );
   }
