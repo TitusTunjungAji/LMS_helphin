@@ -117,8 +117,22 @@ export default function LiveResponsiDetail() {
     }
   };
 
+  // State untuk Twitch embed
+  const [twitchChannel, setTwitchChannel] = useState<string | null>(null);
+
   const loadYouTubeAPI = (url: string) => {
     if (!url) return;
+
+    // Cek apakah link Twitch (twitch.tv/channel)
+    if (url.includes("twitch.tv/")) {
+        const parts = url.split("twitch.tv/")[1]?.split("?")[0]?.split("/");
+        const channel = parts?.[0];
+        if (channel && channel !== "videos") {
+            setTwitchChannel(channel);
+            setIsLoading(false);
+            return;
+        }
+    }
 
     // Ekstrak Video ID dari berbagai format YouTube
     let videoId = "";
@@ -131,7 +145,7 @@ export default function LiveResponsiDetail() {
     }
 
     if (!videoId) {
-        setError("Format link live streaming tidak valid. Harus menggunakan link YouTube.");
+        setError("Format link tidak valid. Gunakan link YouTube atau Twitch.");
         return;
     }
 
@@ -369,8 +383,17 @@ export default function LiveResponsiDetail() {
              className={`bg-slate-900 overflow-hidden relative group ${isFullscreen ? 'w-full h-full' : 'rounded-[32px] border border-slate-800 dark:border-slate-700 shadow-2xl ring-4 md:ring-8 ring-white dark:ring-slate-900 shadow-red-200/50 dark:shadow-none'}`}
           >
             <div className={`relative overflow-hidden bg-black flex items-center justify-center ${isFullscreen ? 'w-full h-full' : 'aspect-video'}`}>
-              {/* The Actual Video Div (Managed by YT API) */}
-              <div id="helphin-player" className="w-full h-full pointer-events-none" />
+              {/* Twitch Player atau YouTube Player */}
+              {twitchChannel ? (
+                <iframe
+                  src={`https://player.twitch.tv/?channel=${twitchChannel}&parent=${typeof window !== 'undefined' ? window.location.hostname : 'localhost'}&muted=false`}
+                  className="w-full h-full"
+                  allowFullScreen
+                  allow="autoplay; encrypted-media"
+                />
+              ) : (
+                <div id="helphin-player" className="w-full h-full pointer-events-none" />
+              )}
 
               {/* TOTAL CLICK OVERLAY: Blocks everything for security */}
               <div 
