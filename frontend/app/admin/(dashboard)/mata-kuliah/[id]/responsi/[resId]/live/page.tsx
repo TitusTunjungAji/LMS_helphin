@@ -120,15 +120,27 @@ export default function AdminLiveResponsiDetail() {
   const loadYouTubeAPI = (url: string) => {
     if (!url) return;
 
+    // Cek apakah link adalah Google Meet, Zoom, atau platform non-YouTube lainnya
+    if (url.includes("meet.google.com") || url.includes("zoom.us") || url.includes("teams.microsoft.com")) {
+        // Untuk platform non-YouTube, buka di tab baru
+        window.open(url, "_blank");
+        setError("Link live streaming dibuka di tab baru. Platform: " + 
+          (url.includes("meet.google.com") ? "Google Meet" : 
+           url.includes("zoom.us") ? "Zoom" : "Microsoft Teams"));
+        return;
+    }
+
     let videoId = "";
     if (url.includes("youtu.be/")) {
         videoId = url.split("youtu.be/")[1]?.split("?")[0];
     } else if (url.includes("v=")) {
         videoId = url.split("v=")[1]?.split("&")[0];
+    } else if (url.includes("youtube.com/live/")) {
+        videoId = url.split("youtube.com/live/")[1]?.split("?")[0];
     }
 
     if (!videoId) {
-        setError("Format link live streaming tidak valid. Harus format YouTube.");
+        setError("Format link live streaming tidak valid. Mendukung: YouTube, Google Meet, Zoom.");
         return;
     }
 
