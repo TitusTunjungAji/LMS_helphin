@@ -28,8 +28,12 @@ const PORT = process.env.PORT || 3000;
 const app = new Elysia()
     // ==================== PLUGINS ====================
     .use(cors({
-        origin: process.env.CORS_ORIGIN || true,
+        origin: process.env.CORS_ORIGIN
+            ? process.env.CORS_ORIGIN.split(",").map(o => o.trim())
+            : true,
         credentials: true,
+        allowedHeaders: ["Content-Type", "Authorization"],
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     }))
     .use(
         jwt({
