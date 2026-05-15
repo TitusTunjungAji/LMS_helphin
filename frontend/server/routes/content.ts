@@ -5,16 +5,7 @@ import { eq, and, ilike } from "drizzle-orm";
 import { getAuthUser, requirePermission, requireProdiAccessOrAdmin } from "../auth";
 import { logActivity } from "../logger";
 import { cache, CACHE_TTL } from "../cache";
-import { writeFile, readFileSync, existsSync, mkdirSync, unlinkSync } from "fs";
-import { join } from "path";
-import { tmpdir } from "os";
-
-const UPLOAD_DIR = join(tmpdir(), "uploads");
-const BANK_SOAL_DIR = join(UPLOAD_DIR, "bank-soal");
-
-// Ensure upload directories exist in /tmp
-try { if (!existsSync(UPLOAD_DIR)) mkdirSync(UPLOAD_DIR, { recursive: true }); } catch {}
-try { if (!existsSync(BANK_SOAL_DIR)) mkdirSync(BANK_SOAL_DIR, { recursive: true }); } catch {}
+import { uploadToFirebase, deleteFromFirebase, downloadFromFirebase } from "../firebase";
 
 // ===================== MATERIALS =====================
 export const materialRoutes = new Hono();
@@ -54,12 +45,13 @@ materialRoutes.post("/", async (c) => {
     if (!requireProdiAccessOrAdmin(prodiId, user!)) return c.json({ success: false, message: "Forbidden" }, 403);
     const file = formData.get("file") as File;
     if (!file) return c.json({ success: false, message: "File is required" }, 400);
-    const fileName = `${Date.now()}-${file.name}`;
-    const filePath = join(UPLOAD_DIR, fileName);
+
+    const fileName = `materials/${Date.now()}-${file.name}`;
     const buffer = Buffer.from(await file.arrayBuffer());
-    await new Promise<void>((res, rej) => writeFile(filePath, buffer, (err) => err ? rej(err) : res()));
+    const fileUrl = await uploadToFirebase(buffer, fileName, file.type);
     const fileType = file.name.split(".").pop() || "unknown";
-    const [created] = await db.insert(materials).values({ title: formData.get("title") as string, description: (formData.get("description") as string) || null, fileUrl: `/uploads/${fileName}`, fileType, tahunAjaran: formData.get("tahunAjaran") as string, mataKuliahId: formData.get("mataKuliahId") as string, prodiId, uploadedBy: user!.id }).returning();
+
+    const [created] = await db.insert(materials).values({ title: formData.get("title") as string, description: (formData.get("description") as string) || null, fileUrl, fileType, tahunAjaran: formData.get("tahunAjaran") as string, mataKuliahId: formData.get("mataKuliahId") as string, prodiId, uploadedBy: user!.id }).returning();
     await logActivity(user!.id, "upload_material", "material", created.id);
     cache.invalidate("materials"); cache.invalidate("matkul");
     return c.json({ success: true, message: "Material uploaded", data: created }, 201);
@@ -89,7 +81,13 @@ materialRoutes.delete("/:id", async (c) => {
     const [existing] = await db.select().from(materials).where(eq(materials.id, c.req.param("id"))).limit(1);
     if (!existing) return c.json({ success: false, message: "Material not found" }, 404);
     if (!requireProdiAccessOrAdmin(existing.prodiId, user!)) return c.json({ success: false, message: "Forbidden" }, 403);
-    try { const fp = join(UPLOAD_DIR, existing.fileUrl.replace("/uploads/", "")); if (existsSync(fp)) unlinkSync(fp); } catch {}
+
+    // Delete from Firebase Storage
+    if (existing.fileUrl.includes("storage.googleapis.com")) {
+        const fbPath = existing.fileUrl.split("/").slice(4).join("/");
+        await deleteFromFirebase(fbPath);
+    }
+
     await db.delete(materials).where(eq(materials.id, c.req.param("id")));
     await logActivity(user!.id, "delete_material", "material", c.req.param("id"));
     cache.invalidate("materials"); cache.invalidate("matkul");
@@ -101,11 +99,21 @@ materialRoutes.get("/:id/download", async (c) => {
     if (!user) return c.json({ success: false, message: "Unauthorized" }, 401);
     const [m] = await db.select().from(materials).where(eq(materials.id, c.req.param("id"))).limit(1);
     if (!m) return c.json({ success: false, message: "Material not found" }, 404);
-    const filePath = join(UPLOAD_DIR, m.fileUrl.replace("/uploads/", ""));
-    if (!existsSync(filePath)) return c.json({ success: false, message: "File not found on disk" }, 404);
     await logActivity(user.id, "download_material", "material", c.req.param("id"));
-    const fileBuffer = readFileSync(filePath);
-    return new Response(fileBuffer, { headers: { "Content-Disposition": `attachment; filename="${m.fileUrl.split("/").pop()}"` } });
+
+    // If Firebase URL, redirect to it
+    if (m.fileUrl.startsWith("http")) {
+        return c.redirect(m.fileUrl);
+    }
+
+    // Legacy: try to download from Firebase path
+    try {
+        const fbPath = m.fileUrl.replace("/uploads/", "materials/");
+        const buffer = await downloadFromFirebase(fbPath);
+        return new Response(new Uint8Array(buffer), { headers: { "Content-Disposition": `attachment; filename="${m.fileUrl.split("/").pop()}"` } });
+    } catch {
+        return c.json({ success: false, message: "File not found" }, 404);
+    }
 });
 
 // ===================== BANK SOAL =====================
@@ -145,12 +153,13 @@ bankSoalRoutes.post("/", async (c) => {
     if (!requireProdiAccessOrAdmin(prodiId, user!)) return c.json({ success: false, message: "Forbidden" }, 403);
     const file = formData.get("file") as File;
     if (!file) return c.json({ success: false, message: "File is required" }, 400);
-    const fileName = `${Date.now()}-${file.name}`;
-    const filePath = join(BANK_SOAL_DIR, fileName);
+
+    const fileName = `bank-soal/${Date.now()}-${file.name}`;
     const buffer = Buffer.from(await file.arrayBuffer());
-    await new Promise<void>((res, rej) => writeFile(filePath, buffer, (err) => err ? rej(err) : res()));
+    const fileUrl = await uploadToFirebase(buffer, fileName, file.type);
     const fileType = file.name.split(".").pop() || "unknown";
-    const [created] = await db.insert(bankSoal).values({ title: formData.get("title") as string, description: (formData.get("description") as string) || null, fileUrl: `/uploads/bank-soal/${fileName}`, fileType, tahunAjaran: formData.get("tahunAjaran") as string, mataKuliahId: formData.get("mataKuliahId") as string, prodiId, uploadedBy: user!.id }).returning();
+
+    const [created] = await db.insert(bankSoal).values({ title: formData.get("title") as string, description: (formData.get("description") as string) || null, fileUrl, fileType, tahunAjaran: formData.get("tahunAjaran") as string, mataKuliahId: formData.get("mataKuliahId") as string, prodiId, uploadedBy: user!.id }).returning();
     await logActivity(user!.id, "upload_bank_soal", "bank_soal", created.id);
     return c.json({ success: true, message: "Bank Soal uploaded", data: created }, 201);
 });
@@ -178,7 +187,12 @@ bankSoalRoutes.delete("/:id", async (c) => {
     const [existing] = await db.select().from(bankSoal).where(eq(bankSoal.id, c.req.param("id"))).limit(1);
     if (!existing) return c.json({ success: false, message: "Bank Soal not found" }, 404);
     if (!requireProdiAccessOrAdmin(existing.prodiId, user!)) return c.json({ success: false, message: "Forbidden" }, 403);
-    try { const fp = join(BANK_SOAL_DIR, existing.fileUrl.replace("/uploads/bank-soal/", "")); if (existsSync(fp)) unlinkSync(fp); } catch {}
+
+    if (existing.fileUrl.includes("storage.googleapis.com")) {
+        const fbPath = existing.fileUrl.split("/").slice(4).join("/");
+        await deleteFromFirebase(fbPath);
+    }
+
     await db.delete(bankSoal).where(eq(bankSoal.id, c.req.param("id")));
     await logActivity(user!.id, "delete_bank_soal", "bank_soal", c.req.param("id"));
     return c.json({ success: true, message: "Bank Soal deleted" });
@@ -189,10 +203,19 @@ bankSoalRoutes.get("/:id/download", async (c) => {
     if (!user) return c.json({ success: false, message: "Unauthorized" }, 401);
     const [m] = await db.select().from(bankSoal).where(eq(bankSoal.id, c.req.param("id"))).limit(1);
     if (!m) return c.json({ success: false, message: "Bank Soal not found" }, 404);
-    const filePath = join(BANK_SOAL_DIR, m.fileUrl.replace("/uploads/bank-soal/", ""));
-    if (!existsSync(filePath)) return c.json({ success: false, message: "File not found on disk" }, 404);
     await logActivity(user.id, "download_bank_soal", "bank_soal", c.req.param("id"));
-    return new Response(readFileSync(filePath), { headers: { "Content-Disposition": `attachment; filename="${m.fileUrl.split("/").pop()}"` } });
+
+    if (m.fileUrl.startsWith("http")) {
+        return c.redirect(m.fileUrl);
+    }
+
+    try {
+        const fbPath = m.fileUrl.replace("/uploads/bank-soal/", "bank-soal/");
+        const buffer = await downloadFromFirebase(fbPath);
+        return new Response(new Uint8Array(buffer), { headers: { "Content-Disposition": `attachment; filename="${m.fileUrl.split("/").pop()}"` } });
+    } catch {
+        return c.json({ success: false, message: "File not found" }, 404);
+    }
 });
 
 bankSoalRoutes.get("/:id/preview", async (c) => {
@@ -200,8 +223,17 @@ bankSoalRoutes.get("/:id/preview", async (c) => {
     if (!user) return c.json({ success: false, message: "Unauthorized" }, 401);
     const [m] = await db.select().from(bankSoal).where(eq(bankSoal.id, c.req.param("id"))).limit(1);
     if (!m) return c.json({ success: false, message: "Bank Soal not found" }, 404);
-    const filePath = join(BANK_SOAL_DIR, m.fileUrl.replace("/uploads/bank-soal/", ""));
-    if (!existsSync(filePath)) return c.json({ success: false, message: "File not found on disk" }, 404);
     await logActivity(user.id, "preview_bank_soal", "bank_soal", c.req.param("id"));
-    return new Response(readFileSync(filePath), { headers: { "Content-Type": "application/pdf", "Content-Disposition": `inline; filename="${m.fileUrl.split("/").pop()}"` } });
+
+    if (m.fileUrl.startsWith("http")) {
+        return c.redirect(m.fileUrl);
+    }
+
+    try {
+        const fbPath = m.fileUrl.replace("/uploads/bank-soal/", "bank-soal/");
+        const buffer = await downloadFromFirebase(fbPath);
+        return new Response(new Uint8Array(buffer), { headers: { "Content-Type": "application/pdf", "Content-Disposition": `inline; filename="${m.fileUrl.split("/").pop()}"` } });
+    } catch {
+        return c.json({ success: false, message: "File not found" }, 404);
+    }
 });
