@@ -35,11 +35,17 @@ export default function LoginView({ roleTitle, redirectPath }: LoginViewProps) {
         throw new Error(data.message || "Gagal login. Periksa kembali email & password.");
       }
 
+      // Role-based access control: block unauthorized portal access
       const userRole = data.data.user.role;
-      if (redirectPath.includes("admin") && userRole !== "admin" && !data.data.user.permissions?.includes("*")) {
-        if (redirectPath.includes("superadmin") && !data.data.user.permissions?.includes("*")) {
-          throw new Error("Anda tidak memiliki akses ke portal ini.");
-        }
+      const isSuperAdminPortal = redirectPath.includes("superadmin");
+      const isAdminPortal = redirectPath.includes("admin");
+      const hasSuperAdminAccess = data.data.user.permissions?.includes("*");
+
+      if (isSuperAdminPortal && !hasSuperAdminAccess) {
+        throw new Error("Anda tidak memiliki akses ke portal Super Admin.");
+      }
+      if (isAdminPortal && !isSuperAdminPortal && userRole !== "admin" && !hasSuperAdminAccess) {
+        throw new Error("Anda tidak memiliki akses ke portal Admin.");
       }
 
       localStorage.setItem("accessToken", data.data.accessToken);
