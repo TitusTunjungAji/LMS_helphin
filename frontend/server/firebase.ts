@@ -6,14 +6,26 @@ const BUCKET_NAME = "helphin-lms.firebasestorage.app";
 function getFirebaseApp() {
   if (getApps().length > 0) return getApps()[0];
 
+  // Try individual env vars first (more reliable on Vercel)
+  const projectId = process.env.FIREBASE_PROJECT_ID;
+  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+  const privateKeyBase64 = process.env.FIREBASE_PRIVATE_KEY_BASE64;
+
+  if (projectId && clientEmail && privateKeyBase64) {
+    const privateKey = Buffer.from(privateKeyBase64, "base64").toString("utf-8");
+    return initializeApp({
+      credential: cert({ projectId, clientEmail, privateKey }),
+      storageBucket: BUCKET_NAME,
+    });
+  }
+
+  // Fallback: full JSON env var
   const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT;
   if (!serviceAccountJson) {
-    throw new Error("FIREBASE_SERVICE_ACCOUNT env var is not set");
+    throw new Error("Firebase credentials not configured. Set FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, and FIREBASE_PRIVATE_KEY_BASE64.");
   }
 
   const serviceAccount = JSON.parse(serviceAccountJson);
-  
-  // Fix private key newlines (Vercel stores \n as literal strings)
   if (serviceAccount.private_key) {
     serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, "\n");
   }
@@ -41,7 +53,6 @@ export async function uploadToFirebase(
     metadata: { contentType: contentType || "application/octet-stream" },
   });
 
-  // Make file publicly accessible
   await file.makePublic();
 
   return `https://storage.googleapis.com/${BUCKET_NAME}/${fileName}`;
