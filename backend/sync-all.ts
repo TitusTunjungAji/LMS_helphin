@@ -29,13 +29,17 @@ async function syncAll() {
                 "video:manage",
                 "responsi:view",
                 "responsi:manage",
+                "latihan:view",
+                "latihan:manage",
+                "bank_soal:view",
+                "bank_soal:manage",
                 "log:view"
             ]
         },
         {
             name: "Student",
             code: "student",
-            permissions: ["dashboard:view", "matkul:view", "responsi:view"]
+            permissions: ["dashboard:view", "matkul:view", "materi:view", "video:view", "responsi:view", "latihan:view", "bank_soal:view"]
         },
     ];
 

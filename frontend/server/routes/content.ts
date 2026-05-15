@@ -7,11 +7,12 @@ import { logActivity } from "../logger";
 import { cache, CACHE_TTL } from "../cache";
 import { writeFile, readFileSync, existsSync, mkdirSync, unlinkSync } from "fs";
 import { join } from "path";
+import { tmpdir } from "os";
 
-const UPLOAD_DIR = join(process.cwd(), "uploads");
+const UPLOAD_DIR = join(tmpdir(), "uploads");
 const BANK_SOAL_DIR = join(UPLOAD_DIR, "bank-soal");
 
-// Ensure upload directories exist
+// Ensure upload directories exist in /tmp
 try { if (!existsSync(UPLOAD_DIR)) mkdirSync(UPLOAD_DIR, { recursive: true }); } catch {}
 try { if (!existsSync(BANK_SOAL_DIR)) mkdirSync(BANK_SOAL_DIR, { recursive: true }); } catch {}
 
