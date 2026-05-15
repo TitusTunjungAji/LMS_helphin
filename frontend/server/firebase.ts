@@ -12,6 +12,12 @@ function getFirebaseApp() {
   }
 
   const serviceAccount = JSON.parse(serviceAccountJson);
+  
+  // Fix private key newlines (Vercel stores \n as literal strings)
+  if (serviceAccount.private_key) {
+    serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, "\n");
+  }
+
   return initializeApp({
     credential: cert(serviceAccount),
     storageBucket: BUCKET_NAME,
