@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { db } from "../db";
 import { users, materials, videos, prodi, fakultas, mataKuliah, activityLogs, materialRequests, exercises, bankSoal, responsi, roles } from "../schema";
-import { eq, count, desc, sql, and } from "drizzle-orm";
+import { eq, count, desc, sql, and, gte } from "drizzle-orm";
 import { getAuthUser, requirePermission } from "../auth";
 
 const dashboard = new Hono();
@@ -35,7 +35,7 @@ dashboard.get("/stats", async (c) => {
         const [coursesCount] = await db.select({ count: count() }).from(mataKuliah).where(prodiId ? eq(mataKuliah.prodiId, prodiId) : sql`TRUE`);
         const [pendingRequests] = await db.select({ count: count() }).from(materialRequests).where(prodiId ? eq(materialRequests.prodiId, prodiId) : sql`TRUE`);
         const [exercisesCount] = await db.select({ count: count() }).from(exercises).where(prodiId ? eq(exercises.prodiId, prodiId) : sql`TRUE`);
-        const upcomingResponsi = await db.select({ id: responsi.id, title: responsi.title, scheduleDate: responsi.scheduleDate, status: responsi.status, mataKuliahName: mataKuliah.name }).from(responsi).leftJoin(mataKuliah, eq(responsi.mataKuliahId, mataKuliah.id)).where(eq(responsi.prodiId, prodiId!)).orderBy(responsi.scheduleDate).limit(5);
+        const upcomingResponsi = await db.select({ id: responsi.id, title: responsi.title, scheduleDate: responsi.scheduleDate, status: responsi.status, mataKuliahName: mataKuliah.name }).from(responsi).leftJoin(mataKuliah, eq(responsi.mataKuliahId, mataKuliah.id)).where(and(eq(responsi.prodiId, prodiId!), gte(responsi.scheduleDate, sql`NOW() - INTERVAL '1 day'`))).orderBy(responsi.scheduleDate).limit(5);
         const allMatkulM = await db.select({ id: materials.mataKuliahId }).from(materials).where(prodiId ? eq(materials.prodiId, prodiId) : undefined);
         const allMatkulV = await db.select({ id: videos.mataKuliahId }).from(videos).where(prodiId ? eq(videos.prodiId, prodiId) : undefined);
         const allMatkulE = await db.select({ id: exercises.mataKuliahId }).from(exercises).where(prodiId ? eq(exercises.prodiId, prodiId) : undefined);
@@ -54,7 +54,7 @@ dashboard.get("/stats", async (c) => {
     if (user!.role === "student" || viewAs === "student") {
         const effectiveProdiId = user!.prodiId;
         const latestMaterials = await db.select({ id: materials.id, title: materials.title, fileType: materials.fileType, prodiName: prodi.name, createdAt: materials.createdAt }).from(materials).leftJoin(prodi, eq(materials.prodiId, prodi.id)).where(effectiveProdiId ? eq(materials.prodiId, effectiveProdiId) : undefined).orderBy(desc(materials.createdAt)).limit(5);
-        const upcomingResponsi = await db.select({ id: responsi.id, title: responsi.title, description: responsi.description, speaker: responsi.speaker, topic: responsi.topic, scheduleDate: responsi.scheduleDate, durationMinutes: responsi.durationMinutes, meetingLink: responsi.meetingLink, status: responsi.status, mataKuliahId: responsi.mataKuliahId, mataKuliahName: mataKuliah.name, prodiId: responsi.prodiId, prodiName: prodi.name }).from(responsi).leftJoin(prodi, eq(responsi.prodiId, prodi.id)).leftJoin(mataKuliah, eq(responsi.mataKuliahId, mataKuliah.id)).where(eq(responsi.status, "upcoming")).orderBy(responsi.scheduleDate).limit(10);
+        const upcomingResponsi = await db.select({ id: responsi.id, title: responsi.title, description: responsi.description, speaker: responsi.speaker, topic: responsi.topic, scheduleDate: responsi.scheduleDate, durationMinutes: responsi.durationMinutes, meetingLink: responsi.meetingLink, status: responsi.status, mataKuliahId: responsi.mataKuliahId, mataKuliahName: mataKuliah.name, prodiId: responsi.prodiId, prodiName: prodi.name }).from(responsi).leftJoin(prodi, eq(responsi.prodiId, prodi.id)).leftJoin(mataKuliah, eq(responsi.mataKuliahId, mataKuliah.id)).where(and(gte(responsi.scheduleDate, sql`NOW() - INTERVAL '1 day'`))).orderBy(responsi.scheduleDate).limit(10);
         const mkQuery = db.select({ id: mataKuliah.id, name: mataKuliah.name, coverUrl: mataKuliah.coverUrl, prodiId: mataKuliah.prodiId, prodiName: prodi.name, materialCount: count(materials.id) }).from(mataKuliah).leftJoin(prodi, eq(mataKuliah.prodiId, prodi.id)).leftJoin(materials, eq(materials.mataKuliahId, mataKuliah.id));
         const studentMataKuliah = effectiveProdiId ? await mkQuery.where(eq(mataKuliah.prodiId, effectiveProdiId)).groupBy(mataKuliah.id, prodi.id) : await mkQuery.groupBy(mataKuliah.id, prodi.id).limit(12);
         let prodiName = "";
