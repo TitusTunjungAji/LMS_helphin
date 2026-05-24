@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Inter } from "next/font/google";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import { Search, BookOpen, ChevronRight, Filter, Calendar } from "lucide-react";
+import { Search, BookOpen, ChevronRight, Filter, Calendar, Clock } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
 import { API_URL } from "@/lib/api";
 
@@ -34,6 +34,8 @@ export default function StudentMataKuliahDetail() {
   const [semester, setSemester] = useState("-");
   const [topikList, setTopikList] = useState<TopikItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [responsiHistory, setResponsiHistory] = useState<any[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
   const [showFilterMenu, setShowFilterMenu] = useState(false);
   const [showYearMenu, setShowYearMenu] = useState(false);
   const [searchTopik, setSearchTopik] = useState("");
@@ -98,6 +100,26 @@ export default function StudentMataKuliahDetail() {
       ]);
       
       setTopikList([...soal, ...materi, ...video, ...quiz, ...responsiData]);
+
+      // Fetch responsi history for this course
+      try {
+        const historyRes = await fetch(`${API_URL}/api/responsi?mataKuliahId=${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const historyData = await historyRes.json();
+        if (historyData.success) {
+          const now = new Date();
+          const pastResponsi = historyData.data.filter((r: any) => {
+            const start = new Date(r.scheduleDate);
+            const end = new Date(start.getTime() + (r.durationMinutes || 60) * 60000);
+            return end < now;
+          });
+          setResponsiHistory(pastResponsi);
+        }
+      } catch (e) {
+        console.error("Failed to fetch responsi history", e);
+      }
+      setIsLoadingHistory(false);
     } catch (e) {
       console.error("Failed to fetch topics", e);
     } finally {
@@ -263,6 +285,53 @@ export default function StudentMataKuliahDetail() {
             ))
           )}
         </div>
+
+        {/* ══════════════════════════════════════════════════ RIWAYAT RESPONSI ══════════════════════════════════════════════════ */}
+        {responsiHistory.length > 0 && (
+          <div className="mt-2 mb-10">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-1.5 h-8 bg-amber-500 rounded-full" />
+              <h2 className="text-2xl font-black text-slate-800 dark:text-slate-100">Riwayat Responsi</h2>
+              <span className="text-xs font-bold text-amber-600 bg-amber-50 dark:bg-amber-900/30 px-3 py-1 rounded-lg">
+                {responsiHistory.length} sesi
+              </span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {responsiHistory.map((item: any) => {
+                const d = new Date(item.scheduleDate);
+                const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+                const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+                return (
+                  <div key={item.id} className="group bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-16 h-16 bg-amber-50 dark:bg-amber-900/10 rounded-bl-[40px] flex items-center justify-center">
+                      <span className="text-amber-400 text-lg">📋</span>
+                    </div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-[9px] font-black px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 uppercase tracking-widest">Selesai</span>
+                    </div>
+                    <h4 className="font-black text-slate-800 dark:text-slate-100 text-sm mb-2 leading-snug line-clamp-2 pr-10">{item.title}</h4>
+                    <div className="space-y-1.5 text-[11px] text-slate-400 dark:text-slate-500 font-medium">
+                      <div className="flex items-center gap-2">
+                        <Calendar size={12} className="text-amber-400" />
+                        <span>{days[d.getDay()]}, {d.getDate()} {months[d.getMonth()]} {d.getFullYear()}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock size={12} className="text-amber-400" />
+                        <span>Pukul {d.getHours().toString().padStart(2, '0')}:{d.getMinutes().toString().padStart(2, '0')} WIB</span>
+                      </div>
+                      {item.speaker && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-amber-400">👤</span>
+                          <span>{item.speaker}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </section>
 
       <div className="mt-auto px-6">

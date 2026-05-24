@@ -103,7 +103,13 @@ export default function StudentDashboard() {
       const data = await res.json();
 
       if (data.success) {
-        setResponsiList(data.data.upcomingResponsi || []);
+        const now = new Date();
+        const activeResponsi = (data.data.upcomingResponsi || []).filter((r: ResponsiItem) => {
+          const start = new Date(r.scheduleDate);
+          const end = new Date(start.getTime() + (r.durationMinutes || 60) * 60000);
+          return end > now;
+        });
+        setResponsiList(activeResponsi);
         setMataKuliahList(data.data.mataKuliah || []);
         setProdiName(data.data.prodiName || "");
       }
@@ -254,12 +260,15 @@ export default function StudentDashboard() {
                     {/* Content area */}
                     <div className="px-4 py-3 flex-1 flex flex-col">
                       <div className="flex gap-1.5 mb-2">
-                        {item.status === 'live' ? (
-                          <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-600">Berlangsung</span>
-                        ) : (
-                          <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-500">Berlangsung</span>
-                        )}
-                        <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-500">Akan Datang</span>
+                        {(() => {
+                          const now = new Date();
+                          const start = new Date(item.scheduleDate);
+                          const end = new Date(start.getTime() + (item.durationMinutes || 60) * 60000);
+                          if (now >= start && now <= end) {
+                            return <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-600 animate-pulse">● Sedang Berlangsung</span>;
+                          }
+                          return <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-500">Akan Datang</span>;
+                        })()}
                       </div>
 
                       <h3 className="text-sm font-bold text-gray-800 dark:text-slate-100 leading-snug line-clamp-2 mb-3">
