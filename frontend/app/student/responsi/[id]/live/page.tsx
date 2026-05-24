@@ -188,19 +188,30 @@ export default function LiveResponsiDetail() {
   };
 
   const initializePlayer = (videoId: string) => {
+    // Destroy existing player if any
+    if (playerRef.current && playerRef.current.destroy) {
+      try { playerRef.current.destroy(); } catch {}
+      playerRef.current = null;
+    }
+
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+
     playerRef.current = new window.YT.Player('helphin-player', {
       height: '100%',
       width: '100%',
       videoId: videoId,
       playerVars: {
         autoplay: 1,
-        controls: 0, // Disable native controls
+        controls: 0,
         rel: 0,
         modestbranding: 1,
         showinfo: 0,
         iv_load_policy: 3,
-        disablekb: 1, // Disable keyboard shortcuts inside iframe
-        fs: 0, // Disable fullscreen button
+        disablekb: 1,
+        fs: 0,
+        playsinline: 1,
+        enablejsapi: 1,
+        origin: origin,
       },
       events: {
         onReady: (event: any) => {
@@ -208,14 +219,29 @@ export default function LiveResponsiDetail() {
           setDuration(d);
           baseDurationRef.current = d;
           baseTimeRef.current = Date.now();
-          event.target.playVideo(); // Auto play if allowed
-          startTimer(); // Always start timer on ready to keep track of duration
+          event.target.playVideo();
+          startTimer();
         },
         onStateChange: (event: any) => {
           if (event.data === window.YT.PlayerState.PLAYING) {
             setIsPlaying(true);
           } else if (event.data === window.YT.PlayerState.PAUSED || event.data === window.YT.PlayerState.ENDED) {
             setIsPlaying(false);
+          } else if (event.data === window.YT.PlayerState.BUFFERING) {
+            setTimeout(() => {
+              if (playerRef.current && playerRef.current.getPlayerState && 
+                  playerRef.current.getPlayerState() !== window.YT.PlayerState.PLAYING) {
+                playerRef.current.playVideo();
+              }
+            }, 2000);
+          }
+        },
+        onError: (event: any) => {
+          console.error("YouTube Player Error:", event.data);
+          if (playerRef.current && playerRef.current.loadVideoById) {
+            setTimeout(() => {
+              playerRef.current.loadVideoById(videoId);
+            }, 3000);
           }
         },
       },
