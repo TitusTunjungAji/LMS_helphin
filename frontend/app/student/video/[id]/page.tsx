@@ -180,9 +180,16 @@ export default function StudentVideoDetail() {
   };
 
   const initializePlayer = (videoId: string) => {
+    if (playerRef.current && playerRef.current.destroy) {
+      try { playerRef.current.destroy(); } catch {}
+      playerRef.current = null;
+    }
+
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+
     playerRef.current = new window.YT.Player('helphin-player', {
       height: '100%', width: '100%', videoId: videoId,
-      playerVars: { autoplay: 0, controls: 0, rel: 0, modestbranding: 1, showinfo: 0, iv_load_policy: 3, disablekb: 1, fs: 0 },
+      playerVars: { autoplay: 0, controls: 0, rel: 0, modestbranding: 1, showinfo: 0, iv_load_policy: 3, disablekb: 1, fs: 0, playsinline: 1, enablejsapi: 1, origin: origin },
       events: {
         onReady: (event: any) => setDuration(event.target.getDuration()),
         onStateChange: (event: any) => {
@@ -192,6 +199,12 @@ export default function StudentVideoDetail() {
           } else {
             setIsPlaying(false);
             stopTimer();
+          }
+        },
+        onError: (event: any) => {
+          console.error("YouTube Player Error:", event.data);
+          if (playerRef.current && playerRef.current.loadVideoById) {
+            setTimeout(() => playerRef.current.loadVideoById(videoId), 3000);
           }
         },
       },

@@ -187,6 +187,14 @@ export default function AdminLiveResponsiDetail() {
   };
 
   const initializePlayer = (videoId: string) => {
+    // Destroy existing player if any
+    if (playerRef.current && playerRef.current.destroy) {
+      try { playerRef.current.destroy(); } catch {}
+      playerRef.current = null;
+    }
+
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    
     playerRef.current = new window.YT.Player('helphin-player', {
       height: '100%',
       width: '100%',
@@ -200,6 +208,9 @@ export default function AdminLiveResponsiDetail() {
         iv_load_policy: 3,
         disablekb: 1,
         fs: 0,
+        playsinline: 1,
+        enablejsapi: 1,
+        origin: origin,
       },
       events: {
         onReady: (event: any) => {
@@ -215,6 +226,23 @@ export default function AdminLiveResponsiDetail() {
             setIsPlaying(true);
           } else if (event.data === window.YT.PlayerState.PAUSED || event.data === window.YT.PlayerState.ENDED) {
             setIsPlaying(false);
+          } else if (event.data === window.YT.PlayerState.BUFFERING) {
+            // Auto-retry play on buffering
+            setTimeout(() => {
+              if (playerRef.current && playerRef.current.getPlayerState && 
+                  playerRef.current.getPlayerState() !== window.YT.PlayerState.PLAYING) {
+                playerRef.current.playVideo();
+              }
+            }, 2000);
+          }
+        },
+        onError: (event: any) => {
+          console.error("YouTube Player Error:", event.data);
+          // Try to recover by reloading the video
+          if (playerRef.current && playerRef.current.loadVideoById) {
+            setTimeout(() => {
+              playerRef.current.loadVideoById(videoId);
+            }, 3000);
           }
         },
       },
