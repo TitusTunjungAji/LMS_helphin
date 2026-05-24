@@ -344,15 +344,18 @@ export default function StudentResponsiDetail() {
                   <h4 className="font-black text-slate-800 dark:text-slate-100 uppercase tracking-tight mb-4">RESPONSI {data.mataKuliahName}</h4>
                   <div className="flex flex-wrap gap-4">
                     <button
-                      disabled={liveStatus === "completed" || (!isGuest && !data.meetingLink)}
+                      disabled={liveStatus === "completed"}
                       onClick={() => handleProtectedAction(() => router.push(`/student/responsi/${id}/live`))}
-                      className={`px-10 py-4 rounded-xl font-black text-sm uppercase tracking-wider transition-all shadow-lg flex items-center gap-3 ${liveStatus === "live" || isGuest
-                        ? "bg-[#007AFF] text-white hover:bg-blue-600 shadow-blue-200 dark:shadow-none"
-                        : "bg-white dark:bg-slate-800 text-[#007AFF] dark:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-700 border border-blue-100 dark:border-blue-900"
+                      className={`px-10 py-4 rounded-xl font-black text-sm uppercase tracking-wider transition-all shadow-lg flex items-center gap-3 ${
+                        liveStatus === "completed"
+                          ? "bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed shadow-none"
+                          : liveStatus === "live" || isGuest
+                            ? "bg-[#007AFF] text-white hover:bg-blue-600 shadow-blue-200 dark:shadow-none"
+                            : "bg-white dark:bg-slate-800 text-[#007AFF] dark:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-700 border border-blue-100 dark:border-blue-900"
                         } ${liveStatus === "live" && !isGuest ? "animate-pulse" : ""}`}
                     >
                       {isGuest && <Lock size={18} />}
-                      {isGuest ? "LOGIN UNTUK JOIN MEETING" : "GABUNG SEKARANG"}
+                      {liveStatus === "completed" ? "SESI SELESAI" : isGuest ? "LOGIN UNTUK JOIN MEETING" : "GABUNG SEKARANG"}
                     </button>
                     {!isGuest && data.liveChatLink && (
                       <button
