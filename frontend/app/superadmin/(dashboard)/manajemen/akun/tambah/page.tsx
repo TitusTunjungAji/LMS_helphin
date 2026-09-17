@@ -105,12 +105,16 @@ export default function BuatAkunPage() {
                 }
             }
 
+            const destination = "/superadmin/manajemen/akun";
+            // #region agent log
+            fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'H',location:'superadmin/manajemen/akun/tambah:simpanSemuaAkun',message:'Create-account redirect destination',data:{destination,successCount,errorCount:errorMessages.length},timestamp:Date.now()})}).catch(()=>{});
+            // #endregion
             if (errorMessages.length > 0) {
                 alert("Beberapa akun gagal ditambahkan:\n" + errorMessages.join("\n"));
-                if (successCount > 0) router.push('/manajemen/akun');
+                if (successCount > 0) router.push(destination);
             } else {
                 alert("Semua akun Himpunan berhasil dibuat! 🐬");
-                router.push('/manajemen/akun');
+                router.push(destination);
             }
 
         } catch (e) {
