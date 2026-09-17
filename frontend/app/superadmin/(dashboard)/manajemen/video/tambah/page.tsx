@@ -54,6 +54,19 @@ function TambahVideoContent() {
             }
         }
         fetchProdi();
+        // #region agent log
+        const check = async (src: string, hypothesisId: string) => {
+            try {
+                const res = await fetch(src, { method: "HEAD" });
+                fetch("http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283", { method: "POST", headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "bf3566" }, body: JSON.stringify({ sessionId: "bf3566", runId: "logo-fix", hypothesisId, location: "superadmin/manajemen/video/tambah/page.tsx:useEffect", message: "Logo asset HEAD check", data: { src, status: res.status, ok: res.ok, contentType: res.headers.get("content-type") }, timestamp: Date.now() }) }).catch(() => {});
+            } catch (error) {
+                fetch("http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283", { method: "POST", headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "bf3566" }, body: JSON.stringify({ sessionId: "bf3566", runId: "logo-fix", hypothesisId, location: "superadmin/manajemen/video/tambah/page.tsx:useEffect", message: "Logo asset HEAD failed", data: { src, error: String(error) }, timestamp: Date.now() }) }).catch(() => {});
+            }
+        };
+        check("/images/helPhin 2.svg", "A");
+        check("/images/helPhin 2.png", "A");
+        check("/Assets/Logo-helphin-biru.png", "C");
+        // #endregion
     }, []);
 
     useEffect(() => {
@@ -129,7 +142,23 @@ function TambahVideoContent() {
             }}>
 
             <div className="mb-10">
-                <Image src="/images/helPhin 2.png" alt="Logo Helphin" width={150} height={50} priority />
+                <Image
+                    src="/images/helPhin 2.svg"
+                    alt="Logo Helphin"
+                    width={150}
+                    height={50}
+                    priority
+                    onLoad={() => {
+                        // #region agent log
+                        fetch("http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283", { method: "POST", headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "bf3566" }, body: JSON.stringify({ sessionId: "bf3566", runId: "logo-fix", hypothesisId: "A", location: "superadmin/manajemen/video/tambah/page.tsx:Image.onLoad", message: "Helphin logo Image loaded", data: { src: "/images/helPhin 2.svg", ok: true }, timestamp: Date.now() }) }).catch(() => {});
+                        // #endregion
+                    }}
+                    onError={() => {
+                        // #region agent log
+                        fetch("http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283", { method: "POST", headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "bf3566" }, body: JSON.stringify({ sessionId: "bf3566", runId: "logo-fix", hypothesisId: "A", location: "superadmin/manajemen/video/tambah/page.tsx:Image.onError", message: "Helphin logo Image failed", data: { src: "/images/helPhin 2.svg", ok: false }, timestamp: Date.now() }) }).catch(() => {});
+                        // #endregion
+                    }}
+                />
             </div>
 
             <div className="mb-10 text-center">

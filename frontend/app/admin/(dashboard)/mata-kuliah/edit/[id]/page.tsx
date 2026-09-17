@@ -91,7 +91,7 @@ export default function EditMatkulAdmin() {
             }}>
 
             <div className="mb-10">
-                <Image src="/images/helPhin 2.png" alt="Logo Helphin" width={150} height={50} priority className="dark:brightness-200" />
+                <Image src="/images/helPhin 2.svg" alt="Logo Helphin" width={150} height={50} priority className="dark:brightness-200" />
             </div>
 
             <div className="mb-10 text-center">
