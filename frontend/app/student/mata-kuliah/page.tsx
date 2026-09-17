@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Search, BookOpen, Clock, Users, Pin } from "lucide-react";
+import { Search, BookOpen, Clock, Users, Pin, X } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
 import CampusHero from "@/components/CampusHero";
 import { API_URL } from "@/lib/api";
@@ -146,7 +146,7 @@ export default function StudentMataKuliahPage() {
             onClick={() => setSearchMatkul("")}
             className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
           >
-            <div className="w-5 h-5 flex items-center justify-center">✕</div>
+            <X size={16} />
           </button>
         )}
       </div>

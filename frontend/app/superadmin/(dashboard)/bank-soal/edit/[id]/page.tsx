@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
 import { API_URL } from "@/lib/api";
+import { FileText } from "lucide-react";
 
 export default function EditBankSoal() {
     const { id } = useParams();
@@ -191,7 +192,9 @@ export default function EditBankSoal() {
                                 />
                                 {file ? (
                                     <div className="flex flex-col items-center gap-2">
-                                        <p className="text-sm text-[#068DFF] font-semibold">📄 {file.name}</p>
+                                        <p className="text-sm text-[#068DFF] font-semibold flex items-center justify-center gap-2">
+                                            <FileText size={16} /> {file.name}
+                                        </p>
                                         <p className="text-xs text-gray-500">File ini akan menimpa file yang lama saat disimpan.</p>
                                     </div>
                                 ) : (

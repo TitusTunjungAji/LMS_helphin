@@ -60,7 +60,7 @@ export default function EditMatkulAdmin() {
             });
             const data = await res.json();
             if (data.success) {
-                alert("Mata kuliah berhasil diperbarui! 📚");
+                alert("Mata kuliah berhasil diperbarui!");
                 router.push("/admin/mata-kuliah");
             } else {
                 alert(`Gagal memperbarui: ${data.message}`);

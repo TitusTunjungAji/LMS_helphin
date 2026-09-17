@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { Hand } from "lucide-react";
 
 export default function HeaderDashboard() {
   const [userName, setUserName] = useState("User");
@@ -22,12 +23,22 @@ export default function HeaderDashboard() {
     if (!token) return;
   }, []);
 
+  useEffect(() => {
+    // #region agent log
+    const heading = document.querySelector("h1")?.innerHTML || "";
+    fetch("http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283", { method: "POST", headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "bf3566" }, body: JSON.stringify({ sessionId: "bf3566", runId: "emoji-fix", hypothesisId: "C", location: "header_dashboard.tsx:useEffect", message: "Greeting icon audit", data: { headingHasEmoji: /[\u{1F300}-\u{1FAFF}]/u.test(heading), headingHasSvg: heading.includes("svg") || !!document.querySelector("h1 svg"), headingText: document.querySelector("h1")?.textContent || "" }, timestamp: Date.now() }) }).catch(() => {});
+    // #endregion
+  }, [userName]);
+
   const firstName = userName.split(" ")[0];
 
   return (
     <header className="overflow-hidden flex justify-between mt-5 pl-5 bg-gradient-to-r from-[#0055FF] to-[#07A3F9] to-75% rounded-lg text-white shadow-lg">
       <div className="flex flex-col justify-end pb-5">
-        <h1 className="font-bold text-3xl mb-1">Hallo, {firstName} 👋</h1>
+        <h1 className="font-bold text-3xl mb-1 flex items-center gap-2">
+          Hallo, {firstName}
+          <Hand size={28} strokeWidth={2} className="opacity-90" />
+        </h1>
         <p className="text-sm opacity-75 mt-1">by helPhin</p>
       </div>
       <div className="relative">

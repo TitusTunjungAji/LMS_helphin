@@ -62,7 +62,7 @@ export default function ManajemenFakultas() {
 
       const data = await res.json();
       if (data.success) {
-        alert("Fakultas berhasil dihapus! 🗑️");
+        alert("Fakultas berhasil dihapus!");
         fetchFakultas();
       } else {
         alert(`Gagal: ${data.message}`);

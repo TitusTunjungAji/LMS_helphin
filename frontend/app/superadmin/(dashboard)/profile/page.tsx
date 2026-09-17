@@ -68,7 +68,7 @@ export default function ProfilePage() {
 
             const data = await res.json();
             if (data.success) {
-                alert("Profile berhasil diperbarui! 🎉");
+                alert("Profile berhasil diperbarui!");
                 
                 // Update local storage user just in case
                 const userStr = localStorage.getItem("user");

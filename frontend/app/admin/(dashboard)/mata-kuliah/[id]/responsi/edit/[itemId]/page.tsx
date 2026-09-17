@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { API_URL } from "@/lib/api";
+import { Sparkles } from "lucide-react";
 
 export default function EditResponsiAdmin() {
     const params = useParams();
@@ -97,7 +98,7 @@ export default function EditResponsiAdmin() {
             });
             const data = await res.json();
             if (data.success) {
-                alert("Jadwal responsi berhasil diperbarui! ✨");
+                alert("Jadwal responsi berhasil diperbarui!");
                 router.push(`/admin/mata-kuliah/${courseId}`);
             } else {
                 alert(`Gagal: ${data.message}`);
@@ -173,7 +174,9 @@ export default function EditResponsiAdmin() {
                             </div>
 
                             <div className="flex flex-col gap-2">
-                                <label className="text-sm font-semibold text-[#007AFF] dark:text-blue-400">Link Pembahasan / Request Soal ✨</label>
+                                <label className="text-sm font-semibold text-[#007AFF] dark:text-blue-400 flex items-center gap-2">
+                                    <Sparkles size={14} /> Link Pembahasan / Request Soal
+                                </label>
                                 <input type="url" placeholder="Youtube link atau link materi" className="w-full h-[48px] px-4 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm text-gray-900 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:border-[#EF4444] outline-none" value={formData.requestMaterialLink} onChange={(e) => setFormData({ ...formData, requestMaterialLink: e.target.value })} />
                             </div>
 

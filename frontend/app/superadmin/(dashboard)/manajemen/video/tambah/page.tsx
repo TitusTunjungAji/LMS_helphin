@@ -105,7 +105,7 @@ function TambahVideoContent() {
             });
             const data = await res.json();
             if (data.success) {
-                alert("Video berhasil ditambahkan! 🎬");
+                alert("Video berhasil ditambahkan!");
                 router.back();
             } else {
                 alert(`Gagal: ${data.message}`);

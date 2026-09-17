@@ -80,7 +80,7 @@ export default function TambahQuizAdmin() {
             });
             const data = await res.json();
             if (data.success) {
-                alert("Quiz berhasil ditambahkan! 📝");
+                alert("Quiz berhasil ditambahkan!");
                 router.push(`/admin/mata-kuliah/${id}`);
             } else {
                 alert(`Gagal: ${data.message}`);

@@ -92,7 +92,7 @@ export default function TambahResponsiAdmin() {
             });
             const data = await res.json();
             if (data.success) {
-                alert("Responsi berhasil dijadwalkan! 🗓️");
+                alert("Responsi berhasil dijadwalkan!");
                 router.push(`/admin/mata-kuliah/${id}`);
             } else {
                 alert(`Gagal: ${data.message}`);

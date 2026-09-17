@@ -126,7 +126,7 @@ export default function EditVideo() {
             });
             const data = await res.json();
             if (data.success) {
-                alert("Video berhasil diperbarui! ✨");
+                alert("Video berhasil diperbarui!");
                 handleBack();
             } else {
                 alert(`Gagal: ${data.message}`);

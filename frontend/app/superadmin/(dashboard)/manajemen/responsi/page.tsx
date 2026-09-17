@@ -61,7 +61,7 @@ export default function ManajemenResponsi() {
 
             const data = await res.json();
             if (data.success) {
-                alert("Responsi berhasil dihapus! 🗑️");
+                alert("Responsi berhasil dihapus!");
                 fetchResponsi();
             } else {
                 alert(`Gagal: ${data.message}`);

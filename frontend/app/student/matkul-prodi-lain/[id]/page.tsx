@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { Inter } from "next/font/google";
-import { ArrowLeft, BookOpen, Search } from "lucide-react";
+import { ArrowLeft, BookOpen, Search, X } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
 import { API_URL } from "@/lib/api";
 
@@ -110,7 +110,7 @@ export default function MatkulProdiLainDetail() {
             onClick={() => setSearchMatkul("")}
             className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
           >
-            <div className="w-5 h-5 flex items-center justify-center">✕</div>
+            <X size={16} />
           </button>
         )}
       </div>

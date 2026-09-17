@@ -89,7 +89,7 @@ export default function EditMateriAdmin() {
             });
             const data = await res.json();
             if (data.success) {
-                alert("Materi berhasil diperbarui! ✨");
+                alert("Materi berhasil diperbarui!");
                 router.push(`/admin/mata-kuliah/${courseId}`);
             } else {
                 alert(`Gagal: ${data.message}`);

@@ -81,7 +81,7 @@ export default function EditBankSoalAdmin() {
             });
             const data = await res.json();
             if (data.success) {
-                alert("Bank Soal berhasil diperbarui! ✨");
+                alert("Bank Soal berhasil diperbarui!");
                 router.push(`/admin/mata-kuliah/${courseId}`);
             } else {
                 alert(`Gagal: ${data.message}`);

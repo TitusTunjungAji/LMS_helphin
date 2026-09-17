@@ -74,7 +74,7 @@ export default function TambahRole() {
             });
             const data = await res.json();
             if (data.success) {
-                alert("Role berhasil ditambahkan! 🎉");
+                alert("Role berhasil ditambahkan!");
                 router.push("/superadmin/manajemen/role");
             } else {
                 alert(`Gagal: ${data.message}`);

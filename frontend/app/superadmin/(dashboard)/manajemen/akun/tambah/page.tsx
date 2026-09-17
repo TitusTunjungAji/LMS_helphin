@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { API_URL } from "@/lib/api";
 import PasswordInput from "@/components/PasswordInput";
+import { X } from "lucide-react";
 
 export default function BuatAkunPage() {
     const router = useRouter();
@@ -114,7 +115,7 @@ export default function BuatAkunPage() {
                 alert("Beberapa akun gagal ditambahkan:\n" + errorMessages.join("\n"));
                 if (successCount > 0) router.push(destination);
             } else {
-                alert("Semua akun Himpunan berhasil dibuat! 🐬");
+                alert("Semua akun Himpunan berhasil dibuat!");
                 router.push(destination);
             }
 
@@ -183,7 +184,9 @@ export default function BuatAkunPage() {
                                     {index > 0 && (
                                         <>
                                             <span className="bg-blue-50 text-blue-500 text-[10px] px-2 py-0.5 rounded-full font-bold">Anggota Ke-{index + 1}</span>
-                                            <button onClick={() => hapusKolomAnggota(anggota.id)} className="text-red-500 hover:text-red-700 text-xs font-bold transition">✕ Hapus</button>
+                                            <button onClick={() => hapusKolomAnggota(anggota.id)} className="text-red-500 hover:text-red-700 text-xs font-bold transition inline-flex items-center gap-1">
+                                                <X size={12} /> Hapus
+                                            </button>
                                         </>
                                     )}
                                 </div>
@@ -256,7 +259,7 @@ export default function BuatAkunPage() {
                                                 const up = [...daftarAnggota];
                                                 up[index].email = val;
                                                 setDaftarAnggota(up);
-                                                setErrorEmail(prev => ({ ...prev, [index]: val.includes("@") ? "Cukup username saja! 🐬" : "" }));
+                                                setErrorEmail(prev => ({ ...prev, [index]: val.includes("@") ? "Cukup username saja!" : "" }));
                                             }}
                                         />
                                         <span className="p-3 text-gray-400 text-xs border-l bg-gray-100/50 flex items-center">.helphian@gmail.com</span>

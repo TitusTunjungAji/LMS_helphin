@@ -56,7 +56,7 @@ export default function ManajemenMatkul() {
 
             const data = await res.json();
             if (data.success) {
-                alert("Mata kuliah berhasil dihapus! 🗑️");
+                alert("Mata kuliah berhasil dihapus!");
                 fetchMatkul();
             } else {
                 alert(`Gagal: ${data.message}`);

@@ -122,7 +122,7 @@ function TambahLatihanSoalContent() {
             });
             const data = await res.json();
             if (data.success) {
-                alert("Latihan Soal berhasil ditambahkan! 📝");
+                alert("Latihan Soal berhasil ditambahkan!");
                 router.back();
             } else {
                 alert(`Gagal: ${data.message}`);
