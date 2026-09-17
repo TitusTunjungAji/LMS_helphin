@@ -87,10 +87,10 @@ export default function MataKuliahDetail() {
       };
 
       const [soal, materi, video, quiz, responsiData] = await Promise.all([
-        fetchTopik(`${API_URL}/api/bank-soal?courseId=${id}`, "bank-soal", "bank-soal"),
-        fetchTopik(`${API_URL}/api/materials?courseId=${id}`, "e-materi", "materi"),
-        fetchTopik(`${API_URL}/api/videos?courseId=${id}`, "smart-video", "video"),
-        fetchTopik(`${API_URL}/api/exercises?courseId=${id}`, "quiz", "quiz"),
+        fetchTopik(`${API_URL}/api/bank-soal?mataKuliahId=${id}`, "bank-soal", "bank-soal"),
+        fetchTopik(`${API_URL}/api/materials?mataKuliahId=${id}`, "e-materi", "materi"),
+        fetchTopik(`${API_URL}/api/videos?mataKuliahId=${id}`, "smart-video", "video"),
+        fetchTopik(`${API_URL}/api/exercises?mataKuliahId=${id}`, "quiz", "quiz"),
         fetchTopik(`${API_URL}/api/responsi?mataKuliahId=${id}`, "responsi", "responsi")
       ]);
       

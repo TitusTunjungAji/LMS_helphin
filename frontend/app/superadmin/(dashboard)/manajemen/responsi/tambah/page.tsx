@@ -48,9 +48,9 @@ function BuatResponsiContent() {
     const handleBack = () => {
         const queryMataKuliahId = searchParams?.get("mataKuliahId");
         if (queryMataKuliahId || mataKuliahId) {
-            router.push(`/mata-kuliah/${queryMataKuliahId || mataKuliahId}`);
+            router.push(`/superadmin/mata-kuliah/${queryMataKuliahId || mataKuliahId}`);
         } else {
-            router.push("/mata-kuliah");
+            router.push("/superadmin/manajemen/responsi");
         }
     };
 

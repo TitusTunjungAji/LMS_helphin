@@ -48,9 +48,9 @@ export default function EditMateri() {
 
     const handleBack = () => {
         if (formData.mataKuliahId) {
-            router.push(`/mata-kuliah/${formData.mataKuliahId}`);
+            router.push(`/superadmin/mata-kuliah/${formData.mataKuliahId}`);
         } else {
-            router.push("/mata-kuliah");
+            router.push("/superadmin/manajemen/materi");
         }
     };
 

@@ -75,7 +75,7 @@ export default function EditBankSoal() {
             const json = await res.json();
             if (json.success) {
                 alert("Bank Soal berhasil diubah!");
-                router.push("/bank-soal");
+                router.push("/superadmin/bank-soal");
             } else {
                 alert(json.message || "Gagal mengubah bank soal.");
             }
@@ -114,7 +114,7 @@ export default function EditBankSoal() {
 
                 <div className="w-full flex justify-between items-center border-b border-gray-100 pb-2">
                     <div className="flex items-center">
-                        <Link href="/bank-soal" className="text-gray-400 hover:text-[#068DFF] transition-colors text-sm font-semibold mr-4">
+                        <Link href="/superadmin/bank-soal" className="text-gray-400 hover:text-[#068DFF] transition-colors text-sm font-semibold mr-4">
                             ← Kembali
                         </Link>
                         <h3 className="text-[20px] font-semibold leading-[32px] text-black">

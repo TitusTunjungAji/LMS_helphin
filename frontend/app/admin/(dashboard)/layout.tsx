@@ -26,16 +26,22 @@ const adminMenuItems: MenuItem[] = [
     hasSubmenu: false,
     path: "/admin/pusat-layanan",
   },
+  {
+    name: "Request Materi",
+    icon: "/Assets/icons/log_activity-icon.svg",
+    hasSubmenu: false,
+    path: "/admin/request-materi",
+  },
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <SessionManager>
-      <div className="flex h-screen bg-[#F8FAFC] dark:bg-slate-950 transition-colors duration-300">
+      <div data-app-shell className="flex h-screen hp-app-shell transition-colors duration-300">
         <Sidebar menuItems={adminMenuItems} />
         <div className="flex-1 flex flex-col overflow-hidden">
           <Navbar />
-          <main className="flex-1 overflow-y-auto bg-[#F8FAFC] dark:bg-slate-950 transition-colors duration-300">
+          <main className="flex-1 overflow-y-auto">
             {children}
           </main>
         </div>

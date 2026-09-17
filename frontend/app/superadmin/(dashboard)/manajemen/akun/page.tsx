@@ -11,6 +11,7 @@ export default function ManajemenAkun() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [searchNama, setSearchNama] = useState("");
   const [userPermissions, setUserPermissions] = useState<string[]>([]);
   const router = useRouter();
 
@@ -143,7 +144,13 @@ export default function ManajemenAkun() {
         </div>
 
         <div className="bg-white p-6 rounded-t-xl border-b flex justify-between items-center">
-          <input type="text" placeholder="Cari Nama" className="border border-gray-200 p-2 rounded-lg w-72 text-sm focus:outline-blue-500" />
+          <input
+            type="text"
+            placeholder="Cari Nama"
+            value={searchNama}
+            onChange={(e) => setSearchNama(e.target.value)}
+            className="border border-gray-200 p-2 rounded-lg w-72 text-sm focus:outline-blue-500"
+          />
           <div className="space-x-2">
             {(userPermissions.includes("*") || userPermissions.includes("akun:manage")) && (
               <Link href="/superadmin/manajemen/akun/tambah">
@@ -177,8 +184,12 @@ export default function ManajemenAkun() {
             <tbody className="text-sm">
               {loading ? (
                 <tr><td colSpan={9} className="p-10 text-center text-gray-400 italic">Memuat data...</td></tr>
-              ) : dataAdmin.length > 0 ? (
-                dataAdmin.map((row, index) => (
+              ) : dataAdmin.filter((row) =>
+                  `${row.name || ""} ${row.email || ""}`.toLowerCase().includes(searchNama.toLowerCase())
+                ).length > 0 ? (
+                dataAdmin.filter((row) =>
+                  `${row.name || ""} ${row.email || ""}`.toLowerCase().includes(searchNama.toLowerCase())
+                ).map((row, index) => (
                   <tr key={row.id} className="hover:bg-gray-50 transition-colors">
                     <td className="p-4 border-b">
                       <input

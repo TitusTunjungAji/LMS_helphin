@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google"; // 1. Tetap gunakan Inter
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
 import { ThemeProvider } from "../context/ThemeContext";
 
-// 2. Konfigurasi Inter
-const inter = Inter({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-inter", // Ini variabel untuk CSS
+  variable: "--font-jakarta",
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -44,7 +44,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${inter.className} antialiased`}
+        className={`${jakarta.variable} ${jakarta.className} antialiased`}
       >
         <ThemeProvider>
           {children}

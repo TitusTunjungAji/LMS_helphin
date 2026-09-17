@@ -1,8 +1,34 @@
+"use client";
+
 import { useState, useEffect, useRef } from "react";
 import { Bell, Moon, Sun, ChevronDown, User, LogOut, Calendar, Clock, ArrowRight } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useTheme } from "../context/ThemeContext";
 import { API_URL } from "@/lib/api";
+
+function greetingLabel() {
+  const h = new Date().getHours();
+  if (h < 11) return "Selamat pagi";
+  if (h < 15) return "Selamat siang";
+  if (h < 18) return "Selamat sore";
+  return "Selamat malam";
+}
+
+function pageLabel(pathname: string) {
+  if (pathname.includes("/matkul-prodi-lain")) return "Prodi Lain";
+  if (pathname.includes("/mata-kuliah")) return "Mata Kuliah";
+  if (pathname.includes("/pusat-layanan")) return "Pusat Layanan";
+  if (pathname.includes("/request-materi")) return "Request Materi";
+  if (pathname.includes("/responsi")) return "Responsi";
+  if (pathname.includes("/log_activity")) return "Log Activity";
+  if (pathname.includes("/setelan")) return "Setelan";
+  if (pathname.includes("/bank-soal")) return "Bank Soal";
+  if (pathname.includes("/smart-video")) return "Smart Video";
+  if (pathname.includes("/profile")) return "Profil";
+  if (pathname.includes("/manajemen")) return "Manajemen";
+  if (pathname.includes("/dashboard")) return "Dashboard";
+  return "helPhin";
+}
 
 interface NavbarProps {
   user?: {
@@ -18,6 +44,7 @@ interface NavbarProps {
 
 export default function Navbar({ user: initialUser }: NavbarProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -46,8 +73,8 @@ export default function Navbar({ user: initialUser }: NavbarProps) {
         setUser(userData);
         
         // Fetch Notifications if it's a student or has prodiId
-        if (parsedUser.role === "student" && parsedUser.prodiId) {
-          fetchNotifications(parsedUser.prodiId);
+        if (parsedUser.role === "student") {
+          fetchNotifications();
         }
       } catch (e) {
         console.error("Failed to parse user", e);
@@ -67,18 +94,19 @@ export default function Navbar({ user: initialUser }: NavbarProps) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const fetchNotifications = async (prodiId: string) => {
+  const fetchNotifications = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/responsi?prodiId=${prodiId}&limit=5&sort=createdAt`);
+      const token = localStorage.getItem("accessToken");
+      if (!token) return;
+      const res = await fetch(`${API_URL}/api/responsi`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const data = await res.json();
-      if (data.success && data.data.length > 0) {
-        setNotifications(data.data);
-        
-        // Check localStorage for last seen ID
+      if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+        const latest = data.data.slice(0, 5);
+        setNotifications(latest);
         const lastSeenId = localStorage.getItem("lastSeenResponsiId");
-        const latestId = data.data[0].id;
-        
-        if (lastSeenId !== latestId) {
+        if (lastSeenId !== latest[0].id) {
           setHasNewNotif(true);
         }
       }
@@ -117,7 +145,11 @@ export default function Navbar({ user: initialUser }: NavbarProps) {
   };
 
   return (
-    <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-30 px-8 py-3 flex items-center justify-end border-b border-gray-100 dark:border-slate-800 transition-colors duration-300">
+    <header data-navbar className="sticky top-0 z-30 px-6 md:px-8 py-3.5 flex items-center justify-between bg-transparent backdrop-blur-md border-b border-[#068DFF]/10 dark:border-white/10 transition-colors duration-300">
+      <div className="min-w-0 pr-4">
+        <p className="text-[11px] text-slate-400 dark:text-slate-500">{mounted ? greetingLabel() : "\u00a0"}</p>
+        <p className="text-[15px] font-semibold text-slate-800 dark:text-slate-100 truncate">{pageLabel(pathname || "")}</p>
+      </div>
       <div className="flex items-center gap-5">
         <button 
           onClick={toggleTheme}
@@ -134,7 +166,7 @@ export default function Navbar({ user: initialUser }: NavbarProps) {
         <div className="relative" ref={notifRef}>
           <button 
             onClick={handleOpenNotif}
-            className={`p-2.5 rounded-xl transition-all duration-200 relative ${isNotifOpen ? "bg-red-50 text-red-500" : "hover:bg-gray-100/80 dark:hover:bg-slate-800 text-gray-500 dark:text-slate-400"}`}
+            className={`p-2.5 rounded-xl transition-all duration-200 relative ${isNotifOpen ? "bg-sky-50 text-[#068DFF]" : "hover:bg-sky-50 dark:hover:bg-slate-800 text-gray-500 dark:text-slate-400"}`}
           >
             <Bell size={20} className={isNotifOpen ? "animate-pulse" : ""} />
             {hasNewNotif && (
@@ -146,8 +178,8 @@ export default function Navbar({ user: initialUser }: NavbarProps) {
           {isNotifOpen && (
             <div className="absolute right-0 mt-3 w-80 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[24px] shadow-2xl py-4 z-50 border border-gray-100 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
               <div className="px-5 pb-3 border-b border-gray-50 dark:border-slate-800 flex items-center justify-between">
-                <h3 className="text-sm font-black text-slate-800 dark:text-slate-100 tracking-tight uppercase">Pemberitahuan</h3>
-                <span className="text-[10px] font-black bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full uppercase">Terbaru</span>
+                <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-100">Pemberitahuan</h3>
+                <span className="text-[10px] font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full">Terbaru</span>
               </div>
               
               <div className="max-h-[360px] overflow-y-auto px-2 py-2">
@@ -168,11 +200,11 @@ export default function Navbar({ user: initialUser }: NavbarProps) {
                       }}
                       className="w-full text-left p-3.5 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-2xl transition-all group flex gap-3 items-start"
                     >
-                      <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-500 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                      <div className="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-900/30 text-[#068DFF] flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                         <Calendar size={18} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[13px] font-black text-slate-800 dark:text-slate-100 leading-tight mb-1 truncate">
+                        <p className="text-[13px] font-semibold text-slate-800 dark:text-slate-100 leading-tight mb-1 truncate">
                           Responsi Baru: {notif.title}
                         </p>
                         <div className="flex items-center gap-3 text-[10px] font-bold text-slate-400 dark:text-slate-500">
@@ -183,7 +215,7 @@ export default function Navbar({ user: initialUser }: NavbarProps) {
                           <span className="truncate">{notif.mataKuliahName}</span>
                         </div>
                       </div>
-                      <ArrowRight size={14} className="text-slate-200 dark:text-slate-800 group-hover:text-red-400 transition-colors shrink-0" />
+                      <ArrowRight size={14} className="text-slate-200 dark:text-slate-800 group-hover:text-[#068DFF] transition-colors shrink-0" />
                     </button>
                   ))
                 )}
@@ -196,7 +228,7 @@ export default function Navbar({ user: initialUser }: NavbarProps) {
                       setIsNotifOpen(false);
                       router.push("/student/responsi");
                     }}
-                    className="w-full py-2.5 text-[11px] font-black text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 text-center uppercase tracking-widest transition-colors"
+                    className="w-full py-2.5 text-[12px] font-medium text-slate-500 hover:text-[#068DFF] text-center transition-colors"
                   >
                     Lihat Semua Responsi
                   </button>
@@ -217,7 +249,7 @@ export default function Navbar({ user: initialUser }: NavbarProps) {
             }}
             className={`flex items-center gap-3.5 pl-2 pr-1.5 py-1.5 rounded-2xl transition-all duration-300 group ${isProfileOpen ? "bg-gray-50/80 dark:bg-slate-800" : "hover:bg-gray-50/80 dark:hover:bg-slate-800"}`}
           >
-            <div className="w-10 h-10 bg-gradient-to-br from-[#068DFF] to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-100 dark:shadow-none group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 bg-[#068DFF] rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
               <span className="text-white font-bold text-sm">
                 {user?.initials || "?"}
               </span>
@@ -235,8 +267,8 @@ export default function Navbar({ user: initialUser }: NavbarProps) {
           {isProfileOpen && (
             <div className="absolute right-0 mt-3 w-56 bg-white dark:bg-slate-900 rounded-[24px] shadow-2xl py-2 z-50 border border-gray-100 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
               <div className="px-4 py-2 border-b border-gray-50 dark:border-slate-800 mb-1">
-                <p className="text-sm font-black text-slate-800 dark:text-slate-100">{user?.name}</p>
-                <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{user?.role?.replace("_", " ")}</p>
+                <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{user?.name}</p>
+                <p className="text-[11px] font-medium text-slate-400">{user?.role?.replace("_", " ")}</p>
               </div>
               <button
                 onClick={() => {

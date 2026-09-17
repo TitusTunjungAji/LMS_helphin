@@ -3,18 +3,19 @@ import Image from "next/image";
 
 export default function FooterDashboard() {
   return (
-    <div className="bg-gradient-to-r mt-5 from-[#068DFF] to-[#31B6FF] p-5 rounded-sm flex justify-between items-center text-white shadow-sm">
+    <div className="mt-5 flex items-center justify-between">
       <Image
-        src="/Assets/Logo-helphin-putih.png"
+        src="/Assets/Logo-helphin-biru.png"
         alt="Logo Helphin"
-        width={100}
-        height={40}
+        width={80}
+        height={28}
         priority
+        className="object-contain opacity-50 dark:brightness-0 dark:invert"
       />
-      <div className="space-x-4 text-xs font-light">
-        <span className="cursor-pointer hover:underline">About</span>
-        <span className="cursor-pointer hover:underline">Policy</span>
-        <span className="cursor-pointer hover:underline">Terms</span>
+      <div className="space-x-5 text-xs text-gray-400">
+        <span className="cursor-pointer hover:text-gray-600">About</span>
+        <span className="cursor-pointer hover:text-gray-600">Policy</span>
+        <span className="cursor-pointer hover:text-gray-600">Terms</span>
       </div>
     </div>
   );

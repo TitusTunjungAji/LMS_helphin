@@ -215,7 +215,7 @@ export default function MataKuliahDetailPage() {
 
         {/* ── Back Button ── */}
         <button
-          onClick={() => router.push("/mata-kuliah")}
+          onClick={() => router.push("/superadmin/manajemen/matkul")}
           className="flex items-center gap-2 text-sm text-gray-500 hover:text-blue-600 mb-6 transition-colors group"
         >
           <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
