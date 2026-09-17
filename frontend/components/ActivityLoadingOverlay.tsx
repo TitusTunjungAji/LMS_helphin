@@ -14,16 +14,20 @@ import {
 let fetchPatched = false;
 let stopNavigation: (() => void) | null = null;
 let navigationTimer: ReturnType<typeof setTimeout> | null = null;
+let navigationCancelled = false;
 
 function startNavigationLoading() {
   if (stopNavigation || navigationTimer) return;
+  navigationCancelled = false;
   navigationTimer = setTimeout(() => {
     navigationTimer = null;
-    stopNavigation = beginActivity("Memuat halaman...");
-  }, 160);
+    if (navigationCancelled) return;
+    stopNavigation = beginActivity("Memuat halaman...", "bar");
+  }, 450);
 }
 
 function stopNavigationLoading() {
+  navigationCancelled = true;
   if (navigationTimer) {
     clearTimeout(navigationTimer);
     navigationTimer = null;
@@ -50,7 +54,10 @@ function installFetchLoading() {
       return originalFetch(input, init);
     }
 
-    return withActivity(guessActivityMessage(url, method), () => originalFetch(input, init), 280);
+    return withActivity(guessActivityMessage(url, method), () => originalFetch(input, init), {
+      delayMs: 450,
+      kind: "bar",
+    });
   };
 }
 
@@ -92,22 +99,22 @@ export default function ActivityLoadingOverlay() {
 
   if (!state.active) return null;
 
+  if (state.kind === "bar") {
+    return (
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-[20000] h-[3px] overflow-hidden bg-blue-100/80 dark:bg-slate-800" role="status" aria-live="polite" aria-busy="true">
+        <div className="h-full w-1/3 rounded-full bg-gradient-to-r from-[#068DFF] via-[#3DB4FF] to-[#068DFF] animate-[helphin-progress_1.1s_ease-in-out_infinite]" />
+      </div>
+    );
+  }
+
   return (
-    <div
-      className="fixed inset-0 z-[20000] flex items-center justify-center bg-slate-900/40 backdrop-blur-[3px]"
-      role="status"
-      aria-live="polite"
-      aria-busy="true"
-    >
-      <div className="flex min-w-[240px] flex-col items-center gap-4 rounded-3xl bg-white px-8 py-7 shadow-2xl dark:bg-slate-900">
-        <div className="relative h-12 w-12">
-          <div className="absolute inset-0 rounded-full border-4 border-blue-100 dark:border-slate-700" />
-          <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-[#068DFF] animate-spin" />
+    <div className="fixed inset-0 z-[20000] flex items-end justify-center bg-slate-900/20 p-8 sm:items-center" role="status" aria-live="polite" aria-busy="true">
+      <div className="flex items-center gap-3 rounded-full bg-white/95 px-5 py-3 shadow-xl ring-1 ring-black/5 backdrop-blur-md dark:bg-slate-900/95">
+        <div className="relative h-5 w-5 shrink-0">
+          <div className="absolute inset-0 rounded-full border-2 border-blue-100 dark:border-slate-700" />
+          <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-[#068DFF] animate-spin" />
         </div>
-        <div className="text-center">
-          <p className="text-sm font-bold text-slate-800 dark:text-slate-100">{state.message}</p>
-          <p className="mt-1 text-xs font-medium text-slate-400">Mohon tunggu sebentar</p>
-        </div>
+        <p className="text-sm font-semibold text-slate-700 dark:text-slate-100">{state.message}</p>
       </div>
     </div>
   );
