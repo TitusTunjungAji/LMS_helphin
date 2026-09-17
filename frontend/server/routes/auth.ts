@@ -128,13 +128,23 @@ auth.post("/forgot-password", async (c) => {
     await logActivity(user.id, "forgot_password_request", "user", user.id);
 
     if (!emailSent.ok) {
-        const notConfigured = emailSent.reason === "MAILER_NOT_CONFIGURED";
+        const detail = "detail" in emailSent ? emailSent.detail : "";
+        const lower = (detail || "").toLowerCase();
+        let message = "Gagal mengirim email OTP. Silakan coba lagi nanti.";
+        if (emailSent.reason === "MAILER_NOT_CONFIGURED") {
+            message = "Layanan pengiriman email belum aktif. Hubungi admin HelPhin.";
+        } else if (lower.includes("testing emails") || lower.includes("own email")) {
+            message = "Email OTP gagal: Resend masih mode testing. Verifikasi domain pengirim, lalu set RESEND_FROM_EMAIL.";
+        } else if (lower.includes("not verified") || lower.includes("domain is not verified")) {
+            message = "Email OTP gagal: domain pengirim belum diverifikasi di Resend.";
+        } else if (lower.includes("api key") || lower.includes("unauthorized") || lower.includes("invalid")) {
+            message = "Email OTP gagal: RESEND_API_KEY tidak valid.";
+        }
         return c.json({
             success: false,
             code: emailSent.reason,
-            message: notConfigured
-                ? "Layanan pengiriman email belum aktif. Hubungi admin HelPhin."
-                : "Gagal mengirim email OTP. Silakan coba lagi nanti.",
+            message,
+            detail: detail || undefined,
         }, 500);
     }
     return c.json({ success: true, message: "Kode OTP telah dikirim ke email terdaftar", data: { email: user.email } });
