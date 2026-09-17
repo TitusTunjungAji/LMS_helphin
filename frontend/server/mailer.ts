@@ -6,6 +6,21 @@ function getResend() {
   return new Resend(key);
 }
 
+function fromAddress() {
+  const name = (process.env.SMTP_FROM_NAME || "HelPhin LMS").trim();
+  const email = (process.env.RESEND_FROM_EMAIL || "").trim();
+  if (!email) return `${name} <onboarding@resend.dev>`;
+  if (email.includes("<") && email.includes(">")) return email;
+  return `${name} <${email}>`;
+}
+
+function resendDetail(error: unknown) {
+  if (!error) return "unknown";
+  if (typeof error === "string") return error.slice(0, 300);
+  const err = error as { message?: string; name?: string; statusCode?: number };
+  return [err.name, err.statusCode, err.message].filter(Boolean).join(" ").slice(0, 300) || "unknown";
+}
+
 export const sendOTP = async (email: string, otp: string, name: string) => {
     try {
         const resend = getResend();
@@ -14,7 +29,7 @@ export const sendOTP = async (email: string, otp: string, name: string) => {
             return { ok: false as const, reason: "MAILER_NOT_CONFIGURED" };
         }
         const { data, error } = await resend.emails.send({
-            from: `${process.env.SMTP_FROM_NAME || "HelPhin LMS"} <${process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev"}>`,
+            from: fromAddress(),
             to: [email],
             subject: "[HelPhin LMS] Kode Verifikasi Lupa Password",
             html: `
@@ -40,15 +55,17 @@ export const sendOTP = async (email: string, otp: string, name: string) => {
         });
 
         if (error) {
-            console.error(`[MAILER] Resend error sending OTP:`, error.name || error);
-            return { ok: false as const, reason: "MAILER_SEND_FAILED" };
+            const detail = resendDetail(error);
+            console.error(`[MAILER] Resend error sending OTP:`, detail);
+            return { ok: false as const, reason: "MAILER_SEND_FAILED", detail };
         }
 
         console.log(`[MAILER] OTP email sent. ID: ${data?.id}`);
         return { ok: true as const };
     } catch (error) {
-        console.error(`[MAILER] Error sending OTP email:`, error);
-        return { ok: false as const, reason: "MAILER_SEND_FAILED" };
+        const detail = resendDetail(error);
+        console.error(`[MAILER] Error sending OTP email:`, detail);
+        return { ok: false as const, reason: "MAILER_SEND_FAILED", detail };
     }
 };
 
@@ -76,7 +93,7 @@ export const sendSupportEmail = async (
             return false;
         }
         const { data, error } = await resend.emails.send({
-            from: `${process.env.SMTP_FROM_NAME || "HelPhin LMS"} <${process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev"}>`,
+            from: fromAddress(),
             to: [companyEmail],
             subject: `[Pusat Layanan] ${subject}`,
             html: `

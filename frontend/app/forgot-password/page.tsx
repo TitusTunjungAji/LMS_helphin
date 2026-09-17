@@ -81,6 +81,7 @@ export default function ForgotPasswordPage() {
             code: data.code || null,
             hasEmail: Boolean(data?.data?.email),
             identifierKind: identifier.includes("@") ? "email" : "other",
+            detail: typeof data.detail === "string" ? data.detail.slice(0, 300) : null,
           },
           timestamp: Date.now(),
         }),
