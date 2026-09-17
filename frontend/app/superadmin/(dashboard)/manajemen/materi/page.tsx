@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
-import { API_URL } from "@/lib/api";
+import { API_URL, downloadAuthFile } from "@/lib/api";
 import { Download, Pencil, Trash2 } from "lucide-react";
 
 export default function ManajemenMateri() {
@@ -62,27 +62,13 @@ export default function ManajemenMateri() {
 
     const handleDownload = async (id: string, fileName: string) => {
         try {
-            const token = localStorage.getItem("accessToken");
-            const res = await fetch(`${API_URL}/api/materials/${id}/download`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-
-            if (!res.ok) throw new Error("Download failed");
-
-            const blob = await res.blob();
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = fileName.split('/').pop() || "materi";
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
+            await downloadAuthFile(`/api/materials/${id}/download`, fileName.split("/").pop() || "materi");
             // #region agent log
-            fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'G',location:'superadmin/manajemen/materi/page.tsx:handleDownload',message:'Superadmin materi download via API',data:{id,ok:true,status:res.status,contentType:res.headers.get('content-type')},timestamp:Date.now()})}).catch(()=>{});
+            fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'loading-fix',hypothesisId:'C',location:'superadmin/manajemen/materi/page.tsx:handleDownload',message:'Superadmin materi download completed',data:{id,ok:true},timestamp:Date.now()})}).catch(()=>{});
             // #endregion
         } catch (error) {
             // #region agent log
-            fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'G',location:'superadmin/manajemen/materi/page.tsx:handleDownload',message:'Superadmin materi download failed',data:{id,error:String(error)},timestamp:Date.now()})}).catch(()=>{});
+            fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'loading-fix',hypothesisId:'C',location:'superadmin/manajemen/materi/page.tsx:handleDownload',message:'Superadmin materi download failed',data:{id,error:String(error)},timestamp:Date.now()})}).catch(()=>{});
             // #endregion
             alert("Gagal mengunduh file.");
         }

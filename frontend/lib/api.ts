@@ -1,3 +1,5 @@
+import { withActivity, withSkippedFetch } from "@/lib/activity-loading";
+
 export const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
 export function superadminReturnPath(returnTo: string | null | undefined, fallback: string) {
@@ -29,28 +31,32 @@ export function suggestedDownloadName(title: string, fileType?: string | null, f
 }
 
 export async function downloadAuthFile(path: string, filename: string) {
-    const token = localStorage.getItem("accessToken");
-    const res = await fetch(`${API_URL}${path}`, {
-        headers: { Authorization: `Bearer ${token}` },
-    });
-    if (!res.ok) throw new Error(`Download failed (${res.status})`);
-    const blob = await res.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    window.URL.revokeObjectURL(url);
+    return withActivity("Mengunduh file...", () => withSkippedFetch(async () => {
+        const token = localStorage.getItem("accessToken");
+        const res = await fetch(`${API_URL}${path}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error(`Download failed (${res.status})`);
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+    }));
 }
 
 export async function previewAuthFile(path: string, fileType?: string | null) {
-    const token = localStorage.getItem("accessToken");
-    const res = await fetch(`${API_URL}${path}`, {
-        headers: { Authorization: `Bearer ${token}` },
-    });
-    if (!res.ok) throw new Error(`Preview failed (${res.status})`);
-    const blob = await res.blob();
-    return URL.createObjectURL(new Blob([blob], { type: blob.type || mimeFromFileType(fileType) }));
+    return withActivity("Memuat preview...", () => withSkippedFetch(async () => {
+        const token = localStorage.getItem("accessToken");
+        const res = await fetch(`${API_URL}${path}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error(`Preview failed (${res.status})`);
+        const blob = await res.blob();
+        return URL.createObjectURL(new Blob([blob], { type: blob.type || mimeFromFileType(fileType) }));
+    }));
 }

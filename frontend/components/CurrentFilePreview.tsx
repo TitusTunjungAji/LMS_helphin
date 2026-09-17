@@ -146,7 +146,12 @@ export default function CurrentFilePreview({
               </div>
             </div>
             <div className="flex-1 bg-slate-50 flex items-center justify-center overflow-hidden">
-              {loading && <p className="text-sm font-medium text-gray-500">Memuat preview...</p>}
+              {loading && (
+                <div className="flex flex-col items-center gap-3">
+                  <div className="w-10 h-10 rounded-full border-4 border-blue-100 border-t-[#068DFF] animate-spin" />
+                  <p className="text-sm font-medium text-gray-500">Memuat preview...</p>
+                </div>
+              )}
               {!loading && error && <p className="text-sm font-medium text-red-500">{error}</p>}
               {!loading && !error && url && isPdf && (
                 <iframe src={url} title="Preview materi" className="w-full h-full border-0 bg-white" />
