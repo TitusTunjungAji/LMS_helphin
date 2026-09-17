@@ -158,7 +158,7 @@ export const bankSoalRoutes = new Elysia({ prefix: "/bank-soal" })
     // ==================== UPDATE (Admin own prodi / Super Admin) ====================
     .patch(
         "/:id",
-        async ({ user, params, body, set }: any) => {
+        async ({ user, params, request, set }: any) => {
             requirePermission("bank_soal:manage")({ user, set });
 
             const [existing] = await db
@@ -177,11 +177,47 @@ export const bankSoalRoutes = new Elysia({ prefix: "/bank-soal" })
                 return { success: false, message: "Cannot edit bank soal from other prodi" };
             }
 
+            const contentType = request.headers.get("content-type") || "";
+            let title: string | undefined;
+            let description: string | undefined;
+            let tahunAjaran: string | undefined;
+            let mataKuliahId: string | undefined;
+            let file: File | null = null;
+
+            if (contentType.includes("multipart/form-data")) {
+                const form = await request.formData();
+                title = (form.get("title") as string) || undefined;
+                description = form.has("description") ? String(form.get("description") ?? "") : undefined;
+                tahunAjaran = (form.get("tahunAjaran") as string) || undefined;
+                mataKuliahId = (form.get("mataKuliahId") as string) || undefined;
+                const maybeFile = form.get("file");
+                if (maybeFile && typeof maybeFile !== "string" && (maybeFile as File).size > 0) {
+                    file = maybeFile as File;
+                }
+            } else {
+                const body = await request.json();
+                title = body.title;
+                description = body.description;
+                tahunAjaran = body.tahunAjaran;
+                mataKuliahId = body.mataKuliahId;
+            }
+
             const updateData: any = { updatedAt: new Date() };
-            if (body.title) updateData.title = body.title;
-            if (body.description !== undefined) updateData.description = body.description;
-            if (body.tahunAjaran) updateData.tahunAjaran = body.tahunAjaran;
-            if (body.mataKuliahId) updateData.mataKuliahId = body.mataKuliahId;
+            if (title) updateData.title = title;
+            if (description !== undefined) updateData.description = description;
+            if (tahunAjaran) updateData.tahunAjaran = tahunAjaran;
+            if (mataKuliahId) updateData.mataKuliahId = mataKuliahId;
+
+            if (file) {
+                try {
+                    const oldPath = join(UPLOAD_DIR, existing.fileUrl.replace("/uploads/bank-soal/", ""));
+                    if (existsSync(oldPath)) unlinkSync(oldPath);
+                } catch { }
+                const fileName = `${Date.now()}-${file.name}`;
+                await Bun.write(join(UPLOAD_DIR, fileName), await file.arrayBuffer());
+                updateData.fileUrl = `/uploads/bank-soal/${fileName}`;
+                updateData.fileType = file.name.split(".").pop() || "unknown";
+            }
 
             const [updated] = await db
                 .update(bankSoal)
@@ -191,14 +227,6 @@ export const bankSoalRoutes = new Elysia({ prefix: "/bank-soal" })
 
             await logActivity(user.id, "update_bank_soal", "bank_soal", params.id);
             return { success: true, data: updated };
-        },
-        {
-            body: t.Object({
-                title: t.Optional(t.String()),
-                description: t.Optional(t.String()),
-                tahunAjaran: t.Optional(t.String()),
-                mataKuliahId: t.Optional(t.String()),
-            }),
         }
     )
 

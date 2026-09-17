@@ -7,6 +7,50 @@ import { logActivity } from "../logger";
 import { cache, CACHE_TTL } from "../cache";
 import { uploadToFirebase, deleteFromFirebase, downloadFromFirebase } from "../firebase";
 
+function firebaseObjectPath(fileUrl?: string | null) {
+    if (!fileUrl || !fileUrl.includes("storage.googleapis.com")) return null;
+    return fileUrl.split("/").slice(4).join("/");
+}
+
+function asUploadFile(value: FormDataEntryValue | null) {
+    if (!value || typeof value === "string") return null;
+    const file = value as File;
+    return file.size > 0 ? file : null;
+}
+
+async function parseContentPatch(c: any) {
+    const contentType = c.req.header("content-type") || "";
+    if (contentType.includes("multipart/form-data")) {
+        const formData = await c.req.formData();
+        return {
+            contentType,
+            title: (formData.get("title") as string) || undefined,
+            description: formData.has("description") ? String(formData.get("description") ?? "") : undefined,
+            tahunAjaran: (formData.get("tahunAjaran") as string) || undefined,
+            mataKuliahId: (formData.get("mataKuliahId") as string) || undefined,
+            file: asUploadFile(formData.get("file")),
+        };
+    }
+    const body = await c.req.json();
+    return {
+        contentType,
+        title: body.title,
+        description: body.description,
+        tahunAjaran: body.tahunAjaran,
+        mataKuliahId: body.mataKuliahId,
+        file: null as File | null,
+    };
+}
+
+async function replaceStoredFile(existingUrl: string, folder: string, file: File) {
+    const oldPath = firebaseObjectPath(existingUrl);
+    if (oldPath) await deleteFromFirebase(oldPath);
+    const fileName = `${folder}/${Date.now()}-${file.name}`;
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const fileUrl = await uploadToFirebase(buffer, fileName, file.type);
+    return { fileUrl, fileType: file.name.split(".").pop() || "unknown" };
+}
+
 // ===================== MATERIALS =====================
 export const materialRoutes = new Hono();
 
@@ -60,15 +104,23 @@ materialRoutes.post("/", async (c) => {
 materialRoutes.patch("/:id", async (c) => {
     const user = await getAuthUser(c);
     requirePermission("materi:manage")(user);
-    const body = await c.req.json();
+    const payload = await parseContentPatch(c);
     const [existing] = await db.select().from(materials).where(eq(materials.id, c.req.param("id"))).limit(1);
     if (!existing) return c.json({ success: false, message: "Material not found" }, 404);
     if (!requireProdiAccessOrAdmin(existing.prodiId, user!)) return c.json({ success: false, message: "Forbidden" }, 403);
     const updateData: any = { updatedAt: new Date() };
-    if (body.title) updateData.title = body.title;
-    if (body.description !== undefined) updateData.description = body.description;
-    if (body.tahunAjaran) updateData.tahunAjaran = body.tahunAjaran;
-    if (body.mataKuliahId) updateData.mataKuliahId = body.mataKuliahId;
+    if (payload.title) updateData.title = payload.title;
+    if (payload.description !== undefined) updateData.description = payload.description;
+    if (payload.tahunAjaran) updateData.tahunAjaran = payload.tahunAjaran;
+    if (payload.mataKuliahId) updateData.mataKuliahId = payload.mataKuliahId;
+    if (payload.file) {
+        const replaced = await replaceStoredFile(existing.fileUrl, "materials", payload.file);
+        updateData.fileUrl = replaced.fileUrl;
+        updateData.fileType = replaced.fileType;
+    }
+    // #region agent log
+    fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'D',location:'frontend/server/routes/content.ts:materialRoutes.patch',message:'Materials PATCH after file-replace support',data:{contentType:payload.contentType,hasFile:!!payload.file,fileName:payload.file?.name||null,updateKeys:Object.keys(updateData),fileReplaced:!!updateData.fileUrl},timestamp:Date.now()})}).catch(()=>{});
+    // #endregion
     const [updated] = await db.update(materials).set(updateData).where(eq(materials.id, c.req.param("id"))).returning();
     await logActivity(user!.id, "update_material", "material", c.req.param("id"));
     cache.invalidate("materials");
@@ -167,15 +219,23 @@ bankSoalRoutes.post("/", async (c) => {
 bankSoalRoutes.patch("/:id", async (c) => {
     const user = await getAuthUser(c);
     requirePermission("bank_soal:manage")(user);
-    const body = await c.req.json();
+    const payload = await parseContentPatch(c);
     const [existing] = await db.select().from(bankSoal).where(eq(bankSoal.id, c.req.param("id"))).limit(1);
     if (!existing) return c.json({ success: false, message: "Bank Soal not found" }, 404);
     if (!requireProdiAccessOrAdmin(existing.prodiId, user!)) return c.json({ success: false, message: "Forbidden" }, 403);
     const updateData: any = { updatedAt: new Date() };
-    if (body.title) updateData.title = body.title;
-    if (body.description !== undefined) updateData.description = body.description;
-    if (body.tahunAjaran) updateData.tahunAjaran = body.tahunAjaran;
-    if (body.mataKuliahId) updateData.mataKuliahId = body.mataKuliahId;
+    if (payload.title) updateData.title = payload.title;
+    if (payload.description !== undefined) updateData.description = payload.description;
+    if (payload.tahunAjaran) updateData.tahunAjaran = payload.tahunAjaran;
+    if (payload.mataKuliahId) updateData.mataKuliahId = payload.mataKuliahId;
+    if (payload.file) {
+        const replaced = await replaceStoredFile(existing.fileUrl, "bank-soal", payload.file);
+        updateData.fileUrl = replaced.fileUrl;
+        updateData.fileType = replaced.fileType;
+    }
+    // #region agent log
+    fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'D',location:'frontend/server/routes/content.ts:bankSoalRoutes.patch',message:'Bank soal PATCH after file-replace support',data:{contentType:payload.contentType,hasFile:!!payload.file,fileName:payload.file?.name||null,updateKeys:Object.keys(updateData),fileReplaced:!!updateData.fileUrl},timestamp:Date.now()})}).catch(()=>{});
+    // #endregion
     const [updated] = await db.update(bankSoal).set(updateData).where(eq(bankSoal.id, c.req.param("id"))).returning();
     await logActivity(user!.id, "update_bank_soal", "bank_soal", c.req.param("id"));
     return c.json({ success: true, data: updated });
