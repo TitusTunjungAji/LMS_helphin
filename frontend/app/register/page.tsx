@@ -74,7 +74,7 @@ export default function StudentRegisterPage() {
 
   return (
     <AuthStage title="#JoinUs" subtitle="with helPhin x HIMA">
-          <div className="flex justify-center mb-4">
+          <div className="flex justify-center mb-3">
             <Image
               src="/images/helPhin 2.svg"
               alt="helPhin"
@@ -84,7 +84,7 @@ export default function StudentRegisterPage() {
             />
           </div>
 
-          <p className="text-center text-[14px] text-gray-500 leading-relaxed mb-8">
+          <p className="text-center text-[14px] text-gray-500 leading-relaxed mb-5">
             Daftarkan akun Anda untuk mulai
             <br />
             belajar bersama helPhin
@@ -106,7 +106,7 @@ export default function StudentRegisterPage() {
               className="w-full px-5 py-3.5 rounded-lg bg-white text-gray-800 border border-gray-300 outline-none transition-all duration-200 hover:border-blue-400 focus:border-[#068DFF] focus:ring-2 focus:ring-blue-100 text-[14px]"
             />
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <input
                 type="text"
                 value={nim}
@@ -162,7 +162,7 @@ export default function StudentRegisterPage() {
             </button>
           </form>
 
-          <p className="text-center text-[14px] text-gray-500 mt-6">
+          <p className="text-center text-[14px] text-gray-500 mt-5 pb-2">
             Sudah punya akun?{" "}
             <Link href="/login" className="text-gray-800 font-bold hover:underline">
               Masuk di sini
