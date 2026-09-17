@@ -51,6 +51,35 @@ async function replaceStoredFile(existingUrl: string, folder: string, file: File
     return { fileUrl, fileType: file.name.split(".").pop() || "unknown" };
 }
 
+function mimeFromFileType(fileType?: string | null, fallback = "application/octet-stream") {
+    const t = (fileType || "").toLowerCase();
+    if (t === "pdf") return "application/pdf";
+    if (t === "doc") return "application/msword";
+    if (t === "docx") return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+    if (t === "ppt") return "application/vnd.ms-powerpoint";
+    if (t === "pptx") return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+    if (t === "xls") return "application/vnd.ms-excel";
+    if (t === "xlsx") return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    if (t === "png") return "image/png";
+    if (t === "jpg" || t === "jpeg") return "image/jpeg";
+    return fallback;
+}
+
+async function serveStoredFile(fileUrl: string, folderFallback: string, fileType: string | null, disposition: "inline" | "attachment") {
+    const fbPath = firebaseObjectPath(fileUrl)
+        || fileUrl.replace("/uploads/bank-soal/", "bank-soal/").replace("/uploads/", `${folderFallback}/`);
+    const buffer = await downloadFromFirebase(fbPath);
+    const filename = decodeURIComponent((fileUrl.split("/").pop() || "file").replace(/"/g, ""));
+    const contentType = mimeFromFileType(fileType, disposition === "inline" ? "application/pdf" : "application/octet-stream");
+    return new Response(new Uint8Array(buffer), {
+        headers: {
+            "Content-Type": contentType,
+            "Content-Disposition": `${disposition}; filename="${filename}"`,
+            "Cache-Control": "private, max-age=0, must-revalidate",
+        },
+    });
+}
+
 // ===================== MATERIALS =====================
 export const materialRoutes = new Hono();
 
@@ -152,17 +181,12 @@ materialRoutes.get("/:id/download", async (c) => {
     const [m] = await db.select().from(materials).where(eq(materials.id, c.req.param("id"))).limit(1);
     if (!m) return c.json({ success: false, message: "Material not found" }, 404);
     await logActivity(user.id, "download_material", "material", c.req.param("id"));
-
-    // If Firebase URL, redirect to it
-    if (m.fileUrl.startsWith("http")) {
-        return c.redirect(m.fileUrl);
-    }
-
-    // Legacy: try to download from Firebase path
     try {
-        const fbPath = m.fileUrl.replace("/uploads/", "materials/");
-        const buffer = await downloadFromFirebase(fbPath);
-        return new Response(new Uint8Array(buffer), { headers: { "Content-Disposition": `attachment; filename="${m.fileUrl.split("/").pop()}"` } });
+        const res = await serveStoredFile(m.fileUrl, "materials", m.fileType, "attachment");
+        // #region agent log
+        fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'E',location:'frontend/server/routes/content.ts:materialRoutes.download',message:'Materials download proxied',data:{id:c.req.param("id"),isHttp:m.fileUrl.startsWith("http"),fileType:m.fileType},timestamp:Date.now()})}).catch(()=>{});
+        // #endregion
+        return res;
     } catch {
         return c.json({ success: false, message: "File not found" }, 404);
     }
@@ -264,15 +288,12 @@ bankSoalRoutes.get("/:id/download", async (c) => {
     const [m] = await db.select().from(bankSoal).where(eq(bankSoal.id, c.req.param("id"))).limit(1);
     if (!m) return c.json({ success: false, message: "Bank Soal not found" }, 404);
     await logActivity(user.id, "download_bank_soal", "bank_soal", c.req.param("id"));
-
-    if (m.fileUrl.startsWith("http")) {
-        return c.redirect(m.fileUrl);
-    }
-
     try {
-        const fbPath = m.fileUrl.replace("/uploads/bank-soal/", "bank-soal/");
-        const buffer = await downloadFromFirebase(fbPath);
-        return new Response(new Uint8Array(buffer), { headers: { "Content-Disposition": `attachment; filename="${m.fileUrl.split("/").pop()}"` } });
+        const res = await serveStoredFile(m.fileUrl, "bank-soal", m.fileType, "attachment");
+        // #region agent log
+        fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'E',location:'frontend/server/routes/content.ts:bankSoalRoutes.download',message:'Bank soal download proxied',data:{id:c.req.param("id"),isHttp:m.fileUrl.startsWith("http"),fileType:m.fileType},timestamp:Date.now()})}).catch(()=>{});
+        // #endregion
+        return res;
     } catch {
         return c.json({ success: false, message: "File not found" }, 404);
     }
@@ -284,15 +305,12 @@ bankSoalRoutes.get("/:id/preview", async (c) => {
     const [m] = await db.select().from(bankSoal).where(eq(bankSoal.id, c.req.param("id"))).limit(1);
     if (!m) return c.json({ success: false, message: "Bank Soal not found" }, 404);
     await logActivity(user.id, "preview_bank_soal", "bank_soal", c.req.param("id"));
-
-    if (m.fileUrl.startsWith("http")) {
-        return c.redirect(m.fileUrl);
-    }
-
     try {
-        const fbPath = m.fileUrl.replace("/uploads/bank-soal/", "bank-soal/");
-        const buffer = await downloadFromFirebase(fbPath);
-        return new Response(new Uint8Array(buffer), { headers: { "Content-Type": "application/pdf", "Content-Disposition": `inline; filename="${m.fileUrl.split("/").pop()}"` } });
+        const res = await serveStoredFile(m.fileUrl, "bank-soal", m.fileType || "pdf", "inline");
+        // #region agent log
+        fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'E',location:'frontend/server/routes/content.ts:bankSoalRoutes.preview',message:'Bank soal preview proxied',data:{id:c.req.param("id"),isHttp:m.fileUrl.startsWith("http"),fileType:m.fileType},timestamp:Date.now()})}).catch(()=>{});
+        // #endregion
+        return res;
     } catch {
         return c.json({ success: false, message: "File not found" }, 404);
     }
