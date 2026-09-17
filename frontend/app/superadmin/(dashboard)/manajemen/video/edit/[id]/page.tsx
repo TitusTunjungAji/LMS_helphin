@@ -99,11 +99,7 @@ export default function EditVideo() {
     };
 
     const handleBack = () => {
-        if (formData.mataKuliahId) {
-            router.push(`/superadmin/mata-kuliah/${formData.mataKuliahId}`);
-        } else {
-            router.push("/superadmin/manajemen/video");
-        }
+        router.push("/superadmin/manajemen/video");
     };
 
     const handleUpdate = async (e: React.FormEvent) => {

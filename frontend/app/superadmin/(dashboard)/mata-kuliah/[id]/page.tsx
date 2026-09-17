@@ -328,7 +328,7 @@ export default function MataKuliahDetailPage() {
                   {canManage && (
                     <>
                       <button
-                        onClick={() => router.push(`/superadmin/manajemen/materi/edit/${m.id}`)}
+                        onClick={() => router.push(`/superadmin/manajemen/materi/edit/${m.id}?returnTo=${encodeURIComponent(`/superadmin/mata-kuliah/${matkulId}`)}`)}
                         className="flex items-center gap-1.5 px-3 py-2 bg-amber-100 text-amber-700 rounded-xl text-xs font-semibold hover:bg-amber-200 transition-colors shadow-sm"
                       >
                         <Edit size={13} /> Edit
@@ -377,7 +377,7 @@ export default function MataKuliahDetailPage() {
                   {canManage && (
                     <>
                       <button
-                        onClick={() => router.push(`/superadmin/manajemen/video/edit/${v.id}`)}
+                        onClick={() => router.push(`/superadmin/manajemen/video/edit/${v.id}?returnTo=${encodeURIComponent(`/superadmin/mata-kuliah/${matkulId}`)}`)}
                         className="flex items-center gap-1.5 px-3 py-2 bg-amber-100 text-amber-700 rounded-xl text-xs font-semibold hover:bg-amber-200 transition-colors shadow-sm"
                       >
                         <Edit size={13} /> Edit
@@ -421,7 +421,7 @@ export default function MataKuliahDetailPage() {
                   {canManage && (
                     <>
                       <button
-                        onClick={() => router.push(`/superadmin/manajemen/latihan-soal/edit/${ex.id}`)}
+                        onClick={() => router.push(`/superadmin/manajemen/latihan-soal/edit/${ex.id}?returnTo=${encodeURIComponent(`/superadmin/mata-kuliah/${matkulId}`)}`)}
                         className="flex items-center gap-1.5 px-3 py-2 bg-amber-100 text-amber-700 rounded-xl text-xs font-semibold hover:bg-amber-200 transition-colors shadow-sm"
                       >
                         <Edit size={13} /> Edit

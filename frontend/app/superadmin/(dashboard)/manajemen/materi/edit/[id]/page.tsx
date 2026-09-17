@@ -1,12 +1,21 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
+import React, { useState, useEffect, Suspense } from "react";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
-import { API_URL } from "@/lib/api";
+import { API_URL, superadminReturnPath } from "@/lib/api";
 
 export default function EditMateri() {
+    return (
+        <Suspense fallback={<div className="p-20 text-center text-gray-500">Memuat data...</div>}>
+            <EditMateriContent />
+        </Suspense>
+    );
+}
+
+function EditMateriContent() {
     const { id } = useParams();
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [formData, setFormData] = useState({
         title: "",
         description: "",
@@ -47,11 +56,11 @@ export default function EditMateri() {
     };
 
     const handleBack = () => {
-        if (formData.mataKuliahId) {
-            router.push(`/superadmin/mata-kuliah/${formData.mataKuliahId}`);
-        } else {
-            router.push("/superadmin/manajemen/materi");
-        }
+        const destination = superadminReturnPath(searchParams.get("returnTo"), "/superadmin/manajemen/materi");
+        // #region agent log
+        fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'A',location:'superadmin/manajemen/materi/edit:handleBack',message:'Superadmin materi edit back destination',data:{destination,returnTo:searchParams.get("returnTo"),mataKuliahId:formData.mataKuliahId||null},timestamp:Date.now()})}).catch(()=>{});
+        // #endregion
+        router.push(destination);
     };
 
     const handleUpdate = async (e: React.FormEvent) => {
