@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 
 interface AuthStageProps {
   title: string;
@@ -10,9 +10,50 @@ interface AuthStageProps {
 }
 
 export default function AuthStage({ title, subtitle, children }: AuthStageProps) {
+  useEffect(() => {
+    const sheet = document.querySelector("[data-auth-sheet]");
+    const stage = document.querySelector("[data-auth-stage]");
+    const vv = window.visualViewport;
+    // #region agent log
+    fetch("http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "bf3566" },
+      body: JSON.stringify({
+        sessionId: "bf3566",
+        runId: "post-fix",
+        hypothesisId: "K",
+        location: "AuthStage.tsx:layout",
+        message: "AuthStage layout metrics",
+        data: {
+          path: window.location.pathname,
+          innerH: window.innerHeight,
+          innerW: window.innerWidth,
+          vvH: vv?.height || null,
+          pageScrollH: document.documentElement.scrollHeight,
+          canPageScroll: document.documentElement.scrollHeight > window.innerHeight + 4,
+          stagePos: stage ? getComputedStyle(stage).position : null,
+          stageOverflow: stage ? getComputedStyle(stage).overflow : null,
+          sheetMaxH: sheet ? getComputedStyle(sheet).maxHeight : null,
+          sheetOverflowY: sheet ? getComputedStyle(sheet).overflowY : null,
+          sheetH: sheet ? Math.round(sheet.getBoundingClientRect().height) : null,
+          sheetScrollH: sheet?.scrollHeight || null,
+          sheetTop: sheet ? Math.round(sheet.getBoundingClientRect().top) : null,
+        },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
+  }, []);
+
   return (
-    <main data-auth-stage className="fixed inset-0 overflow-hidden bg-[#cfe8ff]">
-      <div data-auth-art className="absolute inset-0 md:right-[34%]">
+    <main
+      data-auth-stage
+      className="relative min-h-dvh overflow-x-hidden bg-[#cfe8ff] md:fixed md:inset-0 md:overflow-hidden"
+    >
+      <div
+        data-auth-art
+        className="relative h-[min(38dvh,320px)] w-full md:absolute md:inset-0 md:right-[34%] md:h-auto"
+      >
         <Image
           src="/images/background.svg"
           alt=""
@@ -20,8 +61,8 @@ export default function AuthStage({ title, subtitle, children }: AuthStageProps)
           className="object-cover object-[center_18%]"
           priority
         />
-        <div className="absolute inset-x-0 bottom-0 h-[48%] bg-gradient-to-t from-[#b9dbff] via-[#cfe8ff]/70 to-transparent pointer-events-none" />
-        <div className="absolute bottom-0 left-0 right-0 pointer-events-none opacity-45">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[48%] bg-gradient-to-t from-[#b9dbff] via-[#cfe8ff]/70 to-transparent" />
+        <div className="pointer-events-none absolute right-0 bottom-0 left-0 opacity-45">
           <Image
             src="/images/Vector 1.svg"
             alt=""
@@ -31,18 +72,18 @@ export default function AuthStage({ title, subtitle, children }: AuthStageProps)
           />
         </div>
 
-        <div className="absolute top-7 left-6 md:top-11 md:left-[9%] z-20">
-          <h2 className="text-[42px] md:text-[64px] leading-[0.9] font-extrabold italic text-[#068DFF]">
+        <div className="absolute top-5 left-5 z-20 md:top-11 md:left-[9%]">
+          <h2 className="text-[34px] leading-[0.9] font-extrabold italic text-[#068DFF] md:text-[64px]">
             {title}
           </h2>
-          <p className="text-[12px] md:text-[14px] text-slate-500 font-medium mt-2 italic">
+          <p className="mt-1.5 text-[12px] font-medium text-slate-500 italic md:mt-2 md:text-[14px]">
             {subtitle}
           </p>
         </div>
 
         <div
           data-auth-model
-          className="absolute z-[15] pointer-events-none left-1/2 -translate-x-1/2 bottom-[46%] w-[min(92vw,460px)] h-[58%] md:z-30 md:bottom-0 md:left-[56%] md:w-[min(52vw,620px)] md:h-full"
+          className="pointer-events-none absolute bottom-0 left-1/2 z-[15] h-[88%] w-[min(72vw,280px)] -translate-x-1/2 md:bottom-0 md:left-[56%] md:z-30 md:h-full md:w-[min(52vw,620px)]"
         >
           <Image
             src="/images/Model.svg"
@@ -53,36 +94,38 @@ export default function AuthStage({ title, subtitle, children }: AuthStageProps)
           />
         </div>
 
-        <div className="hidden md:flex absolute left-[6%] top-[40%] z-30 animate-[float_5s_ease-in-out_infinite] bg-white rounded-2xl shadow-[0_10px_28px_rgba(6,141,255,0.12)] px-3 py-2.5 items-center gap-2.5">
-          <div className="w-9 h-9 rounded-lg overflow-hidden flex-shrink-0">
+        <div className="absolute top-[40%] left-[6%] z-30 hidden animate-[float_5s_ease-in-out_infinite] items-center gap-2.5 rounded-2xl bg-white px-3 py-2.5 shadow-[0_10px_28px_rgba(6,141,255,0.12)] md:flex">
+          <div className="h-9 w-9 flex-shrink-0 overflow-hidden rounded-lg">
             <Image src="/images/Group 197.svg" alt="" width={36} height={36} />
           </div>
-          <span className="text-[13px] font-semibold text-gray-700 pr-1">Bank Soal</span>
+          <span className="pr-1 text-[13px] font-semibold text-gray-700">Bank Soal</span>
         </div>
-        <div className="hidden md:flex absolute right-[8%] top-[24%] z-30 animate-[float_6s_ease-in-out_infinite_0.5s] bg-white rounded-xl shadow-[0_10px_28px_rgba(6,141,255,0.12)] px-3 py-2 items-center gap-2">
-          <div className="w-7 h-7 bg-blue-50 rounded-md flex items-center justify-center">
+        <div className="absolute top-[24%] right-[8%] z-30 hidden animate-[float_6s_ease-in-out_infinite_0.5s] items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-[0_10px_28px_rgba(6,141,255,0.12)] md:flex">
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-blue-50">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path d="M7 1L9 5L13 5.5L10 8.5L11 13L7 11L3 13L4 8.5L1 5.5L5 5L7 1Z" fill="#068DFF" />
             </svg>
           </div>
           <span className="text-[12px] font-semibold text-gray-700">Explore</span>
         </div>
-        <div className="hidden md:flex absolute right-[14%] bottom-[30%] z-30 animate-[float_5.5s_ease-in-out_infinite_1s] bg-white rounded-2xl shadow-[0_10px_28px_rgba(6,141,255,0.12)] px-3 py-2.5 items-center gap-2.5">
-          <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+        <div className="absolute right-[14%] bottom-[30%] z-30 hidden animate-[float_5.5s_ease-in-out_infinite_1s] items-center gap-2.5 rounded-2xl bg-white px-3 py-2.5 shadow-[0_10px_28px_rgba(6,141,255,0.12)] md:flex">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <rect x="1" y="3" width="14" height="10" rx="2" stroke="#068DFF" strokeWidth="1.5" />
               <path d="M6.5 6L10.5 8L6.5 10V6Z" fill="#068DFF" />
             </svg>
           </div>
-          <span className="text-[13px] font-semibold text-gray-700 pr-1">Teaching</span>
+          <span className="pr-1 text-[13px] font-semibold text-gray-700">Teaching</span>
         </div>
       </div>
 
       <section
         data-auth-sheet
-        className="absolute inset-x-0 bottom-0 z-20 max-h-[58%] md:max-h-none md:inset-y-0 md:left-auto md:w-[38%] bg-white rounded-t-[32px] md:rounded-none shadow-[0_-20px_50px_rgba(15,50,110,0.12)] md:shadow-[-40px_0_60px_rgba(15,50,110,0.08)] flex items-start md:items-center justify-center px-7 pt-8 pb-6 md:px-14 md:py-10 overflow-y-auto"
+        className="relative z-20 -mt-12 flex min-h-[calc(100dvh-min(38dvh,320px)+3rem)] items-start justify-center rounded-t-[32px] bg-white px-6 pt-7 pb-[max(2rem,env(safe-area-inset-bottom))] shadow-[0_-20px_50px_rgba(15,50,110,0.12)] md:absolute md:inset-y-0 md:left-auto md:mt-0 md:w-[38%] md:items-center md:overflow-y-auto md:rounded-none md:px-14 md:py-10 md:shadow-[-40px_0_60px_rgba(15,50,110,0.08)]"
       >
-        <div className="w-full max-w-[380px] my-auto">{children}</div>
+        <div className="w-full max-w-[380px] md:my-auto [&_input]:text-base [&_select]:text-base">
+          {children}
+        </div>
       </section>
     </main>
   );

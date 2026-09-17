@@ -61,10 +61,10 @@ export default function StudentLoginPage() {
 
   return (
     <AuthStage title="#Explore" subtitle="with helPhin x HIMA">
-      <div className="flex justify-center mb-6">
+      <div className="flex justify-center mb-4">
         <Image src="/images/helPhin 2.svg" alt="helPhin" width={170} height={55} priority />
       </div>
-      <p className="text-center text-[14px] text-gray-500 leading-relaxed mb-8">
+      <p className="text-center text-[14px] text-gray-500 leading-relaxed mb-6">
         Masuk dengan Email atau NIM untuk lanjut belajar.
       </p>
       <form className="flex flex-col gap-3" onSubmit={handleLogin}>
