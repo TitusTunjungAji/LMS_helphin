@@ -138,7 +138,7 @@ function TambahMateriContent() {
             }}>
 
             <div className="mb-10">
-                <Image src="/images/helPhin 2.png" alt="Logo Helphin" width={150} height={50} priority />
+                <Image src="/images/helPhin 2.svg" alt="Logo Helphin" width={150} height={50} priority />
             </div>
 
             <div className="mb-10 text-center">

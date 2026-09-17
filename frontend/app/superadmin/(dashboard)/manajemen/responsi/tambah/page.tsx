@@ -175,7 +175,7 @@ function BuatResponsiContent() {
             {/* Logo Helphin */}
             <div className="mb-10">
                 <Image
-                    src="/images/helPhin 2.png"
+                    src="/images/helPhin 2.svg"
                     alt="Logo Helphin"
                     width={150}
                     height={50}
