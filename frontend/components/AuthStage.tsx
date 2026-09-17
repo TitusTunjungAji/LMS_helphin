@@ -46,8 +46,8 @@ export default function AuthStage({ title, subtitle, children }: AuthStageProps)
       headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "bf3566" },
       body: JSON.stringify({
         sessionId: "bf3566",
-        runId: "auth-model-center-v2",
-        hypothesisId: "B",
+        runId: "auth-model-center-v3",
+        hypothesisId: "G",
         location: "AuthStage.tsx:layout",
         message: "AuthStage layout metrics",
         data: {
@@ -70,6 +70,8 @@ export default function AuthStage({ title, subtitle, children }: AuthStageProps)
           chipOverlapsForm: chips.some((chip) => chip.overlaps),
           chips,
           sheetRightCss: sheet ? getComputedStyle(sheet).right : null,
+          artRightCss: art ? getComputedStyle(art).right : null,
+          artIsFullViewport: artWidth != null ? artWidth >= window.innerWidth - 4 : null,
           artLeft,
           artRight,
           artWidth,
@@ -80,6 +82,7 @@ export default function AuthStage({ title, subtitle, children }: AuthStageProps)
           modelCenter,
           modelInArtRatio,
           modelOffsetFromArtCenter: artCenter != null && modelCenter != null ? modelCenter - artCenter : null,
+          modelOverlapsForm: !!(sheetRect && modelRight != null && modelRight > sheetRect.left + 8),
         },
         timestamp: Date.now(),
       }),
@@ -94,7 +97,7 @@ export default function AuthStage({ title, subtitle, children }: AuthStageProps)
     >
       <div
         data-auth-art
-        className="relative h-[min(38dvh,320px)] w-full md:absolute md:inset-0 md:right-[34%] md:h-auto"
+        className="relative h-[min(38dvh,320px)] w-full overflow-hidden md:absolute md:top-0 md:right-[34%] md:bottom-0 md:left-0 md:h-auto"
       >
         <Image
           src="/images/background.svg"
@@ -125,14 +128,14 @@ export default function AuthStage({ title, subtitle, children }: AuthStageProps)
 
         <div
           data-auth-model
-          className="pointer-events-none absolute bottom-0 left-1/2 z-[15] h-[90%] w-[min(46vw,210px)] -translate-x-1/2 md:bottom-0 md:z-20 md:h-[92%] md:w-[min(24vw,340px)]"
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-[15] h-[92%] md:z-20"
         >
           <Image
             src="/images/Model.svg"
             alt=""
             fill
             priority
-            className="object-cover object-[46%_0%]"
+            className="object-contain object-bottom"
           />
         </div>
 
@@ -142,7 +145,7 @@ export default function AuthStage({ title, subtitle, children }: AuthStageProps)
           </div>
           <span className="pr-1 text-[13px] font-semibold text-gray-700">Bank Soal</span>
         </div>
-        <div data-auth-chip className="absolute top-[20%] left-[72%] z-20 hidden animate-[float_6s_ease-in-out_infinite_0.5s] items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-[0_10px_28px_rgba(6,141,255,0.12)] md:flex">
+        <div data-auth-chip className="absolute top-[20%] left-[8%] z-20 hidden animate-[float_6s_ease-in-out_infinite_0.5s] items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-[0_10px_28px_rgba(6,141,255,0.12)] md:flex">
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-blue-50">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path d="M7 1L9 5L13 5.5L10 8.5L11 13L7 11L3 13L4 8.5L1 5.5L5 5L7 1Z" fill="#068DFF" />
