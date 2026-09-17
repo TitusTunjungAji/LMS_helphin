@@ -25,6 +25,12 @@ export default function AuthStage({ title, subtitle, children }: AuthStageProps)
         overlaps,
       };
     });
+    const art = document.querySelector("[data-auth-art]");
+    const model = document.querySelector("[data-auth-model]");
+    const artRect = art?.getBoundingClientRect();
+    const modelRect = model?.getBoundingClientRect();
+    const artCenter = artRect ? Math.round(artRect.left + artRect.width / 2) : null;
+    const modelCenter = modelRect ? Math.round(modelRect.left + modelRect.width / 2) : null;
     const vv = window.visualViewport;
     // #region agent log
     fetch("http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283", {
@@ -32,8 +38,8 @@ export default function AuthStage({ title, subtitle, children }: AuthStageProps)
       headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "bf3566" },
       body: JSON.stringify({
         sessionId: "bf3566",
-        runId: "auth-bubbles-fix",
-        hypothesisId: "B",
+        runId: "auth-model-center",
+        hypothesisId: "C",
         location: "AuthStage.tsx:layout",
         message: "AuthStage layout metrics",
         data: {
@@ -56,6 +62,9 @@ export default function AuthStage({ title, subtitle, children }: AuthStageProps)
           chipOverlapsForm: chips.some((chip) => chip.overlaps),
           chips,
           sheetRightCss: sheet ? getComputedStyle(sheet).right : null,
+          artCenter,
+          modelCenter,
+          modelOffsetFromArtCenter: artCenter != null && modelCenter != null ? modelCenter - artCenter : null,
         },
         timestamp: Date.now(),
       }),
@@ -101,7 +110,7 @@ export default function AuthStage({ title, subtitle, children }: AuthStageProps)
 
         <div
           data-auth-model
-          className="pointer-events-none absolute bottom-0 left-1/2 z-[15] h-[88%] w-[min(72vw,280px)] -translate-x-1/2 md:bottom-0 md:left-[56%] md:z-30 md:h-full md:w-[min(52vw,620px)]"
+          className="pointer-events-none absolute bottom-0 left-1/2 z-[15] h-[88%] w-[min(72vw,280px)] -translate-x-1/2 md:bottom-0 md:z-20 md:h-[92%] md:w-[min(38vw,480px)]"
         >
           <Image
             src="/images/Model.svg"
