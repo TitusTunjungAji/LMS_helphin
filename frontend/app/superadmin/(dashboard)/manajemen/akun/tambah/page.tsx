@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { API_URL } from "@/lib/api";
+import PasswordInput from "@/components/PasswordInput";
 
 export default function BuatAkunPage() {
     const router = useRouter();
@@ -266,11 +267,11 @@ export default function BuatAkunPage() {
                                 {/* Input Password */}
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-gray-600">Password</label>
-                                    <input
-                                        type="password"
+                                    <PasswordInput
                                         placeholder="Masukkan password (> 6 char)"
                                         className="border border-gray-200 p-3 rounded-xl w-full bg-gray-50/50 text-black outline-none transition"
                                         value={anggota.password}
+                                        autoComplete="new-password"
                                         onChange={(e) => {
                                             const update = [...daftarAnggota];
                                             update[index].password = e.target.value;

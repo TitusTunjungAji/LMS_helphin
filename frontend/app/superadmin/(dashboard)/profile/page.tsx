@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { API_URL } from "@/lib/api";
+import PasswordInput from "@/components/PasswordInput";
 
 export default function ProfilePage() {
     const [name, setName] = useState("");
@@ -143,24 +144,24 @@ export default function ProfilePage() {
 
                         <div className="space-y-1.5">
                             <label className="text-sm font-semibold text-gray-700">Password Baru</label>
-                            <input
-                                type="password"
+                            <PasswordInput
                                 minLength={6}
                                 className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="Minimal 6 karakter"
+                                autoComplete="new-password"
                             />
                         </div>
 
                         <div className="space-y-1.5">
                             <label className="text-sm font-semibold text-gray-700">Konfirmasi Password</label>
-                            <input
-                                type="password"
+                            <PasswordInput
                                 className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 placeholder="Ulangi password baru"
+                                autoComplete="new-password"
                             />
                         </div>
                     </div>

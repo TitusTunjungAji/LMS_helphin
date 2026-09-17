@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { API_URL } from "@/lib/api";
 import AuthStage from "@/components/AuthStage";
+import PasswordInput from "@/components/PasswordInput";
 
 interface LoginViewProps {
   roleTitle: string;
@@ -90,12 +91,12 @@ export default function LoginView({ roleTitle, redirectPath }: LoginViewProps) {
           required
           className="hp-input"
         />
-        <input
-          type="password"
+        <PasswordInput
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
           required
+          autoComplete="current-password"
           className="hp-input"
         />
         <div className="flex justify-end mt-1">

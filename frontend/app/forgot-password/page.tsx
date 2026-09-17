@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, Mail, ShieldCheck, Lock, CheckCircle2 } from "lucide-react";
 import { API_URL } from "@/lib/api";
 import AuthStage from "@/components/AuthStage";
+import PasswordInput from "@/components/PasswordInput";
 
 type Step = "IDENTIFIER" | "OTP" | "RESET" | "SUCCESS";
 
@@ -184,20 +185,20 @@ export default function ForgotPasswordPage() {
           </p>
           <form onSubmit={handleResetPassword} className="flex flex-col gap-3">
             {error && <div className="p-3 text-[13px] text-red-500 bg-red-50 border border-red-200 rounded-lg text-center">{error}</div>}
-            <input
-              type="password"
+            <PasswordInput
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               placeholder="Password Baru"
               required
+              autoComplete="new-password"
               className="hp-input"
             />
-            <input
-              type="password"
+            <PasswordInput
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Konfirmasi Password Baru"
               required
+              autoComplete="new-password"
               className="hp-input"
             />
             <button type="submit" disabled={isLoading} className="hp-btn-primary mt-1">
