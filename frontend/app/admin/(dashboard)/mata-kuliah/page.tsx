@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Search, BookOpen, ChevronRight, MoreVertical, Edit2, Trash2, Plus } from "lucide-react";
+import { Search, BookOpen, ChevronRight, MoreVertical, Edit2, Trash2, Plus, Hand, X } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
 import { API_URL } from "@/lib/api";
 
@@ -119,7 +119,10 @@ export default function MataKuliahAdminPage() {
             <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
             <span className="text-[10px] font-bold uppercase tracking-wider">Admin Portal</span>
           </div>
-          <h1 className="font-black text-4xl mb-2 tracking-tight">Hallo, {firstName} 👋</h1>
+          <h1 className="font-black text-4xl mb-2 tracking-tight flex items-center gap-3">
+            Hallo, {firstName}
+            <Hand size={36} strokeWidth={2} className="opacity-90" />
+          </h1>
           {prodiName && (
             <p className="text-xl font-semibold opacity-90">{prodiName}</p>
           )}
@@ -161,7 +164,9 @@ export default function MataKuliahAdminPage() {
             onClick={() => setSearchQuery("")}
             className="absolute inset-y-0 right-0 pr-5 flex items-center text-gray-400 dark:text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:text-gray-600 dark:text-slate-300 transition-colors"
           >
-            <div className="w-6 h-6 flex items-center justify-center bg-gray-50 dark:bg-slate-800 dark:bg-slate-900/50 rounded-full hover:bg-gray-100">✕</div>
+            <div className="w-6 h-6 flex items-center justify-center bg-gray-50 dark:bg-slate-800 dark:bg-slate-900/50 rounded-full hover:bg-gray-100">
+              <X size={14} />
+            </div>
           </button>
         )}
       </div>

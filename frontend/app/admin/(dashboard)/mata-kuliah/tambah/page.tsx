@@ -42,7 +42,7 @@ export default function TambahMatkulAdmin() {
             });
             const data = await res.json();
             if (data.success) {
-                alert("Mata kuliah berhasil ditambahkan! 📚");
+                alert("Mata kuliah berhasil ditambahkan!");
                 router.push("/admin/mata-kuliah");
             } else {
                 alert(`Gagal: ${data.message}`);

@@ -61,7 +61,7 @@ export default function ManajemenProdi() {
 
       const data = await res.json();
       if (data.success) {
-        alert("Data Prodi berhasil dihapus! 🗑️");
+        alert("Data Prodi berhasil dihapus!");
         fetchProdi();
       } else {
         alert(`Gagal: ${data.message}`);

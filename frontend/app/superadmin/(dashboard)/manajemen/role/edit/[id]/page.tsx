@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
 import { API_URL } from "@/lib/api";
+import { Settings, Key } from "lucide-react";
 
 export default function EditRole() {
     const { id } = useParams();
@@ -98,7 +99,7 @@ export default function EditRole() {
             });
             const data = await res.json();
             if (data.success) {
-                alert("Role berhasil diupdate! ✨");
+                alert("Role berhasil diupdate!");
                 router.push("/superadmin/manajemen/role");
             } else {
                 alert(`Gagal: ${data.message}${data.error ? ` (${data.error})` : ""}`);
@@ -118,7 +119,7 @@ export default function EditRole() {
             <div className="flex-1 p-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-opacity-10">
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-black flex items-center gap-3">
-                        Edit Role <span className="text-orange-500">⚙️</span>
+                        Edit Role <Settings size={28} className="text-orange-500" />
                     </h1>
                     <p className="text-gray-400 text-sm italic">Perbarui informasi role "{formData.name}".</p>
                 </div>
@@ -152,7 +153,7 @@ export default function EditRole() {
                         </div>
 
                         <div className="pt-4 border-t border-gray-100">
-                            <label className="block text-sm font-bold text-gray-800 mb-4">Mempunyai Hak Akses Untuk: 🔑</label>
+                            <label className="flex items-center gap-2 text-sm font-bold text-gray-800 mb-4">Mempunyai Hak Akses Untuk: <Key size={16} /></label>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {availablePermissions.map((group) => (
                                     <div key={group.group} className="space-y-2 pb-4">

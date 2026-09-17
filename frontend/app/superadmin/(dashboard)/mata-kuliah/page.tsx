@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
 import { API_URL } from "@/lib/api";
+import { Hand } from "lucide-react";
 
 interface MataKuliah {
   id: string;
@@ -109,7 +110,10 @@ export default function MataKuliahPage() {
       {/* Welcome Banner */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#0055FF] via-[#068DFF] to-[#07A3F9] text-white shadow-lg min-h-[180px] flex">
         <div className="flex flex-col justify-center pl-8 py-6 z-10 flex-1">
-          <h1 className="font-bold text-3xl mb-1">Hallo, {firstName} 👋</h1>
+          <h1 className="font-bold text-3xl mb-1 flex items-center gap-2">
+            Hallo, {firstName}
+            <Hand size={28} strokeWidth={2} className="opacity-90" />
+          </h1>
           {prodiName && (
             <p className="text-lg font-medium opacity-95">{prodiName}</p>
           )}

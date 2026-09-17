@@ -124,7 +124,7 @@ export default function ManajemenAkun() {
 
       const data = await res.json();
       if (data.success) {
-        alert("Data berhasil dihapus! 🗑️");
+        alert("Data berhasil dihapus!");
         setSelectedIds(selectedIds.filter((selId) => selId !== id));
         fetchAdmins();
       } else {

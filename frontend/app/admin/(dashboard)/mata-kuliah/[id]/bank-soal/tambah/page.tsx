@@ -82,7 +82,7 @@ export default function TambahBankSoalAdmin() {
             });
             const data = await res.json();
             if (data.success) {
-                alert("Bank Soal berhasil ditambahkan! 📚");
+                alert("Bank Soal berhasil ditambahkan!");
                 router.push(`/admin/mata-kuliah/${id}`);
             } else {
                 alert(`Gagal: ${data.message}`);

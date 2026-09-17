@@ -4,7 +4,8 @@ import Link from "next/link";
 import { Inter } from "next/font/google";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import { Search, BookOpen, ChevronRight, Filter, Calendar, Clock } from "lucide-react";
+import { Search, BookOpen, ChevronRight, Filter, Calendar, Clock, Hand, ClipboardList, User, type LucideIcon } from "lucide-react";
+import { getTopicTypeConfig, topicFilterIcons } from "@/lib/topic-type";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
 import { API_URL } from "@/lib/api";
 
@@ -52,6 +53,16 @@ export default function StudentMataKuliahDetail() {
 
     fetchCourseData();
   }, [id]);
+
+  useEffect(() => {
+    if (isLoading) return;
+    // #region agent log
+    const heading = document.querySelector("h1")?.textContent || "";
+    const bodyEmoji = document.body.innerText.match(/[\u{1F300}-\u{1FAFF}]/gu) || [];
+    const filterSvgs = document.querySelectorAll("section button svg").length;
+    fetch("http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283", { method: "POST", headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "bf3566" }, body: JSON.stringify({ sessionId: "bf3566", runId: "emoji-fix", hypothesisId: "B", location: "student/mata-kuliah/[id]/page.tsx:useEffect", message: "Student course emoji audit", data: { headingHasEmoji: /[\u{1F300}-\u{1FAFF}]/u.test(heading), heading, bodyEmojiCount: bodyEmoji.length, bodyEmojiSamples: bodyEmoji.slice(0, 10), filterSvgs, topicCount: topikList.length }, timestamp: Date.now() }) }).catch(() => {});
+    // #endregion
+  }, [isLoading, topikList.length]);
 
   const fetchCourseData = async () => {
     setIsLoading(true);
@@ -139,13 +150,13 @@ export default function StudentMataKuliahDetail() {
 
   const years = ["Semua Tahun", ...Array.from(new Set(topikList.map(t => t.tahunAjaran || "Lainnya"))).sort()];
 
-  const filters: { key: typeof activeFilter; label: string; icon: string }[] = [
-    { key: "all", label: "Semua Topik", icon: "📚" },
-    { key: "e-materi", label: "E-Materi", icon: "📄" },
-    { key: "smart-video", label: "Video", icon: "🎬" },
-    { key: "bank-soal", label: "Bank Soal", icon: "📝" },
-    { key: "quiz", label: "Kuis / Latihan", icon: "💡" },
-    { key: "responsi", label: "Responsi", icon: "🤝" },
+  const filters: { key: typeof activeFilter; label: string; Icon: LucideIcon }[] = [
+    { key: "all", label: "Semua Topik", Icon: topicFilterIcons.all },
+    { key: "e-materi", label: "E-Materi", Icon: topicFilterIcons["e-materi"] },
+    { key: "smart-video", label: "Video", Icon: topicFilterIcons["smart-video"] },
+    { key: "bank-soal", label: "Bank Soal", Icon: topicFilterIcons["bank-soal"] },
+    { key: "quiz", label: "Kuis / Latihan", Icon: topicFilterIcons.quiz },
+    { key: "responsi", label: "Responsi", Icon: topicFilterIcons.responsi },
   ];
 
   return (
@@ -156,8 +167,9 @@ export default function StudentMataKuliahDetail() {
         <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }} />
         
         <div className="relative z-10 flex-1 flex flex-col justify-center px-10 py-8">
-          <h1 className="text-white font-black text-3xl md:text-4xl tracking-tight mb-2">
-            Hallo, {userName}! 👋
+          <h1 className="text-white font-black text-3xl md:text-4xl tracking-tight mb-2 flex items-center gap-3">
+            Hallo, {userName}!
+            <Hand size={32} strokeWidth={2} className="opacity-90" />
           </h1>
           <p className="text-blue-50 text-xl font-medium mb-6 opacity-90 max-w-2xl">
             Siap menjelajahi materi dan mengasah kemampuan kamu di kelas <span className="text-white font-bold underline decoration-blue-300 underline-offset-4">{mataKuliah}</span> hari ini?
@@ -225,7 +237,7 @@ export default function StudentMataKuliahDetail() {
                         onClick={() => { setActiveFilter(f.key); setShowFilterMenu(false); }}
                         className={`w-full flex items-center gap-3 p-3 rounded-xl text-sm font-bold transition-all ${activeFilter === f.key ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
                       >
-                        <span className="text-lg">{f.icon}</span>
+                        <f.Icon size={16} />
                         {f.label}
                       </button>
                     ))}
@@ -304,7 +316,7 @@ export default function StudentMataKuliahDetail() {
                 return (
                   <div key={item.id} className="group bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-16 h-16 bg-amber-50 dark:bg-amber-900/10 rounded-bl-[40px] flex items-center justify-center">
-                      <span className="text-amber-400 text-lg">📋</span>
+                      <ClipboardList size={18} className="text-amber-400" />
                     </div>
                     <div className="flex items-center gap-2 mb-3">
                       <span className="text-[9px] font-black px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 uppercase tracking-widest">Selesai</span>
@@ -321,7 +333,7 @@ export default function StudentMataKuliahDetail() {
                       </div>
                       {item.speaker && (
                         <div className="flex items-center gap-2">
-                          <span className="text-amber-400">👤</span>
+                          <User size={12} className="text-amber-400" />
                           <span>{item.speaker}</span>
                         </div>
                       )}
@@ -344,18 +356,7 @@ export default function StudentMataKuliahDetail() {
 function TopikCard({ item }: { item: TopikItem }) {
   const [hovered, setHovered] = useState(false);
   
-  const getTypeConfig = (type: TopikItem["type"]) => {
-    switch (type) {
-      case "bank-soal": return { color: "#3B82F6", label: "Bank Soal", icon: "📝" };
-      case "e-materi": return { color: "#F97316", label: "E-Materi", icon: "📄" };
-      case "smart-video": return { color: "#22C55E", label: "Video", icon: "🎬" };
-      case "quiz": return { color: "#6366F1", label: "Kuis", icon: "💡" };
-      case "responsi": return { color: "#EF4444", label: "Responsi", icon: "🤝" };
-      default: return { color: "#64748B", label: "Lainnya", icon: "📍" };
-    }
-  };
-
-  const config = getTypeConfig(item.type);
+  const config = getTopicTypeConfig(item.type);
 
   return (
     <div
@@ -368,11 +369,11 @@ function TopikCard({ item }: { item: TopikItem }) {
       
       {/* Left Icon Section */}
       <div className="p-8 md:w-[120px] flex items-center justify-center bg-slate-50 dark:bg-slate-800/50 group-hover:bg-white dark:group-hover:bg-slate-800 transition-colors">
-        <div 
-          className="text-4xl transform transition-transform group-hover:scale-125 duration-500"
-          style={{ textShadow: `0 10px 20px ${config.color}33` }}
+        <div
+          className="transform transition-transform group-hover:scale-125 duration-500"
+          style={{ color: config.color, filter: `drop-shadow(0 10px 20px ${config.color}33)` }}
         >
-          {config.icon}
+          <config.Icon size={36} strokeWidth={1.75} />
         </div>
       </div>
 

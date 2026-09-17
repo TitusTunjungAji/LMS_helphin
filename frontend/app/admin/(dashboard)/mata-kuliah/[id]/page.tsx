@@ -4,6 +4,8 @@ import Link from "next/link";
 import { Inter } from "next/font/google";
 import { useParams } from "next/navigation";
 import { API_URL } from "@/lib/api";
+import { Folder, Calendar } from "lucide-react";
+import { getTopicTypeConfig } from "@/lib/topic-type";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -49,6 +51,15 @@ export default function MataKuliahDetail() {
 
     fetchCourseData();
   }, [id]);
+
+  useEffect(() => {
+    if (isLoading) return;
+    // #region agent log
+    const bodyEmoji = document.body.innerText.match(/[\u{1F300}-\u{1FAFF}]/gu) || [];
+    const categoryBtn = Array.from(document.querySelectorAll("button")).find((b) => (b.textContent || "").includes("Kategori"));
+    fetch("http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283", { method: "POST", headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "bf3566" }, body: JSON.stringify({ sessionId: "bf3566", runId: "emoji-fix", hypothesisId: "B", location: "admin/mata-kuliah/[id]/page.tsx:useEffect", message: "Admin course emoji audit", data: { bodyEmojiCount: bodyEmoji.length, bodyEmojiSamples: bodyEmoji.slice(0, 10), categoryHasSvg: !!categoryBtn?.querySelector("svg"), topicCount: topikList.length, firstTopicIconIsComponent: true }, timestamp: Date.now() }) }).catch(() => {});
+    // #endregion
+  }, [isLoading, topikList.length]);
 
   const fetchCourseData = async () => {
     setIsLoading(true);
@@ -259,7 +270,7 @@ export default function MataKuliahDetail() {
                 onClick={() => setShowFilterMenu(!showFilterMenu)}
                 className="flex items-center gap-2.5 px-5 py-2.5 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 rounded-xl text-sm font-bold border-[1.5px] border-slate-200 dark:border-slate-800 cursor-pointer shadow-sm dark:shadow-none transition-colors"
               >
-                <span>📂</span> Kategori: {filters.find(f => f.key === activeFilter)?.label}
+                <Folder size={16} className="text-slate-500" /> Kategori: {filters.find(f => f.key === activeFilter)?.label}
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: "4px", transform: showFilterMenu ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}><path d="m6 9 6 6 6-6"/></svg>
               </button>
               {showFilterMenu && (
@@ -295,7 +306,7 @@ export default function MataKuliahDetail() {
                 onClick={() => setShowYearMenu(!showYearMenu)}
                 className="flex items-center gap-2.5 px-5 py-2.5 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 rounded-xl text-sm font-bold border-[1.5px] border-slate-200 dark:border-slate-800 cursor-pointer shadow-sm dark:shadow-none transition-colors"
               >
-                <span>📅</span> {selectedYear}
+                <Calendar size={16} className="text-slate-500" /> {selectedYear}
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: "4px", transform: showYearMenu ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}><path d="m6 9 6 6 6-6"/></svg>
               </button>
               {showYearMenu && (
@@ -524,18 +535,7 @@ function TopikCard({ item, onRefresh }: { item: TopikItem; onRefresh: () => void
     }
   };
 
-  const getTypeConfig = (type: TopikItem["type"]) => {
-    switch (type) {
-      case "bank-soal": return { color: "#3B82F6", label: "Bank Soal", icon: "📝" };
-      case "e-materi": return { color: "#F97316", label: "E-Materi", icon: "📄" };
-      case "smart-video": return { color: "#22C55E", label: "Video", icon: "🎬" };
-      case "quiz": return { color: "#6366F1", label: "Kuis", icon: "💡" };
-      case "responsi": return { color: "#EF4444", label: "Responsi", icon: "🤝" };
-      default: return { color: "#64748B", label: "Lainnya", icon: "📍" };
-    }
-  };
-
-  const config = getTypeConfig(item.type);
+  const config = getTopicTypeConfig(item.type);
 
   return (
     <div
@@ -552,14 +552,15 @@ function TopikCard({ item, onRefresh }: { item: TopikItem; onRefresh: () => void
           className="flex items-center justify-center bg-slate-50 dark:bg-slate-800/50 group-hover:bg-white dark:group-hover:bg-slate-800 transition-colors"
           style={{ width: "120px", minWidth: "120px", flexShrink: 0 }}
         >
-          <div 
-            className="text-4xl transform transition-transform duration-500"
-            style={{ 
-              textShadow: `0 10px 20px ${config.color}33`,
+          <div
+            className="transform transition-transform duration-500"
+            style={{
+              color: config.color,
+              filter: `drop-shadow(0 10px 20px ${config.color}33)`,
               transform: hovered ? "scale(1.2)" : "scale(1)"
             }}
           >
-            {config.icon}
+            <config.Icon size={36} strokeWidth={1.75} />
           </div>
         </div>
 

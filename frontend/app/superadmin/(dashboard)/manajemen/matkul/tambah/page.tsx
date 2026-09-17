@@ -57,7 +57,7 @@ export default function TambahMatkul() {
             });
             const data = await res.json();
             if (data.success) {
-                alert("Mata kuliah berhasil ditambahkan! 📚");
+                alert("Mata kuliah berhasil ditambahkan!");
                 router.push("/superadmin/manajemen/matkul");
             } else {
                 alert(`Gagal: ${data.message}`);

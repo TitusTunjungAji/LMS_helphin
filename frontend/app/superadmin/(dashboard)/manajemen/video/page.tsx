@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
 import { API_URL } from "@/lib/api";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, Clapperboard } from "lucide-react";
 
 export default function ManajemenVideo() {
     const [dataVideo, setDataVideo] = useState<any[]>([]);
@@ -21,6 +21,24 @@ export default function ManajemenVideo() {
         }
         fetchVideos();
     }, []);
+
+    useEffect(() => {
+        if (loading) return;
+        // #region agent log
+        const buttons = Array.from(document.querySelectorAll("td button[title]"));
+        const samples = buttons.map((el) => {
+            const node = el as HTMLElement;
+            return {
+                title: node.getAttribute("title"),
+                hasSvg: !!node.querySelector("svg"),
+                text: (node.textContent || "").replace(/\s+/g, " ").trim(),
+                hasEmoji: /[\u{1F300}-\u{1FAFF}]/u.test(node.textContent || ""),
+            };
+        });
+        const bodyEmoji = document.body.innerText.match(/[\u{1F300}-\u{1FAFF}]/gu) || [];
+        fetch("http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283", { method: "POST", headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "bf3566" }, body: JSON.stringify({ sessionId: "bf3566", runId: "emoji-fix", hypothesisId: "A", location: "superadmin/manajemen/video/page.tsx:useEffect", message: "Video AKSI icon audit", data: { samples, bodyEmojiCount: bodyEmoji.length, bodyEmojiSamples: bodyEmoji.slice(0, 10), watchIsLucide: samples.some((s) => s.title === "Tonton" && s.hasSvg && !s.hasEmoji) }, timestamp: Date.now() }) }).catch(() => {});
+        // #endregion
+    }, [loading, dataVideo]);
 
     const fetchVideos = async () => {
         setLoading(true);
@@ -50,7 +68,7 @@ export default function ManajemenVideo() {
             });
             const data = await res.json();
             if (data.success) {
-                alert("Video berhasil dihapus! 🗑️");
+                alert("Video berhasil dihapus!");
                 fetchVideos();
             } else {
                 alert(`Gagal: ${data.message}`);
@@ -143,7 +161,7 @@ export default function ManajemenVideo() {
                                                         className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition"
                                                         title="Tonton"
                                                     >
-                                                        🎬
+                                                        <Clapperboard size={16} />
                                                     </button>
                                                     {canManage && (
                                                         <>

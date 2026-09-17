@@ -77,7 +77,7 @@ export default function TambahVideoAdmin() {
             });
             const data = await res.json();
             if (data.success) {
-                alert("Smart Video berhasil ditambahkan! 🎬");
+                alert("Smart Video berhasil ditambahkan!");
                 router.push(`/admin/mata-kuliah/${id}`);
             } else {
                 alert(`Gagal: ${data.message}`);

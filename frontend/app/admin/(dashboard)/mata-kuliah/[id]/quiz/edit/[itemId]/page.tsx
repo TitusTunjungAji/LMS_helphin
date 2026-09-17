@@ -63,7 +63,7 @@ export default function EditQuizAdmin() {
             });
             const data = await res.json();
             if (data.success) {
-                alert("Quiz berhasil diperbarui! ✨");
+                alert("Quiz berhasil diperbarui!");
                 router.push(`/admin/mata-kuliah/${courseId}`);
             } else {
                 alert(`Gagal: ${data.message}`);

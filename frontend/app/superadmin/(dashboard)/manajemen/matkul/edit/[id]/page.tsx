@@ -81,7 +81,7 @@ export default function EditMatkul() {
             });
             const data = await res.json();
             if (data.success) {
-                alert("Mata kuliah berhasil diperbarui! ✨");
+                alert("Mata kuliah berhasil diperbarui!");
                 router.push("/superadmin/manajemen/matkul");
             } else {
                 alert(`Gagal: ${data.message}`);

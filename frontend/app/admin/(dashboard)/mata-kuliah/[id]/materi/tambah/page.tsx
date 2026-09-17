@@ -73,7 +73,7 @@ export default function TambahMateriAdmin() {
             });
             const data = await res.json();
             if (data.success) {
-                alert("Materi berhasil ditambahkan! 📄");
+                alert("Materi berhasil ditambahkan!");
                 router.push(`/admin/mata-kuliah/${id}`);
             } else {
                 alert(`Gagal: ${data.message}`);

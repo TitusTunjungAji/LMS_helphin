@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
 import { API_URL } from "@/lib/api";
+import { Hand } from "lucide-react";
 
 interface MataKuliah {
   id: string;
@@ -88,7 +89,10 @@ export default function AdminDashboard() {
       {/* ======================== 1. WELCOME BANNER ======================== */}
       <header className="relative w-full h-[180px] rounded-2xl overflow-hidden bg-gradient-to-r from-[#0055FF] to-[#07A3F9] shadow-lg flex items-center">
         <div className="relative z-10 pl-8 text-white">
-          <h1 className="text-3xl font-extrabold mb-1 drop-shadow-sm">Hallo, {firstName} 👋</h1>
+          <h1 className="text-3xl font-extrabold mb-1 drop-shadow-sm flex items-center gap-2">
+            Hallo, {firstName}
+            <Hand size={28} strokeWidth={2} className="opacity-90" />
+          </h1>
           {prodiName && (
             <p className="text-xl font-bold opacity-90 drop-shadow-sm">Prodi {prodiName}</p>
           )}

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
 import { API_URL } from "@/lib/api";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, Star } from "lucide-react";
 
 export default function ManajemenRole() {
     const [dataRole, setDataRole] = useState<any[]>([]);
@@ -51,7 +51,7 @@ export default function ManajemenRole() {
 
             const data = await res.json();
             if (data.success) {
-                alert("Role berhasil dihapus! 🗑️");
+                alert("Role berhasil dihapus!");
                 fetchRoles();
             } else {
                 alert(`Gagal: ${data.message}`);
@@ -105,7 +105,7 @@ export default function ManajemenRole() {
                                         <td className="p-4 border-b">
                                             <div className="flex flex-wrap gap-1 max-w-xs">
                                                 {row.permissions?.includes("*") ? (
-                                                    <span className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded-full text-[10px] font-bold">FULL ACCESS ⭐</span>
+                                                    <span className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded-full text-[10px] font-bold inline-flex items-center gap-1">FULL ACCESS <Star size={10} /></span>
                                                 ) : row.permissions && row.permissions.length > 0 ? (
                                                     row.permissions.map((p: string) => (
                                                         <span key={p} className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full text-[10px] font-medium whitespace-nowrap">

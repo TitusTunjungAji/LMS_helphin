@@ -65,7 +65,7 @@ export default function EditVideoAdmin() {
             });
             const data = await res.json();
             if (data.success) {
-                alert("Smart Video berhasil diperbarui! ✨");
+                alert("Smart Video berhasil diperbarui!");
                 router.push(`/admin/mata-kuliah/${courseId}`);
             } else {
                 alert(`Gagal: ${data.message}`);

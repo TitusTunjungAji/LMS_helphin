@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { API_URL } from "@/lib/api";
+import { FileText } from "lucide-react";
 
 export default function TambahBankSoal() {
     const [formData, setFormData] = useState({
@@ -90,7 +91,7 @@ export default function TambahBankSoal() {
             });
             const data = await res.json();
             if (data.success) {
-                alert("Bank Soal berhasil ditambahkan! 📄");
+                alert("Bank Soal berhasil ditambahkan!");
                 router.push("/superadmin/bank-soal");
             } else {
                 alert(`Gagal: ${data.message}`);
@@ -218,7 +219,9 @@ export default function TambahBankSoal() {
                                     onChange={(e) => setFile(e.target.files?.[0] || null)}
                                 />
                                 {file ? (
-                                    <p className="text-sm text-[#068DFF] font-semibold">📄 {file.name}</p>
+                                    <p className="text-sm text-[#068DFF] font-semibold flex items-center justify-center gap-2">
+                                        <FileText size={16} /> {file.name}
+                                    </p>
                                 ) : (
                                     <div>
                                         <p className="text-gray-400 text-sm">Klik untuk memilih file</p>

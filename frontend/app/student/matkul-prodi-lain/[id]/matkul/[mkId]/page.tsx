@@ -4,7 +4,8 @@ import Link from "next/link";
 import { Inter } from "next/font/google";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import { Search, BookOpen, ChevronRight, Filter, Calendar, ArrowLeft } from "lucide-react";
+import { Search, BookOpen, ChevronRight, Filter, Calendar, ArrowLeft, Hand, type LucideIcon } from "lucide-react";
+import { getTopicTypeConfig, topicFilterIcons } from "@/lib/topic-type";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
 import { API_URL } from "@/lib/api";
 
@@ -123,13 +124,13 @@ export default function MatkulProdiLainMkDetail() {
 
   const years = ["Semua Tahun", ...Array.from(new Set(topikList.map(t => t.tahunAjaran || "Lainnya"))).sort()];
 
-  const filters: { key: typeof activeFilter; label: string; icon: string }[] = [
-    { key: "all", label: "Semua Topik", icon: "📚" },
-    { key: "e-materi", label: "E-Materi", icon: "📄" },
-    { key: "smart-video", label: "Video", icon: "🎬" },
-    { key: "bank-soal", label: "Bank Soal", icon: "📝" },
-    { key: "quiz", label: "Kuis / Latihan", icon: "💡" },
-    { key: "responsi", label: "Responsi", icon: "🤝" },
+  const filters: { key: typeof activeFilter; label: string; Icon: LucideIcon }[] = [
+    { key: "all", label: "Semua Topik", Icon: topicFilterIcons.all },
+    { key: "e-materi", label: "E-Materi", Icon: topicFilterIcons["e-materi"] },
+    { key: "smart-video", label: "Video", Icon: topicFilterIcons["smart-video"] },
+    { key: "bank-soal", label: "Bank Soal", Icon: topicFilterIcons["bank-soal"] },
+    { key: "quiz", label: "Kuis / Latihan", Icon: topicFilterIcons.quiz },
+    { key: "responsi", label: "Responsi", Icon: topicFilterIcons.responsi },
   ];
 
   return (
@@ -147,8 +148,9 @@ export default function MatkulProdiLainMkDetail() {
             <ArrowLeft size={16} />
             Kembali ke {prodiName || "Prodi Lain"}
           </button>
-          <h1 className="text-white font-black text-3xl md:text-4xl tracking-tight mb-2">
-            Hallo, {userName}! 👋
+          <h1 className="text-white font-black text-3xl md:text-4xl tracking-tight mb-2 flex items-center gap-3">
+            Hallo, {userName}!
+            <Hand size={32} strokeWidth={2} className="opacity-90" />
           </h1>
           <p className="text-blue-50 text-xl font-medium mb-6 opacity-90 max-w-2xl">
             Siap menjelajahi materi dan mengasah kemampuan kamu di kelas <span className="text-white font-bold underline decoration-blue-300 underline-offset-4">{mataKuliah}</span> hari ini?
@@ -216,7 +218,7 @@ export default function MatkulProdiLainMkDetail() {
                         onClick={() => { setActiveFilter(f.key); setShowFilterMenu(false); }}
                         className={`w-full flex items-center gap-3 p-3 rounded-xl text-sm font-bold transition-all ${activeFilter === f.key ? 'bg-blue-50 text-blue-600' : 'text-slate-600 hover:bg-slate-50'}`}
                       >
-                        <span className="text-lg">{f.icon}</span>
+                        <f.Icon size={16} />
                         {f.label}
                       </button>
                     ))}
@@ -288,18 +290,7 @@ export default function MatkulProdiLainMkDetail() {
 function TopikCard({ item }: { item: TopikItem }) {
   const [hovered, setHovered] = useState(false);
 
-  const getTypeConfig = (type: TopikItem["type"]) => {
-    switch (type) {
-      case "bank-soal": return { color: "#3B82F6", label: "Bank Soal", icon: "📝" };
-      case "e-materi": return { color: "#F97316", label: "E-Materi", icon: "📄" };
-      case "smart-video": return { color: "#22C55E", label: "Video", icon: "🎬" };
-      case "quiz": return { color: "#6366F1", label: "Kuis", icon: "💡" };
-      case "responsi": return { color: "#EF4444", label: "Responsi", icon: "🤝" };
-      default: return { color: "#64748B", label: "Lainnya", icon: "📍" };
-    }
-  };
-
-  const config = getTypeConfig(item.type);
+  const config = getTopicTypeConfig(item.type);
 
   return (
     <div
@@ -313,10 +304,10 @@ function TopikCard({ item }: { item: TopikItem }) {
       {/* Left Icon Section */}
       <div className="p-8 md:w-[120px] flex items-center justify-center bg-slate-50 group-hover:bg-white transition-colors">
         <div
-          className="text-4xl transform transition-transform group-hover:scale-125 duration-500"
-          style={{ textShadow: `0 10px 20px ${config.color}33` }}
+          className="transform transition-transform group-hover:scale-125 duration-500"
+          style={{ color: config.color, filter: `drop-shadow(0 10px 20px ${config.color}33)` }}
         >
-          {config.icon}
+          <config.Icon size={36} strokeWidth={1.75} />
         </div>
       </div>
 
