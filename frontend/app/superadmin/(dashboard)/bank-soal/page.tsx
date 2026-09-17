@@ -67,6 +67,9 @@ export default function ManajemenBankSoal() {
             const res = await fetch(`${API_URL}/api/bank-soal/${id}/download`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
+            // #region agent log
+            fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'E',location:'superadmin/bank-soal/page.tsx:handleDownload',message:'Bank soal download response',data:{id,ok:res.ok,status:res.status,redirected:res.redirected,contentType:res.headers.get('content-type'),url:res.url},timestamp:Date.now()})}).catch(()=>{});
+            // #endregion
 
             if (!res.ok) throw new Error("Download failed");
 
@@ -79,6 +82,9 @@ export default function ManajemenBankSoal() {
             a.click();
             window.URL.revokeObjectURL(url);
         } catch (error) {
+            // #region agent log
+            fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'E',location:'superadmin/bank-soal/page.tsx:handleDownload',message:'Bank soal download error',data:{id,error:String(error)},timestamp:Date.now()})}).catch(()=>{});
+            // #endregion
             alert("Gagal mengunduh file.");
         }
     };
@@ -89,6 +95,9 @@ export default function ManajemenBankSoal() {
             const res = await fetch(`${API_URL}/api/bank-soal/${id}/preview`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
+            // #region agent log
+            fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'E',location:'superadmin/bank-soal/page.tsx:handlePreview',message:'Bank soal preview response',data:{id,ok:res.ok,status:res.status,redirected:res.redirected,contentType:res.headers.get('content-type'),url:res.url},timestamp:Date.now()})}).catch(()=>{});
+            // #endregion
 
             if (!res.ok) throw new Error("Preview failed");
 
@@ -100,6 +109,9 @@ export default function ManajemenBankSoal() {
             setIsPreviewOpen(true);
         } catch (error) {
             console.error("Preview error:", error);
+            // #region agent log
+            fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'E',location:'superadmin/bank-soal/page.tsx:handlePreview',message:'Bank soal preview error',data:{id,error:String(error)},timestamp:Date.now()})}).catch(()=>{});
+            // #endregion
             alert("Gagal memuat preview PDF.");
         }
     };
