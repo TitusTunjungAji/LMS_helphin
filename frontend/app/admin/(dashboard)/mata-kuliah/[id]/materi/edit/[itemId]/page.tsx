@@ -3,6 +3,15 @@ import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { API_URL } from "@/lib/api";
 
+function fileNameFromUrl(url?: string | null) {
+    if (!url) return "File saat ini";
+    try {
+        return decodeURIComponent(url.split("/").pop() || "File saat ini");
+    } catch {
+        return url.split("/").pop() || "File saat ini";
+    }
+}
+
 export default function EditMateriAdmin() {
     const params = useParams();
     const courseId = params?.id as string;
@@ -14,6 +23,8 @@ export default function EditMateriAdmin() {
         tahunAjaran: "",
         mataKuliahId: ""
     });
+    const [file, setFile] = useState<File | null>(null);
+    const [currentFileName, setCurrentFileName] = useState("");
     const [matkulName, setMatkulName] = useState("Memuat...");
     const [loading, setLoading] = useState(false);
     const [isFetching, setIsFetching] = useState(true);
@@ -35,7 +46,11 @@ export default function EditMateriAdmin() {
                         tahunAjaran: data.data.tahunAjaran,
                         mataKuliahId: data.data.mataKuliahId
                     });
+                    setCurrentFileName(fileNameFromUrl(data.data.fileUrl));
                     setMatkulName(data.data.mataKuliahName);
+                    // #region agent log
+                    fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'A',location:'admin/materi/edit/page.tsx:fetchDetail',message:'Admin edit materi loaded',data:{itemId,hasFileUrl:!!data.data.fileUrl,fileType:data.data.fileType||null,formKeys:['title','description','tahunAjaran','mataKuliahId','file']},timestamp:Date.now()})}).catch(()=>{});
+                    // #endregion
                 }
             } catch (e) {
                 console.error("Failed fetching material", e);
@@ -51,14 +66,21 @@ export default function EditMateriAdmin() {
         setLoading(true);
         try {
             const token = localStorage.getItem("accessToken");
-            
+            const fd = new FormData();
+            fd.append("title", formData.title);
+            fd.append("description", formData.description);
+            fd.append("tahunAjaran", formData.tahunAjaran);
+            if (formData.mataKuliahId) fd.append("mataKuliahId", formData.mataKuliahId);
+            if (file) fd.append("file", file);
+            // #region agent log
+            fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'C',location:'admin/materi/edit/page.tsx:handleSubmit',message:'Admin edit materi PATCH payload',data:{contentType:'multipart/form-data',hasFile:!!file,fileName:file?.name||null},timestamp:Date.now()})}).catch(()=>{});
+            // #endregion
             const res = await fetch(`${API_URL}/api/materials/${itemId}`, {
                 method: "PATCH",
-                headers: { 
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}` 
+                headers: {
+                    "Authorization": `Bearer ${token}`
                 },
-                body: JSON.stringify(formData)
+                body: fd
             });
             const data = await res.json();
             if (data.success) {
@@ -87,7 +109,7 @@ export default function EditMateriAdmin() {
         <div className="w-full min-h-screen py-10 px-4 flex justify-center bg-[#EEF5FF] dark:bg-slate-950 transition-colors duration-300" style={{ fontFamily: "inter" }}>
             <div className="w-full max-w-[900px]">
                 <div className="flex items-center gap-4 mb-8">
-                    <button 
+                    <button
                         onClick={() => router.back()}
                         className="w-10 h-10 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center shadow-sm border border-gray-100 dark:border-slate-800 text-gray-500 dark:text-slate-400 hover:text-[#068DFF] dark:hover:text-[#068DFF] transition-all"
                     >
@@ -130,6 +152,39 @@ export default function EditMateriAdmin() {
                                     value={formData.description}
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                 />
+                            </div>
+
+                            <div className="flex flex-col gap-2 md:col-span-2">
+                                <label className="text-sm font-semibold text-gray-700 dark:text-slate-300">Ganti File Materi (Opsional)</label>
+                                <div
+                                    className="w-full border-2 border-dashed border-gray-200 dark:border-slate-700 rounded-2xl p-8 hover:border-[#068DFF] dark:hover:border-[#068DFF] hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-all cursor-pointer group flex flex-col items-center justify-center gap-3"
+                                    onClick={() => document.getElementById("file-upload")?.click()}
+                                >
+                                    <input
+                                        id="file-upload"
+                                        type="file"
+                                        className="hidden"
+                                        accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
+                                        onChange={(e) => setFile(e.target.files?.[0] || null)}
+                                    />
+                                    <div className="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#068DFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                                    </div>
+                                    <div className="text-center">
+                                        {file ? (
+                                            <>
+                                                <p className="text-[#068DFF] font-semibold text-sm">{file.name}</p>
+                                                <p className="text-gray-400 dark:text-slate-500 text-xs mt-1">File ini akan menimpa file yang lama saat disimpan.</p>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <p className="text-gray-900 dark:text-slate-100 font-semibold text-sm">Klik untuk unggah file baru</p>
+                                                <p className="text-gray-400 dark:text-slate-500 text-xs mt-1">File saat ini: {currentFileName}</p>
+                                                <p className="text-gray-400 dark:text-slate-500 text-xs mt-1">PDF, DOCX, PPTX (kosongkan jika tidak ingin mengganti)</p>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
