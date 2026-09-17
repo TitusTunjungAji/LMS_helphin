@@ -10,14 +10,13 @@ import {
   User, 
   BookOpen, 
   FileText, 
-  ExternalLink,
   ChevronRight,
   Clock,
   Info,
   Edit
 } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
-import { API_URL } from "@/lib/api";
+import { API_URL, downloadAuthFile, previewAuthFile, suggestedDownloadName } from "@/lib/api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -44,9 +43,35 @@ export default function AdminMaterialDetail() {
   const [material, setMaterial] = useState<MaterialDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewError, setPreviewError] = useState(false);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     fetchMaterial();
+  }, [materiId]);
+
+  useEffect(() => {
+    if (!materiId) return;
+    let objectUrl: string | null = null;
+    let cancelled = false;
+    previewAuthFile(`/api/materials/${materiId}/preview`)
+      .then((url) => {
+        if (cancelled) {
+          URL.revokeObjectURL(url);
+          return;
+        }
+        objectUrl = url;
+        setPreviewUrl(url);
+        setPreviewError(false);
+      })
+      .catch(() => {
+        if (!cancelled) setPreviewError(true);
+      });
+    return () => {
+      cancelled = true;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
   }, [materiId]);
 
   const fetchMaterial = async () => {
@@ -73,9 +98,22 @@ export default function AdminMaterialDetail() {
     }
   };
 
-  const getFileUrl = (path: string) => {
-    if (!path) return "";
-    return `${API_URL}${path}`;
+  const handleDownload = async () => {
+    if (!material) return;
+    setDownloading(true);
+    try {
+      await downloadAuthFile(`/api/materials/${materiId}/download`, suggestedDownloadName(material.title, material.fileType, "materi"));
+      // #region agent log
+      fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'G',location:'admin/materi/[materiId]/page.tsx:handleDownload',message:'Admin materi download via API',data:{materiId,ok:true},timestamp:Date.now()})}).catch(()=>{});
+      // #endregion
+    } catch (err) {
+      // #region agent log
+      fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'G',location:'admin/materi/[materiId]/page.tsx:handleDownload',message:'Admin materi download failed',data:{materiId,error:String(err)},timestamp:Date.now()})}).catch(()=>{});
+      // #endregion
+      alert("Gagal mengunduh file.");
+    } finally {
+      setDownloading(false);
+    }
   };
 
   if (isLoading) {
@@ -150,13 +188,15 @@ export default function AdminMaterialDetail() {
               <Edit size={18} />
               Edit Materi
             </Link>
-            <a 
-              href={`${getFileUrl(material.fileUrl)}?download=true`}
-              className="flex items-center gap-2 px-6 py-3.5 bg-blue-500 text-white rounded-2xl font-bold text-sm shadow-lg dark:shadow-none shadow-blue-500/30 hover:bg-blue-600 hover:-translate-y-0.5 transition-all"
+            <button
+              type="button"
+              onClick={handleDownload}
+              disabled={downloading}
+              className="flex items-center gap-2 px-6 py-3.5 bg-blue-500 text-white rounded-2xl font-bold text-sm shadow-lg dark:shadow-none shadow-blue-500/30 hover:bg-blue-600 hover:-translate-y-0.5 transition-all disabled:opacity-60"
             >
               <Download size={18} />
-              Download Materi
-            </a>
+              {downloading ? "Mengunduh..." : "Download Materi"}
+            </button>
           </div>
         </div>
       </header>
@@ -179,14 +219,24 @@ export default function AdminMaterialDetail() {
             
             <div className="relative h-[650px] bg-slate-50 dark:bg-slate-800 dark:bg-slate-900/50 rounded-b-[36px] overflow-hidden">
               {isPDF ? (
-                <iframe 
-                  src={`${getFileUrl(material.fileUrl)}#toolbar=0`} 
-                  className="w-full h-full border-none"
-                  title="PDF Preview"
-                />
+                previewUrl ? (
+                  <iframe 
+                    src={previewUrl}
+                    className="w-full h-full border-none"
+                    title="PDF Preview"
+                  />
+                ) : (
+                  <div className="h-full flex items-center justify-center text-slate-500 font-semibold">
+                    {previewError ? "Gagal memuat preview PDF" : "Memuat preview..."}
+                  </div>
+                )
               ) : material.fileType?.match(/(jpg|jpeg|png|webp|gif)/i) ? (
                 <div className="p-10 w-full h-full flex items-center justify-center">
-                  <img src={getFileUrl(material.fileUrl)} alt="Preview" className="max-w-full max-h-full rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700" />
+                  {previewUrl ? (
+                    <img src={previewUrl} alt="Preview" className="max-w-full max-h-full rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700" />
+                  ) : (
+                    <p className="text-slate-500 font-semibold">{previewError ? "Gagal memuat preview" : "Memuat preview..."}</p>
+                  )}
                 </div>
               ) : (
                 <div className="text-center p-20 w-full h-full flex flex-col items-center justify-center">
@@ -196,13 +246,15 @@ export default function AdminMaterialDetail() {
                   <h3 className="text-3xl font-black text-slate-800 dark:text-slate-100 mb-4 tracking-tighter uppercase">Preview Tidak Tersedia</h3>
                   <p className="text-slate-500 dark:text-slate-400 dark:text-slate-500 max-w-sm mx-auto font-semibold mb-10 leading-relaxed">Format file ini (<span className="text-blue-500">{material.fileType?.toUpperCase()}</span>) tidak didukung untuk pratinjau langsung di browser, namun dapat diunduh di bawah ini.</p>
                   
-                  <a 
-                    href={`${getFileUrl(material.fileUrl)}?download=true`}
-                    className="inline-flex items-center gap-3 px-10 py-5 bg-blue-500 text-white rounded-[24px] font-black text-sm shadow-xl shadow-blue-500/30 hover:bg-blue-600 hover:-translate-y-1 transition-all"
+                  <button
+                    type="button"
+                    onClick={handleDownload}
+                    disabled={downloading}
+                    className="inline-flex items-center gap-3 px-10 py-5 bg-blue-500 text-white rounded-[24px] font-black text-sm shadow-xl shadow-blue-500/30 hover:bg-blue-600 hover:-translate-y-1 transition-all disabled:opacity-60"
                   >
                     <Download size={20} />
-                    Download File {material.fileType?.toUpperCase()}
-                  </a>
+                    {downloading ? "Mengunduh..." : `Download File ${material.fileType?.toUpperCase()}`}
+                  </button>
                 </div>
               )}
             </div>

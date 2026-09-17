@@ -9,7 +9,12 @@ import { uploadToFirebase, deleteFromFirebase, downloadFromFirebase } from "../f
 
 function firebaseObjectPath(fileUrl?: string | null) {
     if (!fileUrl || !fileUrl.includes("storage.googleapis.com")) return null;
-    return fileUrl.split("/").slice(4).join("/");
+    const raw = fileUrl.split("/").slice(4).join("/");
+    try {
+        return decodeURIComponent(raw);
+    } catch {
+        return raw;
+    }
 }
 
 function asUploadFile(value: FormDataEntryValue | null) {
@@ -185,6 +190,23 @@ materialRoutes.get("/:id/download", async (c) => {
         const res = await serveStoredFile(m.fileUrl, "materials", m.fileType, "attachment");
         // #region agent log
         fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'E',location:'frontend/server/routes/content.ts:materialRoutes.download',message:'Materials download proxied',data:{id:c.req.param("id"),isHttp:m.fileUrl.startsWith("http"),fileType:m.fileType},timestamp:Date.now()})}).catch(()=>{});
+        // #endregion
+        return res;
+    } catch {
+        return c.json({ success: false, message: "File not found" }, 404);
+    }
+});
+
+materialRoutes.get("/:id/preview", async (c) => {
+    const user = await getAuthUser(c);
+    if (!user) return c.json({ success: false, message: "Unauthorized" }, 401);
+    const [m] = await db.select().from(materials).where(eq(materials.id, c.req.param("id"))).limit(1);
+    if (!m) return c.json({ success: false, message: "Material not found" }, 404);
+    await logActivity(user.id, "preview_material", "material", c.req.param("id"));
+    try {
+        const res = await serveStoredFile(m.fileUrl, "materials", m.fileType || "pdf", "inline");
+        // #region agent log
+        fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'G',location:'frontend/server/routes/content.ts:materialRoutes.preview',message:'Materials preview proxied',data:{id:c.req.param("id"),isHttp:m.fileUrl.startsWith("http"),fileType:m.fileType},timestamp:Date.now()})}).catch(()=>{});
         // #endregion
         return res;
     } catch {
