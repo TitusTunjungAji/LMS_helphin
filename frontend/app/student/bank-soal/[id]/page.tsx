@@ -13,8 +13,7 @@ import {
   ChevronRight,
   Clock,
   Info,
-  Archive,
-  ShieldCheck
+  Archive
 } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
 import { API_URL, downloadAuthFile, previewAuthFile, suggestedDownloadName } from "@/lib/api";
