@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { API_URL } from "@/lib/api";
 import AuthStage from "@/components/AuthStage";
+import PasswordInput from "@/components/PasswordInput";
 
 interface Prodi {
   id: string;
@@ -144,12 +145,12 @@ export default function StudentRegisterPage() {
               </div>
             </div>
 
-            <input
-              type="password"
+            <PasswordInput
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password (min. 6 karakter)"
               required
+              autoComplete="new-password"
               className="w-full px-5 py-3.5 rounded-lg bg-white text-gray-800 border border-gray-300 outline-none transition-all duration-200 hover:border-blue-400 focus:border-[#068DFF] focus:ring-2 focus:ring-blue-100 text-[14px]"
             />
 

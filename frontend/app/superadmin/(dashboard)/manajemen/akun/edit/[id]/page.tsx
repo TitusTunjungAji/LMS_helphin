@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { API_URL } from "@/lib/api";
+import PasswordInput from "@/components/PasswordInput";
 
 export default function EditAkunPage() {
     const [nama, setNama] = useState("");
@@ -251,12 +252,12 @@ export default function EditAkunPage() {
                             {/* Input Password */}
                             <div className="space-y-2">
                                 <label className="text-sm font-bold text-gray-600">Password Baru</label>
-                                <input
-                                    type="password"
+                                <PasswordInput
                                     placeholder="Kosongkan jika tidak diubah"
                                     className="border border-gray-200 p-3 rounded-xl w-full bg-gray-50/50 text-black outline-none transition"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
+                                    autoComplete="new-password"
                                 />
                             </div>
                         </div>

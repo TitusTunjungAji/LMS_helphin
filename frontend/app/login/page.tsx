@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { API_URL } from "@/lib/api";
 import AuthStage from "@/components/AuthStage";
+import PasswordInput from "@/components/PasswordInput";
 
 function homePath(user: { role?: string; permissions?: string[] }) {
   const role = user?.role || "";
@@ -81,12 +82,12 @@ export default function StudentLoginPage() {
           required
           className="w-full px-5 py-3.5 rounded-lg bg-white text-gray-800 border border-gray-300 outline-none transition-all hover:border-blue-400 focus:border-[#068DFF] focus:ring-2 focus:ring-blue-100 text-[14px]"
         />
-        <input
-          type="password"
+        <PasswordInput
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
           required
+          autoComplete="current-password"
           className="w-full px-5 py-3.5 rounded-lg bg-white text-gray-800 border border-gray-300 outline-none transition-all hover:border-blue-400 focus:border-[#068DFF] focus:ring-2 focus:ring-blue-100 text-[14px]"
         />
         <div className="flex justify-end mt-1">

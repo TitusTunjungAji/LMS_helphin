@@ -17,6 +17,7 @@ import {
 import Image from "next/image";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
 import { API_URL } from "@/lib/api";
+import PasswordInput from "@/components/PasswordInput";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -295,13 +296,13 @@ export default function StudentProfile() {
               <div className="space-y-2">
                 <label className="text-xs font-black text-gray-400 uppercase tracking-widest pl-4">Password Baru</label>
                 <div className="group relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-orange-500 transition-colors" size={18} />
-                  <input 
-                    type="password" 
+                  <Lock className="absolute left-4 top-1/2 z-10 -translate-y-1/2 text-gray-400 group-focus-within:text-orange-500 transition-colors" size={18} />
+                  <PasswordInput 
                     value={formData.newPassword}
                     onChange={(e) => setFormData({...formData, newPassword: e.target.value})}
                     placeholder="••••••••"
-                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-orange-500 outline-none transition-all text-sm font-bold text-gray-700 placeholder:text-gray-300"
+                    autoComplete="new-password"
+                    className="w-full pl-12 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-orange-500 outline-none transition-all text-sm font-bold text-gray-700 placeholder:text-gray-300"
                   />
                 </div>
               </div>
@@ -309,13 +310,13 @@ export default function StudentProfile() {
               <div className="space-y-2">
                 <label className="text-xs font-black text-gray-400 uppercase tracking-widest pl-4">Konfirmasi Password</label>
                 <div className="group relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-orange-500 transition-colors" size={18} />
-                  <input 
-                    type="password" 
+                  <Lock className="absolute left-4 top-1/2 z-10 -translate-y-1/2 text-gray-400 group-focus-within:text-orange-500 transition-colors" size={18} />
+                  <PasswordInput 
                     value={formData.confirmPassword}
                     onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
                     placeholder="••••••••"
-                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-orange-500 outline-none transition-all text-sm font-bold text-gray-700 placeholder:text-gray-300"
+                    autoComplete="new-password"
+                    className="w-full pl-12 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-orange-500 outline-none transition-all text-sm font-bold text-gray-700 placeholder:text-gray-300"
                   />
                 </div>
               </div>
