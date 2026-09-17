@@ -76,7 +76,13 @@ export default function ManajemenMateri() {
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);
+            // #region agent log
+            fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'G',location:'superadmin/manajemen/materi/page.tsx:handleDownload',message:'Superadmin materi download via API',data:{id,ok:true,status:res.status,contentType:res.headers.get('content-type')},timestamp:Date.now()})}).catch(()=>{});
+            // #endregion
         } catch (error) {
+            // #region agent log
+            fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'G',location:'superadmin/manajemen/materi/page.tsx:handleDownload',message:'Superadmin materi download failed',data:{id,error:String(error)},timestamp:Date.now()})}).catch(()=>{});
+            // #endregion
             alert("Gagal mengunduh file.");
         }
     };

@@ -18,7 +18,7 @@ import {
   ShieldCheck
 } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
-import { API_URL } from "@/lib/api";
+import { API_URL, downloadAuthFile, previewAuthFile, suggestedDownloadName } from "@/lib/api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -45,9 +45,35 @@ export default function AdminBankSoalDetail() {
   const [item, setItem] = useState<BankSoalDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewError, setPreviewError] = useState(false);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     fetchBankSoal();
+  }, [soalId]);
+
+  useEffect(() => {
+    if (!soalId) return;
+    let objectUrl: string | null = null;
+    let cancelled = false;
+    previewAuthFile(`/api/bank-soal/${soalId}/preview`)
+      .then((url) => {
+        if (cancelled) {
+          URL.revokeObjectURL(url);
+          return;
+        }
+        objectUrl = url;
+        setPreviewUrl(url);
+        setPreviewError(false);
+      })
+      .catch(() => {
+        if (!cancelled) setPreviewError(true);
+      });
+    return () => {
+      cancelled = true;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
   }, [soalId]);
 
   const fetchBankSoal = async () => {
@@ -74,9 +100,16 @@ export default function AdminBankSoalDetail() {
     }
   };
 
-  const getFileUrl = (path: string) => {
-    if (!path) return "";
-    return `${API_URL}${path}`;
+  const handleDownload = async () => {
+    if (!item) return;
+    setDownloading(true);
+    try {
+      await downloadAuthFile(`/api/bank-soal/${soalId}/download`, suggestedDownloadName(item.title, item.fileType, "bank-soal"));
+    } catch {
+      alert("Gagal mengunduh file.");
+    } finally {
+      setDownloading(false);
+    }
   };
 
   if (isLoading) {
@@ -152,13 +185,15 @@ export default function AdminBankSoalDetail() {
               <Edit size={18} />
               Edit Bank Soal
             </Link>
-            <a 
-              href={`${getFileUrl(item.fileUrl)}?download=true`}
-              className="flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-[20px] font-black text-sm shadow-xl shadow-blue-500/30 hover:bg-blue-700 hover:-translate-y-1 transition-all"
+            <button
+              type="button"
+              onClick={handleDownload}
+              disabled={downloading}
+              className="flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-[20px] font-black text-sm shadow-xl shadow-blue-500/30 hover:bg-blue-700 hover:-translate-y-1 transition-all disabled:opacity-60"
             >
               <Download size={18} strokeWidth={3} />
-              Unduh Soal
-            </a>
+              {downloading ? "Mengunduh..." : "Unduh Soal"}
+            </button>
           </div>
         </div>
       </header>
@@ -181,14 +216,24 @@ export default function AdminBankSoalDetail() {
             
             <div className="relative h-[650px] bg-slate-50 dark:bg-slate-800 dark:bg-slate-900/50 rounded-b-[36px] overflow-hidden">
               {isPDF ? (
-                <iframe 
-                  src={`${getFileUrl(item.fileUrl)}#toolbar=0`} 
-                  className="w-full h-full border-none"
-                  title="PDF Preview"
-                />
+                previewUrl ? (
+                  <iframe 
+                    src={previewUrl}
+                    className="w-full h-full border-none"
+                    title="PDF Preview"
+                  />
+                ) : (
+                  <div className="h-full flex items-center justify-center text-slate-500 font-semibold">
+                    {previewError ? "Gagal memuat preview PDF" : "Memuat preview..."}
+                  </div>
+                )
               ) : item.fileType?.match(/(jpg|jpeg|png|webp|gif)/i) ? (
                 <div className="p-12 w-full h-full flex items-center justify-center">
-                  <img src={getFileUrl(item.fileUrl)} alt="Preview" className="max-w-full max-h-full rounded-[32px] shadow-2xl border border-white" />
+                  {previewUrl ? (
+                    <img src={previewUrl} alt="Preview" className="max-w-full max-h-full rounded-[32px] shadow-2xl border border-white" />
+                  ) : (
+                    <p className="text-slate-500 font-semibold">{previewError ? "Gagal memuat preview" : "Memuat preview..."}</p>
+                  )}
                 </div>
               ) : (
                 <div className="text-center p-24 w-full h-full flex flex-col items-center justify-center">
@@ -198,13 +243,15 @@ export default function AdminBankSoalDetail() {
                   <h3 className="text-3xl font-black text-slate-800 dark:text-slate-100 mb-4 tracking-tighter uppercase">PRATINJAU TIDAK TERSEDIA</h3>
                   <p className="text-slate-500 dark:text-slate-400 dark:text-slate-500 max-w-sm mx-auto font-bold mb-12 leading-relaxed">Format file ini (<span className="text-blue-600">{item.fileType?.toUpperCase()}</span>) belum didukung pratinjau browser, silakan unduh untuk mengecek isi soal.</p>
                   
-                  <a 
-                    href={`${getFileUrl(item.fileUrl)}?download=true`}
-                    className="inline-flex items-center gap-4 px-12 py-5 bg-blue-600 text-white rounded-[28px] font-black text-sm shadow-2xl shadow-blue-500/40 hover:bg-blue-700 hover:-translate-y-2 transition-all"
+                  <button
+                    type="button"
+                    onClick={handleDownload}
+                    disabled={downloading}
+                    className="inline-flex items-center gap-4 px-12 py-5 bg-blue-600 text-white rounded-[28px] font-black text-sm shadow-2xl shadow-blue-500/40 hover:bg-blue-700 hover:-translate-y-2 transition-all disabled:opacity-60"
                   >
                     <Download size={24} />
-                    UNDUH FILE BANK SOAL
-                  </a>
+                    {downloading ? "MENGUNDUH..." : "UNDUH FILE BANK SOAL"}
+                  </button>
                 </div>
               )}
             </div>

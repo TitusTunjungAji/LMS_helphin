@@ -4,6 +4,15 @@ import { useRouter, useParams, useSearchParams } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
 import { API_URL, superadminReturnPath } from "@/lib/api";
 
+function fileNameFromUrl(url?: string | null) {
+    if (!url) return "File saat ini";
+    try {
+        return decodeURIComponent(url.split("/").pop() || "File saat ini");
+    } catch {
+        return url.split("/").pop() || "File saat ini";
+    }
+}
+
 export default function EditMateri() {
     return (
         <Suspense fallback={<div className="p-20 text-center text-gray-500">Memuat data...</div>}>
@@ -24,6 +33,8 @@ function EditMateriContent() {
         prodiName: "",
         mataKuliahName: ""
     });
+    const [file, setFile] = useState<File | null>(null);
+    const [currentFileName, setCurrentFileName] = useState("");
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
@@ -47,6 +58,10 @@ function EditMateriContent() {
                     prodiName: json.data.prodiName,
                     mataKuliahName: json.data.mataKuliahName
                 });
+                setCurrentFileName(fileNameFromUrl(json.data.fileUrl));
+                // #region agent log
+                fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'F',location:'superadmin/manajemen/materi/edit:fetchMateri',message:'Superadmin edit materi loaded with file field',data:{id,hasFileUrl:!!json.data.fileUrl,fileType:json.data.fileType||null,hasFileInput:true},timestamp:Date.now()})}).catch(()=>{});
+                // #endregion
             }
         } catch (error) {
             console.error("Failed to fetch material:", error);
@@ -68,17 +83,20 @@ function EditMateriContent() {
         setSaving(true);
         try {
             const token = localStorage.getItem("accessToken");
+            const fd = new FormData();
+            fd.append("title", formData.title);
+            fd.append("description", formData.description);
+            fd.append("tahunAjaran", formData.tahunAjaran);
+            if (file) fd.append("file", file);
+            // #region agent log
+            fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'F',location:'superadmin/manajemen/materi/edit:handleUpdate',message:'Superadmin edit materi PATCH payload',data:{contentType:'multipart/form-data',hasFile:!!file,fileName:file?.name||null},timestamp:Date.now()})}).catch(()=>{});
+            // #endregion
             const res = await fetch(`${API_URL}/api/materials/${id}`, {
                 method: "PATCH",
                 headers: {
-                    "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`
                 },
-                body: JSON.stringify({
-                    title: formData.title,
-                    description: formData.description,
-                    tahunAjaran: formData.tahunAjaran
-                })
+                body: fd
             });
 
             const json = await res.json();
@@ -153,6 +171,34 @@ function EditMateriContent() {
                             />
                         </div>
 
+                        <div className="space-y-1.5">
+                            <label className="text-sm font-semibold text-gray-700">Ganti File Materi (Opsional)</label>
+                            <div
+                                className="w-full border-2 border-dashed border-gray-200 rounded-xl p-6 hover:border-blue-400 hover:bg-blue-50/40 transition-all cursor-pointer group flex flex-col items-center justify-center gap-2"
+                                onClick={() => document.getElementById("file-upload")?.click()}
+                            >
+                                <input
+                                    id="file-upload"
+                                    type="file"
+                                    className="hidden"
+                                    accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
+                                    onChange={(e) => setFile(e.target.files?.[0] || null)}
+                                />
+                                {file ? (
+                                    <>
+                                        <p className="text-blue-600 font-semibold text-sm">{file.name}</p>
+                                        <p className="text-gray-400 text-xs">File ini akan menimpa file yang lama saat disimpan.</p>
+                                    </>
+                                ) : (
+                                    <>
+                                        <p className="text-gray-800 font-semibold text-sm">Klik untuk unggah file baru</p>
+                                        <p className="text-gray-400 text-xs">File saat ini: {currentFileName}</p>
+                                        <p className="text-gray-400 text-xs">PDF, DOCX, PPTX (kosongkan jika tidak ingin mengganti)</p>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+
                         <div className="pt-4 flex gap-3">
                             <button
                                 type="submit"
@@ -170,15 +216,6 @@ function EditMateriContent() {
                             </button>
                         </div>
                     </form>
-
-                    <div className="mt-6 bg-orange-50/50 p-4 rounded-xl border border-orange-100 flex items-start gap-3">
-                        <div className="text-orange-500 mt-0.5 animate-pulse">
-                            ⚠️
-                        </div>
-                        <p className="text-[11px] text-orange-700 leading-relaxed italic">
-                            Informasi Penting: Mengubah file materi harus dilakukan dengan cara menghapus dan mengunggah ulang materi untuk menjaga integritas data prodi.
-                        </p>
-                    </div>
                 </div>
 
                 <FooterDashboard />

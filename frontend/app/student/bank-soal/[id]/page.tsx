@@ -10,14 +10,14 @@ import {
   User, 
   BookOpen, 
   FileText, 
-  ExternalLink,
   ChevronRight,
   Clock,
   Info,
-  Archive
+  Archive,
+  ShieldCheck
 } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
-import { API_URL } from "@/lib/api";
+import { API_URL, downloadAuthFile, previewAuthFile, suggestedDownloadName } from "@/lib/api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -43,9 +43,35 @@ export default function StudentBankSoalDetail() {
   const [item, setItem] = useState<BankSoalDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewError, setPreviewError] = useState(false);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     fetchBankSoal();
+  }, [id]);
+
+  useEffect(() => {
+    if (!id) return;
+    let objectUrl: string | null = null;
+    let cancelled = false;
+    previewAuthFile(`/api/bank-soal/${id}/preview`)
+      .then((url) => {
+        if (cancelled) {
+          URL.revokeObjectURL(url);
+          return;
+        }
+        objectUrl = url;
+        setPreviewUrl(url);
+        setPreviewError(false);
+      })
+      .catch(() => {
+        if (!cancelled) setPreviewError(true);
+      });
+    return () => {
+      cancelled = true;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
   }, [id]);
 
   const fetchBankSoal = async () => {
@@ -72,9 +98,16 @@ export default function StudentBankSoalDetail() {
     }
   };
 
-  const getFileUrl = (path: string) => {
-    if (!path) return "";
-    return `${API_URL}${path}`;
+  const handleDownload = async () => {
+    if (!item) return;
+    setDownloading(true);
+    try {
+      await downloadAuthFile(`/api/bank-soal/${id}/download`, suggestedDownloadName(item.title, item.fileType, "bank-soal"));
+    } catch {
+      alert("Gagal mengunduh file.");
+    } finally {
+      setDownloading(false);
+    }
   };
 
   if (isLoading) {
@@ -143,13 +176,15 @@ export default function StudentBankSoalDetail() {
           </div>
  
           <div className="flex items-center gap-3">
-            <a 
-              href={`${getFileUrl(item.fileUrl)}?download=true`}
-              className="flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-[20px] font-black text-sm shadow-xl shadow-blue-500/30 hover:bg-blue-700 hover:-translate-y-1 transition-all"
+            <button
+              type="button"
+              onClick={handleDownload}
+              disabled={downloading}
+              className="flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-[20px] font-black text-sm shadow-xl shadow-blue-500/30 hover:bg-blue-700 hover:-translate-y-1 transition-all disabled:opacity-60"
             >
               <Download size={18} strokeWidth={3} />
-              Unduh Soal
-            </a>
+              {downloading ? "Mengunduh..." : "Unduh Soal"}
+            </button>
           </div>
         </div>
       </header>
@@ -174,58 +209,21 @@ export default function StudentBankSoalDetail() {
             
             <div className="relative h-[500px] bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
               {isPDF ? (
-                <iframe 
-                  src={`${getFileUrl(item.fileUrl)}#toolbar=0`} 
-                  className="w-full h-full border-none"
-                  title="PDF Preview"
-                />
+                previewUrl ? (
+                  <iframe 
+                    src={previewUrl}
+                    className="w-full h-full border-none"
+                    title="PDF Preview"
+                  />
+                ) : (
+                  <p className="text-slate-500 font-semibold">{previewError ? "Gagal memuat preview PDF" : "Memuat preview..."}</p>
+                )
               ) : item.fileType?.match(/(jpg|jpeg|png|webp|gif)/i) ? (
                 <div className="p-12 w-full h-full flex items-center justify-center">
-                  <img src={getFileUrl(item.fileUrl)} alt="Preview" className="max-w-full max-h-full rounded-[32px] shadow-2xl border border-white ring-8 ring-white" />
-                </div>
-              ) : item.fileType?.match(/(pptx|docx|xlsx|ppt|doc|xls)/i) ? (
-                <div className="w-full h-full bg-white relative">
-                  <iframe 
-                    src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(getFileUrl(item.fileUrl))}`} 
-                    width="100%" 
-                    height="100%" 
-                    frameBorder="0"
-                    title="Office Online Viewer"
-                    className="border-none"
-                  >
-                    Office document viewer.
-                  </iframe>
-                  
-                  {/* Local Testing Overlay */}
-                  {API_URL.includes('localhost') && (
-                    <div className="absolute inset-0 bg-white/95 backdrop-blur-xl flex items-center justify-center p-16 text-center">
-                      <div className="max-w-md">
-                        <div className="w-24 h-24 bg-blue-50 text-blue-600 rounded-[32px] flex items-center justify-center mx-auto mb-8 shadow-xl shadow-blue-100 flex-col gap-1 ring-1 ring-blue-100">
-                           <FileText size={40} />
-                        </div>
-                        <h3 className="text-3xl font-black text-slate-800 mb-4 tracking-tighter">PRATINJAU OFFICE</h3>
-                        <p className="text-slate-500 font-bold mb-8 leading-relaxed">
-                          Sistem mendeteksi file <span className="text-blue-600 font-black underline decoration-blue-200">{item.fileType?.toUpperCase()}</span>. Pratinjau otomatis hanya bekerja jika server terhubung ke internet.
-                        </p>
-                        
-                        <div className="grid grid-cols-1 gap-4 mb-10">
-                          <div className="p-5 bg-slate-50 rounded-3xl border border-slate-100 text-left">
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
-                               <ShieldCheck size={14} className="text-emerald-500" /> Informasi Teknis
-                            </p>
-                            <p className="text-xs font-bold text-slate-600 leading-relaxed italic">Gunakan PDF atau Gambar untuk pratinjau instan di localhost. File Office membutuhkan tunneling seperti ngrok di localhost.</p>
-                          </div>
-                        </div>
- 
-                        <a 
-                          href={`${getFileUrl(item.fileUrl)}?download=true`}
-                          className="flex items-center justify-center gap-3 w-full py-5 bg-slate-900 text-white rounded-[24px] font-black text-sm hover:bg-black transition-all shadow-2xl shadow-slate-300"
-                        >
-                          <Download size={20} />
-                          Unduh Untuk Baca Offline
-                        </a>
-                      </div>
-                    </div>
+                  {previewUrl ? (
+                    <img src={previewUrl} alt="Preview" className="max-w-full max-h-full rounded-[32px] shadow-2xl border border-white ring-8 ring-white" />
+                  ) : (
+                    <p className="text-slate-500 font-semibold">{previewError ? "Gagal memuat preview" : "Memuat preview..."}</p>
                   )}
                 </div>
               ) : (
@@ -236,13 +234,15 @@ export default function StudentBankSoalDetail() {
                   <h3 className="text-3xl font-black text-slate-800 mb-4 tracking-tighter uppercase">FILE {item.fileType?.toUpperCase()}</h3>
                   <p className="text-slate-500 max-w-sm mx-auto font-bold mb-12 leading-relaxed">Format file ini belum didukung pratinjau browser, silakan unduh untuk mempelajarinya.</p>
                   
-                  <a 
-                    href={`${getFileUrl(item.fileUrl)}?download=true`}
-                    className="inline-flex items-center gap-4 px-12 py-5 bg-blue-600 text-white rounded-[24px] font-black text-sm shadow-2xl shadow-blue-500/40 hover:bg-blue-700 hover:-translate-y-2 transition-all"
+                  <button
+                    type="button"
+                    onClick={handleDownload}
+                    disabled={downloading}
+                    className="inline-flex items-center gap-4 px-12 py-5 bg-blue-600 text-white rounded-[24px] font-black text-sm shadow-2xl shadow-blue-500/40 hover:bg-blue-700 hover:-translate-y-2 transition-all disabled:opacity-60"
                   >
                     <Download size={24} />
-                    UNDUH FILE SEKARANG
-                  </a>
+                    {downloading ? "MENGUNDUH..." : "UNDUH FILE SEKARANG"}
+                  </button>
                 </div>
               )}
             </div>
