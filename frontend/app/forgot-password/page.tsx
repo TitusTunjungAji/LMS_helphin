@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Mail, ShieldCheck, Lock, CheckCircle2 } from "lucide-react";
 import { API_URL } from "@/lib/api";
@@ -20,6 +20,36 @@ export default function ForgotPasswordPage() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    const input = document.querySelector("[data-forgot-identifier]") as HTMLInputElement | null;
+    const icon = document.querySelector("[data-forgot-mail-icon]");
+    if (!input || !icon) return;
+    const inputRect = input.getBoundingClientRect();
+    const iconRect = icon.getBoundingClientRect();
+    const padLeft = parseFloat(getComputedStyle(input).paddingLeft || "0");
+    const overlapsPlaceholder = iconRect.right > inputRect.left + padLeft - 2;
+    // #region agent log
+    fetch("http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "bf3566" },
+      body: JSON.stringify({
+        sessionId: "bf3566",
+        runId: "forgot-password",
+        hypothesisId: "A",
+        location: "forgot-password/page.tsx:layout",
+        message: "Forgot password identifier input metrics",
+        data: {
+          padLeft,
+          iconLeft: Math.round(iconRect.left - inputRect.left),
+          iconRight: Math.round(iconRect.right - inputRect.left),
+          overlapsPlaceholder,
+        },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
+  }, [step]);
+
   // Step 1: Request OTP
   const handleRequestOtp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +64,28 @@ export default function ForgotPasswordPage() {
       });
 
       const data = await res.json();
+      // #region agent log
+      fetch("http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "bf3566" },
+        body: JSON.stringify({
+          sessionId: "bf3566",
+          runId: "forgot-password",
+          hypothesisId: "F",
+          location: "forgot-password/page.tsx:requestOtp",
+          message: "Forgot password OTP request result",
+          data: {
+            status: res.status,
+            ok: res.ok,
+            success: data.success === true,
+            code: data.code || null,
+            hasEmail: Boolean(data?.data?.email),
+            identifierKind: identifier.includes("@") ? "email" : "other",
+          },
+          timestamp: Date.now(),
+        }),
+      }).catch(() => {});
+      // #endregion
       if (!res.ok) throw new Error(data.message || "Gagal mengirim OTP");
 
       setEmail(data.data.email);
@@ -124,14 +176,15 @@ export default function ForgotPasswordPage() {
           <form onSubmit={handleRequestOtp} className="flex flex-col gap-3">
             {error && <div className="p-3 text-[13px] text-red-500 bg-red-50 border border-red-200 rounded-lg text-center">{error}</div>}
             <div className="relative">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+              <Mail data-forgot-mail-icon className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
               <input
+                data-forgot-identifier
                 type="text"
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
                 placeholder="Email atau NIM"
                 required
-                className="hp-input pl-12"
+                className="hp-input !pl-12"
               />
             </div>
             <button type="submit" disabled={isLoading} className="hp-btn-primary mt-1">
