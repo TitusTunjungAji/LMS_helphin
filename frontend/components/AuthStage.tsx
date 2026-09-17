@@ -31,6 +31,14 @@ export default function AuthStage({ title, subtitle, children }: AuthStageProps)
     const modelRect = model?.getBoundingClientRect();
     const artCenter = artRect ? Math.round(artRect.left + artRect.width / 2) : null;
     const modelCenter = modelRect ? Math.round(modelRect.left + modelRect.width / 2) : null;
+    const artWidth = artRect ? Math.round(artRect.width) : null;
+    const modelWidth = modelRect ? Math.round(modelRect.width) : null;
+    const modelLeft = modelRect ? Math.round(modelRect.left) : null;
+    const modelRight = modelRect ? Math.round(modelRect.right) : null;
+    const artLeft = artRect ? Math.round(artRect.left) : null;
+    const artRight = artRect ? Math.round(artRect.right) : null;
+    const modelInArtRatio =
+      artWidth && modelCenter != null && artLeft != null ? Number(((modelCenter - artLeft) / artWidth).toFixed(3)) : null;
     const vv = window.visualViewport;
     // #region agent log
     fetch("http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283", {
@@ -38,8 +46,8 @@ export default function AuthStage({ title, subtitle, children }: AuthStageProps)
       headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "bf3566" },
       body: JSON.stringify({
         sessionId: "bf3566",
-        runId: "auth-model-center",
-        hypothesisId: "C",
+        runId: "auth-model-center-v2",
+        hypothesisId: "B",
         location: "AuthStage.tsx:layout",
         message: "AuthStage layout metrics",
         data: {
@@ -62,8 +70,15 @@ export default function AuthStage({ title, subtitle, children }: AuthStageProps)
           chipOverlapsForm: chips.some((chip) => chip.overlaps),
           chips,
           sheetRightCss: sheet ? getComputedStyle(sheet).right : null,
+          artLeft,
+          artRight,
+          artWidth,
           artCenter,
+          modelLeft,
+          modelRight,
+          modelWidth,
           modelCenter,
+          modelInArtRatio,
           modelOffsetFromArtCenter: artCenter != null && modelCenter != null ? modelCenter - artCenter : null,
         },
         timestamp: Date.now(),
@@ -110,14 +125,14 @@ export default function AuthStage({ title, subtitle, children }: AuthStageProps)
 
         <div
           data-auth-model
-          className="pointer-events-none absolute bottom-0 left-1/2 z-[15] h-[88%] w-[min(72vw,280px)] -translate-x-1/2 md:bottom-0 md:z-20 md:h-[92%] md:w-[min(38vw,480px)]"
+          className="pointer-events-none absolute bottom-0 left-1/2 z-[15] h-[90%] w-[min(46vw,210px)] -translate-x-1/2 md:bottom-0 md:z-20 md:h-[92%] md:w-[min(24vw,340px)]"
         >
           <Image
             src="/images/Model.svg"
             alt=""
             fill
             priority
-            className="object-contain object-bottom"
+            className="object-cover object-[46%_0%]"
           />
         </div>
 
@@ -127,7 +142,7 @@ export default function AuthStage({ title, subtitle, children }: AuthStageProps)
           </div>
           <span className="pr-1 text-[13px] font-semibold text-gray-700">Bank Soal</span>
         </div>
-        <div data-auth-chip className="absolute top-[22%] left-[38%] z-20 hidden animate-[float_6s_ease-in-out_infinite_0.5s] items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-[0_10px_28px_rgba(6,141,255,0.12)] md:flex">
+        <div data-auth-chip className="absolute top-[20%] left-[72%] z-20 hidden animate-[float_6s_ease-in-out_infinite_0.5s] items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-[0_10px_28px_rgba(6,141,255,0.12)] md:flex">
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-blue-50">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path d="M7 1L9 5L13 5.5L10 8.5L11 13L7 11L3 13L4 8.5L1 5.5L5 5L7 1Z" fill="#068DFF" />
