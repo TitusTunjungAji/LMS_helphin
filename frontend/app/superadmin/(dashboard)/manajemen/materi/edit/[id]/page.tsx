@@ -4,6 +4,7 @@ import { useRouter, useParams, useSearchParams } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
 import { API_URL, superadminReturnPath } from "@/lib/api";
 import { Pencil } from "lucide-react";
+import CurrentFilePreview from "@/components/CurrentFilePreview";
 
 function fileNameFromUrl(url?: string | null) {
     if (!url) return "File saat ini";
@@ -36,6 +37,8 @@ function EditMateriContent() {
     });
     const [file, setFile] = useState<File | null>(null);
     const [currentFileName, setCurrentFileName] = useState("");
+    const [currentFileType, setCurrentFileType] = useState("");
+    const [hasCurrentFile, setHasCurrentFile] = useState(false);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
@@ -60,6 +63,8 @@ function EditMateriContent() {
                     mataKuliahName: json.data.mataKuliahName
                 });
                 setCurrentFileName(fileNameFromUrl(json.data.fileUrl));
+                setCurrentFileType(json.data.fileType || "");
+                setHasCurrentFile(!!json.data.fileUrl);
                 // #region agent log
                 fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'F',location:'superadmin/manajemen/materi/edit:fetchMateri',message:'Superadmin edit materi loaded with file field',data:{id,hasFileUrl:!!json.data.fileUrl,fileType:json.data.fileType||null,hasFileInput:true},timestamp:Date.now()})}).catch(()=>{});
                 // #endregion
@@ -170,6 +175,25 @@ function EditMateriContent() {
                                 value={formData.description}
                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                             />
+                        </div>
+
+                        <div className="space-y-1.5">
+                            <label className="text-sm font-semibold text-gray-700">File Materi Saat Ini</label>
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-3 p-4 rounded-xl border border-gray-100 bg-gray-50">
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-semibold text-gray-800 truncate">{currentFileName || "Tidak ada file"}</p>
+                                    <p className="text-xs text-gray-400">{currentFileType ? currentFileType.toUpperCase() : "File materi sebelumnya"}</p>
+                                </div>
+                                {hasCurrentFile && (
+                                    <CurrentFilePreview
+                                        apiPreviewPath={`/api/materials/${id}/preview`}
+                                        apiDownloadPath={`/api/materials/${id}/download`}
+                                        fileName={currentFileName}
+                                        fileType={currentFileType}
+                                        title={formData.title}
+                                    />
+                                )}
+                            </div>
                         </div>
 
                         <div className="space-y-1.5">
