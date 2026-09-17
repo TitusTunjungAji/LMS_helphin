@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { API_URL } from "@/lib/api";
+import CurrentFilePreview from "@/components/CurrentFilePreview";
 
 function fileNameFromUrl(url?: string | null) {
     if (!url) return "File saat ini";
@@ -25,6 +26,8 @@ export default function EditMateriAdmin() {
     });
     const [file, setFile] = useState<File | null>(null);
     const [currentFileName, setCurrentFileName] = useState("");
+    const [currentFileType, setCurrentFileType] = useState("");
+    const [hasCurrentFile, setHasCurrentFile] = useState(false);
     const [matkulName, setMatkulName] = useState("Memuat...");
     const [loading, setLoading] = useState(false);
     const [isFetching, setIsFetching] = useState(true);
@@ -47,6 +50,8 @@ export default function EditMateriAdmin() {
                         mataKuliahId: data.data.mataKuliahId
                     });
                     setCurrentFileName(fileNameFromUrl(data.data.fileUrl));
+                    setCurrentFileType(data.data.fileType || "");
+                    setHasCurrentFile(!!data.data.fileUrl);
                     setMatkulName(data.data.mataKuliahName);
                     // #region agent log
                     fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'A',location:'admin/materi/edit/page.tsx:fetchDetail',message:'Admin edit materi loaded',data:{itemId,hasFileUrl:!!data.data.fileUrl,fileType:data.data.fileType||null,formKeys:['title','description','tahunAjaran','mataKuliahId','file']},timestamp:Date.now()})}).catch(()=>{});
@@ -152,6 +157,25 @@ export default function EditMateriAdmin() {
                                     value={formData.description}
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                 />
+                            </div>
+
+                            <div className="flex flex-col gap-2 md:col-span-2">
+                                <label className="text-sm font-semibold text-gray-700 dark:text-slate-300">File Materi Saat Ini</label>
+                                <div className="flex flex-col sm:flex-row sm:items-center gap-3 p-4 rounded-2xl border border-gray-100 dark:border-slate-800 bg-gray-50 dark:bg-slate-800">
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-semibold text-gray-800 dark:text-slate-100 truncate">{currentFileName || "Tidak ada file"}</p>
+                                        <p className="text-xs text-gray-400">{currentFileType ? currentFileType.toUpperCase() : "File materi sebelumnya"}</p>
+                                    </div>
+                                    {hasCurrentFile && (
+                                        <CurrentFilePreview
+                                            apiPreviewPath={`/api/materials/${itemId}/preview`}
+                                            apiDownloadPath={`/api/materials/${itemId}/download`}
+                                            fileName={currentFileName}
+                                            fileType={currentFileType}
+                                            title={formData.title}
+                                        />
+                                    )}
+                                </div>
                             </div>
 
                             <div className="flex flex-col gap-2 md:col-span-2">
