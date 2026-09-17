@@ -13,6 +13,12 @@ export default function AuthStage({ title, subtitle, children }: AuthStageProps)
   useEffect(() => {
     const sheet = document.querySelector("[data-auth-sheet]");
     const stage = document.querySelector("[data-auth-stage]");
+    const chip = document.querySelector("[data-auth-chip]");
+    const sheetRect = sheet?.getBoundingClientRect();
+    const chipRect = chip?.getBoundingClientRect();
+    const overlap = sheetRect && chipRect
+      ? !(chipRect.right < sheetRect.left || chipRect.left > sheetRect.right || chipRect.bottom < sheetRect.top || chipRect.top > sheetRect.bottom)
+      : false;
     const vv = window.visualViewport;
     // #region agent log
     fetch("http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283", {
@@ -20,8 +26,8 @@ export default function AuthStage({ title, subtitle, children }: AuthStageProps)
       headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "bf3566" },
       body: JSON.stringify({
         sessionId: "bf3566",
-        runId: "post-fix",
-        hypothesisId: "K",
+        runId: "auth-side-fix",
+        hypothesisId: "A",
         location: "AuthStage.tsx:layout",
         message: "AuthStage layout metrics",
         data: {
@@ -38,6 +44,11 @@ export default function AuthStage({ title, subtitle, children }: AuthStageProps)
           sheetH: sheet ? Math.round(sheet.getBoundingClientRect().height) : null,
           sheetScrollH: sheet?.scrollHeight || null,
           sheetTop: sheet ? Math.round(sheet.getBoundingClientRect().top) : null,
+          sheetLeft: sheetRect ? Math.round(sheetRect.left) : null,
+          sheetRight: sheetRect ? Math.round(sheetRect.right) : null,
+          formOnRight: sheetRect ? sheetRect.left > window.innerWidth / 2 : null,
+          chipOverlapsForm: overlap,
+          sheetRightCss: sheet ? getComputedStyle(sheet).right : null,
         },
         timestamp: Date.now(),
       }),
@@ -94,7 +105,7 @@ export default function AuthStage({ title, subtitle, children }: AuthStageProps)
           />
         </div>
 
-        <div className="absolute top-[40%] left-[6%] z-30 hidden animate-[float_5s_ease-in-out_infinite] items-center gap-2.5 rounded-2xl bg-white px-3 py-2.5 shadow-[0_10px_28px_rgba(6,141,255,0.12)] md:flex">
+        <div data-auth-chip className="absolute top-[40%] left-[6%] z-30 hidden animate-[float_5s_ease-in-out_infinite] items-center gap-2.5 rounded-2xl bg-white px-3 py-2.5 shadow-[0_10px_28px_rgba(6,141,255,0.12)] md:flex">
           <div className="h-9 w-9 flex-shrink-0 overflow-hidden rounded-lg">
             <Image src="/images/Group 197.svg" alt="" width={36} height={36} />
           </div>
@@ -121,7 +132,7 @@ export default function AuthStage({ title, subtitle, children }: AuthStageProps)
 
       <section
         data-auth-sheet
-        className="relative z-20 -mt-12 flex min-h-[calc(100dvh-min(38dvh,320px)+3rem)] items-start justify-center rounded-t-[32px] bg-white px-6 pt-7 pb-[max(2rem,env(safe-area-inset-bottom))] shadow-[0_-20px_50px_rgba(15,50,110,0.12)] md:absolute md:inset-y-0 md:left-auto md:mt-0 md:w-[38%] md:items-center md:overflow-y-auto md:rounded-none md:px-14 md:py-10 md:shadow-[-40px_0_60px_rgba(15,50,110,0.08)]"
+        className="relative z-20 -mt-12 flex min-h-[calc(100dvh-min(38dvh,320px)+3rem)] items-start justify-center rounded-t-[32px] bg-white px-6 pt-7 pb-[max(2rem,env(safe-area-inset-bottom))] shadow-[0_-20px_50px_rgba(15,50,110,0.12)] md:absolute md:inset-y-0 md:right-0 md:left-auto md:mt-0 md:w-[38%] md:items-center md:overflow-y-auto md:rounded-none md:px-14 md:py-10 md:shadow-[-40px_0_60px_rgba(15,50,110,0.08)]"
       >
         <div className="w-full max-w-[380px] md:my-auto [&_input]:text-base [&_select]:text-base">
           {children}
