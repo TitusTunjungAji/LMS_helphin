@@ -127,7 +127,16 @@ auth.post("/forgot-password", async (c) => {
     const emailSent = await sendOTP(user.email, otp, user.name);
     await logActivity(user.id, "forgot_password_request", "user", user.id);
 
-    if (!emailSent) return c.json({ success: false, message: "Gagal mengirim email OTP. Silakan coba lagi nanti." }, 500);
+    if (!emailSent.ok) {
+        const notConfigured = emailSent.reason === "MAILER_NOT_CONFIGURED";
+        return c.json({
+            success: false,
+            code: emailSent.reason,
+            message: notConfigured
+                ? "Layanan pengiriman email belum aktif. Hubungi admin HelPhin."
+                : "Gagal mengirim email OTP. Silakan coba lagi nanti.",
+        }, 500);
+    }
     return c.json({ success: true, message: "Kode OTP telah dikirim ke email terdaftar", data: { email: user.email } });
 });
 

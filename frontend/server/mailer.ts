@@ -11,7 +11,7 @@ export const sendOTP = async (email: string, otp: string, name: string) => {
         const resend = getResend();
         if (!resend) {
             console.error("[MAILER] RESEND_API_KEY is not set");
-            return false;
+            return { ok: false as const, reason: "MAILER_NOT_CONFIGURED" };
         }
         const { data, error } = await resend.emails.send({
             from: `${process.env.SMTP_FROM_NAME || "HelPhin LMS"} <${process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev"}>`,
@@ -40,15 +40,15 @@ export const sendOTP = async (email: string, otp: string, name: string) => {
         });
 
         if (error) {
-            console.error(`[MAILER] Resend error sending to ${email}:`, error);
-            return false;
+            console.error(`[MAILER] Resend error sending OTP:`, error.name || error);
+            return { ok: false as const, reason: "MAILER_SEND_FAILED" };
         }
 
-        console.log(`[MAILER] Email sent successfully to ${email}. ID: ${data?.id}`);
-        return true;
+        console.log(`[MAILER] OTP email sent. ID: ${data?.id}`);
+        return { ok: true as const };
     } catch (error) {
-        console.error(`[MAILER] Error sending email to ${email}:`, error);
-        return false;
+        console.error(`[MAILER] Error sending OTP email:`, error);
+        return { ok: false as const, reason: "MAILER_SEND_FAILED" };
     }
 };
 
