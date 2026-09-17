@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
 import { API_URL } from "@/lib/api";
+import { ExternalLink, Pencil, Trash2 } from "lucide-react";
 
 export default function ManajemenLatihanSoal() {
     const [dataExercises, setDataExercises] = useState<any[]>([]);
@@ -139,7 +140,7 @@ export default function ManajemenLatihanSoal() {
                                                         className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition"
                                                         title="Buka Google Form"
                                                     >
-                                                        📝
+                                                        <ExternalLink size={16} />
                                                     </a>
                                                     {canManage && (
                                                         <>
@@ -148,14 +149,14 @@ export default function ManajemenLatihanSoal() {
                                                                 className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
                                                                 title="Edit"
                                                             >
-                                                                ✏️
+                                                                <Pencil size={16} />
                                                             </button>
                                                             <button
                                                                 onClick={() => handleDelete(e.id)}
                                                                 className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
                                                                 title="Hapus"
                                                             >
-                                                                🗑️
+                                                                <Trash2 size={16} />
                                                             </button>
                                                         </>
                                                     )}

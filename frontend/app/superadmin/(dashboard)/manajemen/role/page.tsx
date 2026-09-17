@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
 import { API_URL } from "@/lib/api";
+import { Pencil, Trash2 } from "lucide-react";
 
 export default function ManajemenRole() {
     const [dataRole, setDataRole] = useState<any[]>([]);
@@ -126,14 +127,14 @@ export default function ManajemenRole() {
                                                     className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
                                                     title="Edit"
                                                 >
-                                                    ✏️
+                                                    <Pencil size={16} />
                                                 </button>
                                                 <button
                                                     onClick={() => hapusRole(row.id)}
                                                     className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
                                                     title="Hapus"
                                                 >
-                                                    🗑️
+                                                    <Trash2 size={16} />
                                                 </button>
                                             </div>
                                         </td>
