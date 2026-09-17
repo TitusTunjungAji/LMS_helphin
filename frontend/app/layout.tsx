@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
 import { ThemeProvider } from "../context/ThemeContext";
+import ActivityLoadingOverlay from "@/components/ActivityLoadingOverlay";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -53,6 +54,7 @@ export default function RootLayout({
         className={`${jakarta.variable} ${jakarta.className} antialiased`}
       >
         <ThemeProvider>
+          <ActivityLoadingOverlay />
           {children}
         </ThemeProvider>
       </body>

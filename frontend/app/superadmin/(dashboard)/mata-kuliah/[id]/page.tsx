@@ -14,7 +14,7 @@ import {
   Edit,
   Trash2,
 } from "lucide-react";
-import { API_URL } from "@/lib/api";
+import { API_URL, downloadAuthFile } from "@/lib/api";
 
 type FilterType = "all" | "e-materi" | "video" | "bank-soal" | "responsi";
 
@@ -147,19 +147,7 @@ export default function MataKuliahDetailPage() {
 
   const handleDownload = async (id: string, fileName: string) => {
     try {
-      const token = localStorage.getItem("accessToken");
-      const res = await fetch(`${API_URL}/api/materials/${id}/download`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) throw new Error("Download failed");
-      const blob = await res.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = fileName.split("/").pop() || "materi";
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
+      await downloadAuthFile(`/api/materials/${id}/download`, fileName.split("/").pop() || "materi");
     } catch {
       alert("Gagal mengunduh file.");
     }

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
-import { API_URL } from "@/lib/api";
+import { API_URL, downloadAuthFile, previewAuthFile } from "@/lib/api";
 import { Download, Eye, Pencil, Trash2 } from "lucide-react";
 
 export default function ManajemenBankSoal() {
@@ -64,54 +64,34 @@ export default function ManajemenBankSoal() {
 
     const handleDownload = async (id: string, fileName: string) => {
         try {
-            const token = localStorage.getItem("accessToken");
-            const res = await fetch(`${API_URL}/api/bank-soal/${id}/download`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            await downloadAuthFile(`/api/bank-soal/${id}/download`, fileName.split("/").pop() || "bank-soal");
             // #region agent log
-            fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'E',location:'superadmin/bank-soal/page.tsx:handleDownload',message:'Bank soal download response',data:{id,ok:res.ok,status:res.status,redirected:res.redirected,contentType:res.headers.get('content-type'),url:res.url},timestamp:Date.now()})}).catch(()=>{});
+            fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'loading-fix',hypothesisId:'C',location:'superadmin/bank-soal/page.tsx:handleDownload',message:'Bank soal download completed',data:{id,ok:true},timestamp:Date.now()})}).catch(()=>{});
             // #endregion
-
-            if (!res.ok) throw new Error("Download failed");
-
-            const blob = await res.blob();
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = fileName.split('/').pop() || "bank-soal";
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
         } catch (error) {
             // #region agent log
-            fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'E',location:'superadmin/bank-soal/page.tsx:handleDownload',message:'Bank soal download error',data:{id,error:String(error)},timestamp:Date.now()})}).catch(()=>{});
+            fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'loading-fix',hypothesisId:'C',location:'superadmin/bank-soal/page.tsx:handleDownload',message:'Bank soal download error',data:{id,error:String(error)},timestamp:Date.now()})}).catch(()=>{});
             // #endregion
             alert("Gagal mengunduh file.");
         }
     };
 
     const handlePreview = async (id: string) => {
+        const startedAt = Date.now();
         try {
-            const token = localStorage.getItem("accessToken");
-            const res = await fetch(`${API_URL}/api/bank-soal/${id}/preview`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
             // #region agent log
-            fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'E',location:'superadmin/bank-soal/page.tsx:handlePreview',message:'Bank soal preview response',data:{id,ok:res.ok,status:res.status,redirected:res.redirected,contentType:res.headers.get('content-type'),url:res.url},timestamp:Date.now()})}).catch(()=>{});
+            fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'loading-fix',hypothesisId:'A',location:'superadmin/bank-soal/page.tsx:handlePreview',message:'Bank soal preview started',data:{id},timestamp:Date.now()})}).catch(()=>{});
             // #endregion
-
-            if (!res.ok) throw new Error("Preview failed");
-
-            const blob = await res.blob();
-            const fileBlob = new Blob([blob], { type: 'application/pdf' });
-            const url = window.URL.createObjectURL(fileBlob);
-
+            const url = await previewAuthFile(`/api/bank-soal/${id}/preview`, "pdf");
             setPreviewUrl(url);
             setIsPreviewOpen(true);
+            // #region agent log
+            fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'loading-fix',hypothesisId:'A',location:'superadmin/bank-soal/page.tsx:handlePreview',message:'Bank soal preview opened',data:{id,durationMs:Date.now()-startedAt,ok:true},timestamp:Date.now()})}).catch(()=>{});
+            // #endregion
         } catch (error) {
             console.error("Preview error:", error);
             // #region agent log
-            fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'post-fix',hypothesisId:'E',location:'superadmin/bank-soal/page.tsx:handlePreview',message:'Bank soal preview error',data:{id,error:String(error)},timestamp:Date.now()})}).catch(()=>{});
+            fetch('http://127.0.0.1:7711/ingest/60cd0445-865c-40e5-90cd-09d9cf1d5283',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bf3566'},body:JSON.stringify({sessionId:'bf3566',runId:'loading-fix',hypothesisId:'A',location:'superadmin/bank-soal/page.tsx:handlePreview',message:'Bank soal preview error',data:{id,durationMs:Date.now()-startedAt,error:String(error)},timestamp:Date.now()})}).catch(()=>{});
             // #endregion
             alert("Gagal memuat preview PDF.");
         }
