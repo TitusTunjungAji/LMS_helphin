@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
 import { API_URL } from "@/lib/api";
 
@@ -156,14 +157,16 @@ export default function ManajemenResponsi() {
                                                 {row.communityLink ? <a href={row.communityLink} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Buka Link</a> : <span className="text-gray-400">-</span>}
                                             </td>
                                             <td className="p-4 border-b text-center relative overflow-visible">
-                                                <button onClick={() => setOpenMenuId(openMenuId === row.id ? null : row.id)} className="text-gray-400 font-bold p-1 text-xl leading-none hover:text-black">...</button>
+                                                <button onClick={() => setOpenMenuId(openMenuId === row.id ? null : row.id)} className="text-gray-400 p-1.5 rounded-md hover:text-black hover:bg-gray-100 transition" aria-label="Aksi">
+                                                    <MoreHorizontal size={18} />
+                                                </button>
                                                 {openMenuId === row.id && (
-                                                    <div className="absolute right-0 mt-2 w-28 bg-white border border-gray-100 shadow-2xl rounded-lg z-[50] py-1 animate-in fade-in zoom-in duration-150">
+                                                    <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-100 shadow-2xl rounded-lg z-[50] py-1 animate-in fade-in zoom-in duration-150">
                                                         <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 font-medium transition flex items-center gap-2" onClick={() => router.push(`/superadmin/manajemen/responsi/edit/${row.id}`)}>
-                                                            ✏️ Edit
+                                                            <Pencil size={14} /> Edit
                                                         </button>
                                                         <button className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition flex items-center gap-2" onClick={() => hapusResponsi(row.id)}>
-                                                            🗑️ Hapus
+                                                            <Trash2 size={14} /> Hapus
                                                         </button>
                                                     </div>
                                                 )}

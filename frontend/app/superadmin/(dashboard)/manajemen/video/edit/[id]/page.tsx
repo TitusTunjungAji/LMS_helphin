@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
 import { API_URL } from "@/lib/api";
+import { Pencil } from "lucide-react";
 
 export default function EditVideo() {
     const { id } = useParams();
@@ -145,7 +146,7 @@ export default function EditVideo() {
             <div className="flex-1 p-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-opacity-10">
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold flex items-center gap-3">
-                        Edit Video <span className="text-blue-600">✏️</span>
+                        Edit Video <Pencil size={22} className="text-blue-600" />
                     </h1>
                     <p className="text-gray-400 text-sm italic">Ubah detail link YouTube atau metadata video pembelajaran.</p>
                 </div>

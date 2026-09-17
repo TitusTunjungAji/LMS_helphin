@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
 import { API_URL } from "@/lib/api";
+import { Trash2 } from "lucide-react";
 
 export default function ManajemenRequestMateri() {
     const [dataRequests, setDataRequests] = useState<any[]>([]);
@@ -139,7 +140,7 @@ export default function ManajemenRequestMateri() {
                                                             className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
                                                             title="Hapus / Selesai"
                                                         >
-                                                            🗑️
+                                                            <Trash2 size={16} />
                                                         </button>
                                                     ) : (
                                                         <span className="text-gray-300">-</span>
