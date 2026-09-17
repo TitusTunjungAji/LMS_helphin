@@ -1,9 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Inter } from "next/font/google";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import CampusHero from "@/components/CampusHero";
+import { BookOpen } from "lucide-react";
 import { API_URL } from "@/lib/api";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -76,34 +77,18 @@ export default function StudentMatkulProdiLain() {
   };
 
   return (
-    <div className={`min-h-screen bg-[#F8FAFC] dark:bg-slate-950 ${inter.className} pb-10 flex flex-col gap-6 transition-colors duration-300`}>
-      {/* ── HERO BANNER ── */}
-      <div className="relative w-full h-[160px] md:h-[180px] rounded-2xl overflow-hidden bg-gradient-to-r from-[#0055FF] to-[#07A3F9] shadow-sm flex items-center mx-4 mt-4" style={{ maxWidth: "calc(100% - 2rem)" }}>
-        <div className="relative z-10 pl-6 md:pl-8 text-white max-w-md">
-          <h1 className="text-2xl md:text-[28px] font-extrabold mb-1 drop-shadow-sm">Hallo, {userName} 👋</h1>
-          <p className="text-sm md:text-xl font-bold opacity-90 drop-shadow-sm">{fakultasName}</p>
-          <p className="text-[11px] md:text-xs font-medium opacity-75 mt-1 tracking-wide">by helPhin</p>
-        </div>
-        <div 
-          className="absolute right-0 top-0 h-full w-[45%] z-0 overflow-hidden"
-          style={{
-            maskImage: 'linear-gradient(to right, transparent, black 15%, black 100%)',
-            WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 100%)'
-          }}
-        >
-          <Image
-            src="/Assets/gedung_kampus_image.png"
-            alt="Gedung Kampus"
-            fill
-            className="object-cover object-left"
-            priority
-          />
-        </div>
-      </div>
+    <div className={`min-h-screen ${inter.className} pb-10 flex flex-col gap-6 p-5 md:p-7`}>
+      <CampusHero
+        title={`Hallo, ${userName}`}
+        subtitle={fakultasName}
+        pills={[`${isLoading ? "—" : prodiList.length} Prodi`]}
+      />
 
-      {/* ── PRODI GRID ── */}
-      <section className="px-6 flex flex-col gap-6 max-w-[1400px] mx-auto w-full mt-4">
-        <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">Prodi</h3>
+      <section className="flex flex-col gap-6 w-full">
+        <div className="hp-section-title">
+          <div className="hp-section-bar"></div>
+          <h2>Prodi</h2>
+        </div>
 
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-20">
@@ -115,27 +100,19 @@ export default function StudentMatkulProdiLain() {
               <Link
                 key={prodi.id}
                 href={`/student/matkul-prodi-lain/${prodi.id}`}
-                className="group bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-xl dark:hover:border-blue-900/50 hover:-translate-y-1 transition-all duration-300 flex flex-col"
+                className="group hp-card overflow-hidden flex flex-col"
               >
-                {/* Logo/Image area */}
-                <div className="relative w-full h-[140px] bg-gradient-to-br from-[#0055FF] to-[#068DFF] dark:from-[#0044CC] dark:to-[#056CC0] overflow-hidden flex-shrink-0 flex items-center justify-center">
+                <div className="relative w-full h-[140px] bg-[#068DFF] overflow-hidden flex-shrink-0 flex items-center justify-center">
                   {prodi.logoUrl ? (
                     <img
                       src={prodi.logoUrl}
                       alt={prodi.name}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="w-full h-full object-cover"
                     />
                   ) : (
-                    <>
-                      <div className="absolute top-0 right-0 w-28 h-28 rounded-full bg-white/10 -translate-y-10 translate-x-10" />
-                      <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full bg-white/5 -translate-x-6 translate-y-6" />
-                      {/* Prodi initial */}
-                      <div className="relative z-10 w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-lg">
-                        <span className="text-white font-black text-2xl">
-                          {prodi.name.charAt(0)}
-                        </span>
-                      </div>
-                    </>
+                    <span className="text-white font-semibold text-2xl">
+                      {prodi.name.charAt(0)}
+                    </span>
                   )}
                 </div>
 
@@ -156,8 +133,11 @@ export default function StudentMatkulProdiLain() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 text-slate-400 dark:text-slate-500 font-medium bg-white dark:bg-slate-900 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 transition-colors">
-            Tidak ada Prodi tersedia saat ini.
+          <div className="hp-empty">
+            <div className="w-14 h-14 bg-blue-50 dark:bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-3">
+              <BookOpen size={24} className="text-[#068DFF]" />
+            </div>
+            <p className="text-slate-400 dark:text-slate-500 text-sm">Tidak ada Prodi tersedia saat ini.</p>
           </div>
         )}
       </section>

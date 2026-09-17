@@ -10,6 +10,7 @@ export default function ManajemenFakultas() {
   const [dataFakultas, setDataFakultas] = useState<any[]>([]);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [searchFakultas, setSearchFakultas] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -80,7 +81,13 @@ export default function ManajemenFakultas() {
         </div>
 
         <div className="bg-white p-6 rounded-t-xl border-b flex justify-between items-center">
-          <input type="text" placeholder="Cari Fakultas" className="border border-gray-200 p-2 rounded-lg w-72 text-sm" />
+          <input
+            type="text"
+            placeholder="Cari Fakultas"
+            value={searchFakultas}
+            onChange={(e) => setSearchFakultas(e.target.value)}
+            className="border border-gray-200 p-2 rounded-lg w-72 text-sm"
+          />
 
           <Link href="/superadmin/manajemen/fakultas/tambah">
             <button className="bg-black text-white px-6 py-2 rounded-lg text-sm font-semibold hover:bg-gray-800 transition">
@@ -103,8 +110,8 @@ export default function ManajemenFakultas() {
             <tbody className="text-sm">
               {loading ? (
                 <tr><td colSpan={5} className="p-10 text-center text-gray-400 italic">Memuat data...</td></tr>
-              ) : dataFakultas.length > 0 ? (
-                dataFakultas.map((row, index) => (
+              ) : dataFakultas.filter((row) => row.name?.toLowerCase().includes(searchFakultas.toLowerCase())).length > 0 ? (
+                dataFakultas.filter((row) => row.name?.toLowerCase().includes(searchFakultas.toLowerCase())).map((row, index) => (
                   <tr key={row.id} className="hover:bg-gray-50 transition-colors">
                     <td className="p-4 border-b">{index + 1}</td>
                     <td className="p-4 border-b font-medium">{row.name}</td>

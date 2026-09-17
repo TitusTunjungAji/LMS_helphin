@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Search, BookOpen, Clock, Users, Pin } from "lucide-react";
 import FooterDashboard from "@/components/dashboard/footer_dashboard";
+import CampusHero from "@/components/CampusHero";
 import { API_URL } from "@/lib/api";
 
 interface MataKuliah {
@@ -120,30 +121,13 @@ export default function StudentMataKuliahPage() {
   const firstName = userName.split(" ")[0];
 
   return (
-    <div className="flex flex-col gap-6 p-4 mt-2">
+    <div className="flex flex-col gap-6 p-5 md:p-7">
       {/* Welcome Banner */}
-      <div className="relative w-full h-[160px] md:h-[180px] rounded-2xl overflow-hidden bg-gradient-to-r from-[#0055FF] to-[#07A3F9] shadow-sm flex items-center">
-        <div className="relative z-10 pl-6 md:pl-8 text-white max-w-md">
-          <h1 className="text-2xl md:text-[28px] font-extrabold mb-1 drop-shadow-sm">Hallo, {firstName} 👋</h1>
-          <p className="text-sm md:text-xl font-bold opacity-90 drop-shadow-sm">Mata Kuliah Program Studi</p>
-          <p className="text-[11px] md:text-xs font-medium opacity-75 mt-1 tracking-wide">by helPhin</p>
-        </div>
-        <div 
-          className="absolute right-0 top-0 h-full w-[45%] z-0 overflow-hidden"
-          style={{
-            maskImage: 'linear-gradient(to right, transparent, black 15%, black 100%)',
-            WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 100%)'
-          }}
-        >
-          <Image
-            src="/Assets/gedung_kampus_image.png"
-            alt="Gedung"
-            fill
-            className="object-cover object-left"
-            priority
-          />
-        </div>
-      </div>
+      <CampusHero
+        title={`Hallo, ${firstName}`}
+        subtitle="Mata Kuliah Program Studi"
+        pills={[`${loading ? "—" : mataKuliahList.length} Mata Kuliah`]}
+      />
 
       {/* Search Bar Section */}
       <div className="relative group">
@@ -169,7 +153,10 @@ export default function StudentMataKuliahPage() {
 
       {/* Mata Kuliah Section */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-800 dark:text-slate-100 mb-4">Daftar Mata Kuliah</h2>
+        <div className="hp-section-title mb-4">
+          <div className="hp-section-bar"></div>
+          <h2>Daftar Mata Kuliah</h2>
+        </div>
 
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -183,30 +170,25 @@ export default function StudentMataKuliahPage() {
               <div
                 key={mk.id}
                 onClick={() => router.push(`/student/mata-kuliah/${mk.id}`)}
-                className="group bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-xl dark:hover:border-blue-900/50 hover:-translate-y-1 transition-all duration-300 text-left flex flex-col cursor-pointer"
+                className="group hp-card overflow-hidden text-left flex flex-col cursor-pointer"
               >
-                {/* Cover Image */}
-                <div className="relative w-full h-[150px] bg-[#0044CC] dark:bg-blue-950 overflow-hidden flex-shrink-0 transition-colors duration-300">
+                <div className="relative w-full h-[150px] bg-[#068DFF] overflow-hidden flex-shrink-0">
                   <Image
                     src="/Assets/bg_matkul.png"
-                    alt="Pattern"
+                    alt=""
                     fill
-                    className="object-cover opacity-70"
+                    className="object-cover opacity-35"
                   />
                   {mk.coverUrl ? (
                     <img
                       src={mk.coverUrl}
                       alt={mk.name}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="w-full h-full object-cover"
                     />
                   ) : (
-                    <>
-                      <div className="absolute top-0 right-0 w-28 h-28 rounded-full bg-white/10 dark:bg-white/5 -translate-y-10 translate-x-10" />
-                      <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full bg-white/5 dark:bg-white/5 -translate-x-6 translate-y-6" />
-                      <div className="absolute inset-0 flex items-center justify-center opacity-20">
-                        <BookOpen size={72} className="text-white" />
-                      </div>
-                    </>
+                    <div className="absolute inset-0 flex items-center justify-center opacity-25">
+                      <BookOpen size={56} className="text-white" />
+                    </div>
                   )}
                   {/* Pin Button */}
                   <button
@@ -232,7 +214,7 @@ export default function StudentMataKuliahPage() {
 
                 {/* Content */}
                 <div className="p-4 flex flex-col flex-1">
-                  <h3 className="font-extrabold text-sm text-gray-900 dark:text-slate-100 leading-tight line-clamp-2 mb-3 group-hover:text-[#0055FF] dark:group-hover:text-blue-400 transition-colors">
+                  <h3 className="font-semibold text-sm text-gray-900 dark:text-slate-100 leading-tight line-clamp-2 mb-3 group-hover:text-[#068DFF] transition-colors">
                     {mk.name}
                   </h3>
 
@@ -252,11 +234,11 @@ export default function StudentMataKuliahPage() {
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-20 text-center bg-white/50 rounded-3xl border-2 border-dashed border-gray-100">
-            <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-4">
-              <BookOpen size={30} className="text-blue-400" />
+          <div className="hp-empty">
+            <div className="w-14 h-14 bg-blue-50 dark:bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-3">
+              <Search size={24} className="text-[#068DFF]" />
             </div>
-            <h3 className="text-gray-700 font-bold text-lg mb-1">Mata kuliah tidak ditemukan</h3>
+            <h3 className="text-gray-700 dark:text-slate-200 font-semibold text-base mb-1">Mata kuliah tidak ditemukan</h3>
             <p className="text-gray-400 text-sm">Tidak ada hasil untuk pencarian "{searchMatkul}"</p>
           </div>
         )}

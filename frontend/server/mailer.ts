@@ -1,9 +1,18 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResend() {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) return null;
+  return new Resend(key);
+}
 
 export const sendOTP = async (email: string, otp: string, name: string) => {
     try {
+        const resend = getResend();
+        if (!resend) {
+            console.error("[MAILER] RESEND_API_KEY is not set");
+            return false;
+        }
         const { data, error } = await resend.emails.send({
             from: `${process.env.SMTP_FROM_NAME || "HelPhin LMS"} <${process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev"}>`,
             to: [email],
@@ -61,6 +70,11 @@ export const sendSupportEmail = async (
     };
 
     try {
+        const resend = getResend();
+        if (!resend) {
+            console.error("[MAILER] RESEND_API_KEY is not set");
+            return false;
+        }
         const { data, error } = await resend.emails.send({
             from: `${process.env.SMTP_FROM_NAME || "HelPhin LMS"} <${process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev"}>`,
             to: [companyEmail],

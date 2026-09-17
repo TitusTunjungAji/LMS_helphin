@@ -141,7 +141,7 @@ export default function ManajemenBankSoal() {
                         />
                     </div>
                     {canManage && (
-                        <Link href="/bank-soal/tambah">
+                        <Link href="/superadmin/bank-soal/tambah">
                             <button className="bg-black text-white px-6 py-2 rounded-lg text-sm font-semibold hover:bg-gray-800 transition active:scale-95 shadow-lg shadow-gray-200">
                                 Tambah Bank Soal +
                             </button>
@@ -202,7 +202,7 @@ export default function ManajemenBankSoal() {
                                                     {canManage && (
                                                         <>
                                                             <button
-                                                                onClick={() => router.push(`/bank-soal/edit/${m.id}`)}
+                                                                onClick={() => router.push(`/superadmin/bank-soal/edit/${m.id}`)}
                                                                 className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
                                                                 title="Edit"
                                                             >

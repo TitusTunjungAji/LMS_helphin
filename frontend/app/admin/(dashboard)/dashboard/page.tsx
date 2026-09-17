@@ -10,6 +10,8 @@ import {
   Tooltip 
 } from "recharts";
 import { API_URL } from "@/lib/api";
+import CampusHero from "@/components/CampusHero";
+import BrandRings from "@/components/BrandRings";
 
 // Mock Data for Trendlines
 const trendData = [
@@ -139,57 +141,26 @@ export default function AdminDashboard() {
   const pVideo = Math.round(((content?.withVideo || 0) / tc) * 100) || 0;
   const pExercise = Math.round(((content?.withExercise || 0) / tc) * 100) || 0;
 
-  const getInitials = (name?: string) => {
-    if (!name) return "PR";
-    const clean = name.replace("S1 ", "").replace("D3 ", "").replace("S2 ", "");
-    const words = clean.split(" ");
-    if (words.length === 1) return words[0].substring(0, 2).toUpperCase();
-    return (words[0][0] + words[1][0]).toUpperCase();
-  };
-  const prodiInitials = getInitials(user?.prodi);
-
-
   return (
-    <div className="p-8 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="p-5 md:p-7 space-y-8">
       {/* Welcome Banner Sync */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#0055FF] via-[#068DFF] to-[#07A3F9] text-white shadow-lg dark:shadow-none min-h-[180px] flex">
-        <div className="flex flex-col justify-center pl-8 py-6 z-10 flex-1 font-sans">
-          <h1 className="font-bold text-3xl mb-1">Hallo, {user?.name} 👋</h1>
-          {user?.prodi && (
-            <p className="text-lg font-medium opacity-95">{user?.prodi}</p>
-          )}
-          <p className="text-sm opacity-75 mt-1">by helPhin</p>
-        </div>
-        <div className="absolute right-0 bottom-0 h-full w-[50%] z-0">
-          <Image
-            src="/Assets/gedung_kampus_image.png"
-            alt="Campus"
-            fill
-            className="object-contain object-right-bottom mix-blend-overlay opacity-30"
-          />
-        </div>
-        <div 
-          className="absolute right-0 top-0 h-full w-[45%] z-5 overflow-hidden"
-          style={{
-            maskImage: 'linear-gradient(to right, transparent, black 15%, black 100%)',
-            WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 100%)'
-          }}
-        >
-             <Image
-                src="/Assets/gedung_kampus_image.png"
-                alt="Gedung"
-                fill
-                className="object-cover object-left"
-                priority
-            />
-        </div>
-      </div>
+      <CampusHero
+        title={`Hallo, ${user?.name || "Admin"}`}
+        subtitle={user?.prodi || "Admin Prodi"}
+        pills={[
+          `${dashboardData?.totalStudents ?? 0} Mahasiswa`,
+          `${dashboardData?.totalCourses ?? 0} Course`,
+        ]}
+      />
 
       <div className="space-y-8">
 
       <div>
         <div className="flex items-center justify-between mb-6 px-1">
-          <h2 className="text-xl font-bold text-gray-800 dark:text-slate-100">Aktivitas Anda</h2>
+          <div className="hp-section-title">
+            <div className="hp-section-bar"></div>
+            <h2>Aktivitas Anda</h2>
+          </div>
           <button 
             onClick={fetchStats}
             className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold text-gray-500 dark:text-slate-400 dark:text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
@@ -204,13 +175,13 @@ export default function AdminDashboard() {
         
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Performance Card */}
-          <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-8 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-sm dark:shadow-none flex items-center justify-between group hover:shadow-md dark:shadow-none transition-all">
+          <div className="lg:col-span-2 hp-card p-8 flex items-center justify-between">
             <div className="space-y-4">
               <div className="space-y-1">
-                <p className="text-gray-500 dark:text-slate-400 font-semibold text-sm">Review Kelengkapan Konten</p>
-                <p className="text-xs text-gray-400 max-w-[200px]">Persentase mata kuliah yang aktif menyediakan materi, video, & kuis.</p>
+                <p className="text-gray-500 dark:text-slate-400 font-medium text-sm">Review Kelengkapan Konten</p>
+                <p className="text-xs text-gray-400 max-w-[220px]">Persentase mata kuliah yang aktif menyediakan materi, video, & kuis.</p>
               </div>
-              <h3 className="text-6xl font-black text-gray-900 dark:text-slate-100 tracking-tight">{overallPercentage}%</h3>
+              <h3 className="text-6xl font-bold text-gray-900 dark:text-slate-100 tracking-tight">{overallPercentage}%</h3>
               <div className="space-y-2 mt-2">
                   <div className="flex items-center gap-3" title="Mata Kuliah dengan Materi">
                     <span className="text-[10px] text-gray-400 dark:text-slate-500 w-6 font-bold">{pMaterial}%</span>
@@ -235,31 +206,21 @@ export default function AdminDashboard() {
                   </div>
               </div>
             </div>
-            <div className="relative w-48 h-48 group-hover:rotate-6 transition-transform duration-500 flex-shrink-0">
-               {/* 3D-like graphic */}
-               <div className="absolute inset-0 bg-gradient-to-tr from-blue-50 dark:from-blue-900/20 to-transparent rounded-full border-2 border-blue-100/50 dark:border-slate-800 flex items-center justify-center">
-                  <div className="w-32 h-32 bg-white dark:bg-slate-800 rounded-2xl shadow-xl shadow-blue-100 dark:shadow-none flex items-center justify-center transform -rotate-12 group-hover:rotate-0 transition-all duration-700">
-                     <p className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-br from-blue-600 to-purple-600">
-                        {prodiInitials}
-                     </p>
-                  </div>
-               </div>
-            </div>
           </div>
 
           {/* Stats Mini Cards */}
           <div className="lg:col-span-2 grid grid-cols-2 gap-4">
             {dynamicStats.map((stat, i) => (
-              <div key={i} className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-50 dark:border-slate-800/50 shadow-sm dark:shadow-none hover:shadow-md dark:shadow-none transition-all flex flex-col justify-between group/card relative overflow-hidden">
+              <div key={i} className="hp-card p-5 flex flex-col justify-between relative overflow-hidden">
                 {loading && (
                    <div className="absolute inset-0 bg-white dark:bg-slate-900/50 backdrop-blur-[2px] z-10 flex items-center justify-center">
                       <div className="w-6 h-6 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
                    </div>
                 )}
                 <div>
-                   <p className="text-[11px] font-bold text-gray-400 dark:text-slate-500 dark:text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2">{stat.label}</p>
+                   <p className="text-[12px] font-medium text-gray-400 dark:text-slate-500 mb-2">{stat.label}</p>
                    <div className="flex items-end justify-between">
-                      <h4 className="text-3xl font-black text-gray-800 dark:text-slate-100 tracking-tight">{stat.value}</h4>
+                      <h4 className="text-3xl font-bold text-gray-800 dark:text-slate-100 tracking-tight">{stat.value}</h4>
                       <div className="h-10 w-20 opacity-60 group-hover/card:opacity-100 transition-opacity">
                         <ResponsiveContainer width="100%" height="100%">
                           <LineChart data={trendData}>
@@ -285,12 +246,12 @@ export default function AdminDashboard() {
         <div>
           <div className="flex items-center justify-between mb-4 px-1">
             <h2 className="text-lg font-bold text-gray-800 dark:text-slate-100">Course Terfavorit</h2>
-            <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-md uppercase">Top 5</span>
+            <span className="text-[11px] font-medium text-[#068DFF] bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded-md">Top 5</span>
           </div>
           <div className="space-y-3">
              {popularCourses.length > 0 ? (
                popularCourses.map((fav, index) => (
-                 <div key={fav.id} className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-gray-50 dark:border-slate-800/50 shadow-sm dark:shadow-none flex items-center justify-between hover:translate-x-1 transition-transform group">
+                 <div key={fav.id} className="hp-card p-4 flex items-center justify-between hover:translate-x-1 transition-transform group">
                    <div className="flex items-center gap-4">
                      <div className="w-10 h-10 bg-orange-50 text-orange-500 rounded-xl flex items-center justify-center font-black text-lg">
                        {index + 1}
@@ -320,12 +281,12 @@ export default function AdminDashboard() {
         <div>
           <div className="flex items-center justify-between mb-4 px-1">
             <h2 className="text-lg font-bold text-gray-800 dark:text-slate-100">Student Active</h2>
-            <span className="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-1 rounded-md uppercase">Top 10</span>
+            <span className="text-[11px] font-medium text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded-md">Top 10</span>
           </div>
           <div className="space-y-3">
              {activeStudentsList.length > 0 ? (
                activeStudentsList.map((student, index) => (
-                 <div key={student.userId} className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-gray-50 dark:border-slate-800/50 shadow-sm dark:shadow-none flex items-center justify-between hover:translate-x-1 transition-transform group">
+                 <div key={student.userId} className="hp-card p-4 flex items-center justify-between hover:translate-x-1 transition-transform group">
                    <div className="flex items-center gap-4">
                      <div className="w-10 h-10 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center font-black text-lg">
                        {index + 1}
@@ -335,7 +296,7 @@ export default function AdminDashboard() {
                         <span className="text-[10px] text-gray-400 dark:text-slate-500 dark:text-slate-400 dark:text-slate-500 font-medium">{student.activityCount} aktivitas terbaru</span>
                      </div>
                    </div>
-                   <button className="text-[11px] font-bold text-gray-400 dark:text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:text-blue-600 transition-colors">Lihat Profile</button>
+                        <span className="text-[10px] text-slate-400">{student.userEmail}</span>
                  </div>
                ))
              ) : (
@@ -349,52 +310,48 @@ export default function AdminDashboard() {
       </div>
 
       {/* Support Banner */}
-      <div className="relative bg-[#E3F2FF] dark:bg-blue-900/20 rounded-[40px] p-10 flex items-center justify-between overflow-hidden group mx-8">
-        <div className="relative z-10 space-y-4 max-w-lg">
-          <h3 className="text-2xl font-black text-gray-800 dark:text-slate-100 leading-tight">
-            Ada kendala? Yuk, Tanya Kami!
-          </h3>
-          <p className="text-gray-500 dark:text-slate-400 dark:text-slate-500 font-medium">
-            Tim support helPhin siap membantumu kapanpun kamu butuh bantuan.
-          </p>
-          <Link 
+      <div className="relative rounded-[28px] overflow-hidden bg-[#068DFF]">
+        <BrandRings className="absolute -right-20 -top-28 w-80 h-80 pointer-events-none" />
+        <div className="relative z-10 flex items-center gap-5 px-8 md:px-10 py-8">
+          <div className="space-y-2 flex-1 min-w-0">
+            <h3 className="text-xl md:text-2xl font-semibold text-white leading-tight">
+              Ada kendala? Tanya kami
+            </h3>
+            <p className="text-white/80 text-sm">
+              Tim support helPhin siap membantu kapan pun kamu butuh.
+            </p>
+          </div>
+          <Link
             href="/admin/pusat-layanan"
-            className="inline-block px-8 py-3.5 bg-white dark:bg-slate-900 text-blue-600 font-black rounded-2xl shadow-xl shadow-blue-200/50 hover:bg-blue-600 hover:text-white transition-all transform active:scale-95 text-center"
+            className="px-6 py-2.5 bg-white text-[#0570CC] font-semibold rounded-full hover:bg-sky-50 transition-all active:scale-[0.97] whitespace-nowrap shrink-0"
           >
             Hubungi Kami
           </Link>
+          <div className="relative hidden md:block w-[88px] h-[88px] shrink-0">
+            <Image
+              src="/Assets/helphin_1.png"
+              alt=""
+              fill
+              className="object-contain mix-blend-screen"
+            />
+          </div>
         </div>
-        
-        <div className="relative w-64 h-64 -mr-10 group-hover:scale-110 transition-transform duration-500">
-           <div className="absolute inset-0 bg-blue-100/50 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
-           <Image
-             src="/Assets/helphin_CS.png"
-             alt="Mascot Mascot"
-             fill
-             className="object-contain"
-             priority={false}
-             onError={(e) => {
-               // Fallback if the asset is missing
-               const target = e.target as HTMLImageElement;
-               target.src = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
-             }}
-           />
-        </div>
-
       </div>
 
-      {/* Footer Bar */}
-      <footer className="bg-[#068DFF] rounded-2xl px-8 py-6 flex items-center justify-between text-white">
-        <div className="flex items-center gap-2">
-           <span className="text-2xl font-black tracking-tighter">hel?hin</span>
-        </div>
-        <div className="flex gap-8 text-sm font-bold opacity-90">
-           <button className="hover:opacity-100">About</button>
-           <button className="hover:opacity-100">Policy</button>
-           <button className="hover:opacity-100">Terms</button>
+      <footer className="flex items-center justify-between pt-2 pb-1">
+        <Image
+          src="/Assets/Logo-helphin-biru.png"
+          alt="helPhin"
+          width={70}
+          height={24}
+          className="object-contain opacity-50 dark:brightness-0 dark:invert"
+        />
+        <div className="flex items-center gap-5">
+          <button className="text-[11px] text-gray-400 hover:text-gray-600 dark:hover:text-slate-300 font-medium">About</button>
+          <button className="text-[11px] text-gray-400 hover:text-gray-600 dark:hover:text-slate-300 font-medium">Policy</button>
+          <button className="text-[11px] text-gray-400 hover:text-gray-600 dark:hover:text-slate-300 font-medium">Terms</button>
         </div>
       </footer>
-      <div className="h-8" />
     </div>
   );
 }

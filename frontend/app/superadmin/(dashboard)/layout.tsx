@@ -72,11 +72,11 @@ const superAdminMenuItems: MenuItem[] = [
 export default function SuperAdminLayout({ children }: { children: ReactNode }) {
   return (
     <SessionManager>
-      <div className="flex h-screen bg-[#F8FAFC]">
+      <div data-app-shell className="flex h-screen hp-app-shell">
         <Sidebar menuItems={superAdminMenuItems} />
         <div className="flex-1 flex flex-col overflow-hidden">
           <Navbar />
-          <main className="flex-1 overflow-y-auto bg-[#F8FAFC]">
+          <main className="flex-1 overflow-y-auto">
             {children}
           </main>
         </div>
