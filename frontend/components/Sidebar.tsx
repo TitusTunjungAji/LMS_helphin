@@ -191,7 +191,7 @@ export default function Sidebar({ menuItems, logoSrc = "/Assets/Logo-helphin-bir
         {!collapsed ? (
           <div className="relative z-10 px-5 py-4 border-t border-gray-100 dark:border-white/10">
             <p className="text-[10px] text-slate-400 dark:text-slate-500 leading-relaxed">
-              helPhin × HIMA Informatika
+              helPhin Telkom University
             </p>
           </div>
         ) : null}
