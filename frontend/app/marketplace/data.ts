@@ -15,96 +15,23 @@ export type Mentor = {
 };
 
 export const MENTORS: Mentor[] = [
-  {
-    id: "salsa",
-    name: "Salsa Nabila",
-    prodi: "Informatika",
-    fakultas: "Fakultas Informatika",
-    angkatan: 2022,
-    course: "Algoritma",
-    price: 20000,
-    sessions: 31,
-    rating: 5,
-    badge: "Perintis",
-    focus: "Alur algoritma dan rekursi",
-    methods: ["Daring", "Tatap muka"],
-    wash: "#E0F7FA",
-  },
-  {
-    id: "aulia",
-    name: "Aulia Rahman",
-    prodi: "Informatika",
-    fakultas: "Fakultas Informatika",
-    angkatan: 2023,
-    course: "Basis Data",
-    price: 18000,
-    sessions: 24,
-    rating: 4.9,
-    badge: "Tepercaya",
-    focus: "Pemodelan data dan kueri",
-    methods: ["Daring"],
-    wash: "#E1F5FE",
-  },
-  {
-    id: "dimas",
-    name: "Dimas Pratama",
-    prodi: "Informatika",
-    fakultas: "Fakultas Informatika",
-    angkatan: 2022,
-    course: "Kalkulus",
-    price: 15000,
-    sessions: 11,
-    rating: 4.8,
-    badge: "Pendamping",
-    focus: "Limit dan integral",
-    methods: ["Tatap muka"],
-    wash: "#FFF3E0",
-  },
-  {
-    id: "farhan",
-    name: "Farhan Yusuf",
-    prodi: "Teknik Komputer",
-    fakultas: "Fakultas Teknik Elektro",
-    angkatan: 2023,
-    course: "Jaringan",
-    price: 12000,
-    sessions: 9,
-    rating: 4.7,
-    badge: "Pendamping",
-    focus: "Subnetting dan model jaringan",
-    methods: ["Daring", "Tatap muka"],
-    wash: "#FCE4EC",
-  },
-  {
-    id: "keisha",
-    name: "Keisha Amalia",
-    prodi: "Sistem Informasi",
-    fakultas: "Fakultas Rekayasa Industri",
-    angkatan: 2024,
-    course: "Statistika",
-    price: 20000,
-    sessions: 18,
-    rating: 4.9,
-    badge: "Tepercaya",
-    focus: "Distribusi dan uji hipotesis",
-    methods: ["Daring"],
-    wash: "#F3E5F5",
-  },
-  {
-    id: "bima",
-    name: "Bima Aditya",
-    prodi: "Informatika",
-    fakultas: "Fakultas Informatika",
-    angkatan: 2025,
-    course: "Pemrograman Web",
-    price: 10000,
-    sessions: 7,
-    rating: 4.6,
-    badge: "Pendamping",
-    focus: "Struktur dan tata letak halaman",
-    methods: ["Tatap muka"],
-    wash: "#E0F2F1",
-  },
+  { id: "arka", name: "Arka Pratama", prodi: "Informatika", fakultas: "Fakultas Informatika", angkatan: 2022, course: "Algoritma", price: 25000, sessions: 31, rating: 5, badge: "Perintis", focus: "Alur algoritma dan rekursi", methods: ["Daring", "Tatap muka"], wash: "#E0F7FA" },
+  { id: "bima", name: "Bima Aditya", prodi: "Informatika", fakultas: "Fakultas Informatika", angkatan: 2023, course: "Basis Data", price: 40000, sessions: 24, rating: 4.9, badge: "Tepercaya", focus: "Pemodelan data dan kueri", methods: ["Daring"], wash: "#E1F5FE" },
+  { id: "dimas", name: "Dimas Saputra", prodi: "Informatika", fakultas: "Fakultas Informatika", angkatan: 2022, course: "Kalkulus", price: 15000, sessions: 11, rating: 4.8, badge: "Pendamping", focus: "Limit dan integral", methods: ["Tatap muka"], wash: "#FFF3E0" },
+  { id: "farhan", name: "Farhan Yusuf", prodi: "Teknik Komputer", fakultas: "Fakultas Teknik Elektro", angkatan: 2023, course: "Jaringan", price: 55000, sessions: 18, rating: 4.7, badge: "Tepercaya", focus: "Subnetting dan model jaringan", methods: ["Daring", "Tatap muka"], wash: "#FCE4EC" },
+  { id: "galih", name: "Galih Ramadhan", prodi: "Teknik Telekomunikasi", fakultas: "Fakultas Teknik Elektro", angkatan: 2024, course: "Sinyal", price: 30000, sessions: 9, rating: 4.6, badge: "Pendamping", focus: "Spektrum dan modulasi dasar", methods: ["Daring"], wash: "#F3E5F5" },
+  { id: "hadi", name: "Hadi Wijaya", prodi: "Teknik Elektro", fakultas: "Fakultas Teknik Elektro", angkatan: 2022, course: "Rangkaian", price: 70000, sessions: 27, rating: 4.9, badge: "Perintis", focus: "Hukum Kirchhoff dan analisis simpul", methods: ["Tatap muka"], wash: "#E8F5E9" },
+  { id: "iqbal", name: "Iqbal Maulana", prodi: "Sistem Informasi", fakultas: "Fakultas Rekayasa Industri", angkatan: 2023, course: "Statistika", price: 45000, sessions: 16, rating: 4.8, badge: "Tepercaya", focus: "Distribusi dan uji hipotesis", methods: ["Daring", "Tatap muka"], wash: "#FFF8E1" },
+  { id: "jaka", name: "Jaka Nugraha", prodi: "Teknik Industri", fakultas: "Fakultas Rekayasa Industri", angkatan: 2024, course: "Riset Operasi", price: 60000, sessions: 14, rating: 4.7, badge: "Pendamping", focus: "Pemodelan linear dan antrian", methods: ["Daring"], wash: "#E0F2F1" },
+  { id: "kenan", name: "Kenan Putra", prodi: "Ilmu Komunikasi", fakultas: "Fakultas Komunikasi dan Bisnis", angkatan: 2025, course: "Metodologi", price: 20000, sessions: 8, rating: 4.6, badge: "Pendamping", focus: "Rancangan penelitian dan wawancara", methods: ["Tatap muka"], wash: "#FBE9E7" },
+  { id: "luthfi", name: "Luthfi Hakim", prodi: "Administrasi Bisnis", fakultas: "Fakultas Komunikasi dan Bisnis", angkatan: 2022, course: "Manajemen", price: 85000, sessions: 22, rating: 4.9, badge: "Perintis", focus: "Perencanaan dan organisasi tim", methods: ["Daring", "Tatap muka"], wash: "#EDE7F6" },
+  { id: "nabil", name: "Nabil Akbar", prodi: "Teknologi Informasi", fakultas: "Fakultas Informatika", angkatan: 2024, course: "Pemrograman Web", price: 35000, sessions: 13, rating: 4.8, badge: "Tepercaya", focus: "Struktur dan tata letak halaman", methods: ["Daring"], wash: "#E3F2FD" },
+  { id: "omar", name: "Omar Fadillah", prodi: "Sains Data", fakultas: "Fakultas Informatika", angkatan: 2023, course: "Pembelajaran Mesin", price: 100000, sessions: 19, rating: 5, badge: "Perintis", focus: "Regresi dan evaluasi model", methods: ["Daring", "Tatap muka"], wash: "#E0F7FA" },
+  { id: "pandu", name: "Pandu Setiawan", prodi: "Rekayasa Perangkat Lunak", fakultas: "Fakultas Informatika", angkatan: 2025, course: "Struktur Data", price: 18000, sessions: 7, rating: 4.5, badge: "Pendamping", focus: "Senarai, pohon, dan graf", methods: ["Tatap muka"], wash: "#F1F8E9" },
+  { id: "raka", name: "Raka Firmansyah", prodi: "Desain Komunikasi Visual", fakultas: "Fakultas Industri Kreatif", angkatan: 2024, course: "Tipografi", price: 50000, sessions: 12, rating: 4.7, badge: "Tepercaya", focus: "Hirarki visual dan jarak huruf", methods: ["Daring"], wash: "#FCE4EC" },
+  { id: "satria", name: "Satria Mahendra", prodi: "Desain Produk", fakultas: "Fakultas Industri Kreatif", angkatan: 2022, course: "Gambar Teknik", price: 75000, sessions: 21, rating: 4.8, badge: "Perintis", focus: "Proyeksi dan toleransi ukuran", methods: ["Tatap muka"], wash: "#FFF3E0" },
+  { id: "taufik", name: "Taufik Hidayat", prodi: "Teknik Komputer (D3)", fakultas: "Fakultas Ilmu Terapan", angkatan: 2023, course: "Mikrokontroler", price: 28000, sessions: 10, rating: 4.6, badge: "Pendamping", focus: "Pin, sensor, dan alur program", methods: ["Daring", "Tatap muka"], wash: "#E8EAF6" },
+  { id: "yusuf", name: "Yusuf Kurniawan", prodi: "Sistem Informasi (D3)", fakultas: "Fakultas Ilmu Terapan", angkatan: 2026, course: "Basis Data", price: 90000, sessions: 6, rating: 4.9, badge: "Tepercaya", focus: "Relasi dan normalisasi tabel", methods: ["Daring"], wash: "#E0F2F1" },
 ];
 
 export const FACULTIES: { name: string; prodi: string[] }[] = [
@@ -118,10 +45,10 @@ export const FACULTIES: { name: string; prodi: string[] }[] = [
 
 export const COHORTS = [2022, 2023, 2024, 2025, 2026];
 
-export const LEVEL1_MAX = 20000;
+export const LEVEL1_MAX = 100000;
 
 export const TARIF_HINT =
-  "Mentor level 1 dapat menetapkan tarif paling tinggi Rp20.000 per sesi, dalam kelipatan Rp1.000.";
+  "Mentor level 1 dapat menetapkan tarif paling tinggi Rp100.000 per sesi, dalam kelipatan Rp1.000.";
 
 export function parseTarif(raw: string): number | null {
   const digits = String(raw).replace(/\D/g, "");

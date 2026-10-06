@@ -55,7 +55,7 @@ export function ChatDock() {
                 return (
                   <li key={id}>
                     <button type="button" onClick={() => setActive(id)} className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-[#F7FCFF]">
-                      <Image src={`/marketplace/mentor-${id}.jpg`} alt="" width={44} height={44} className="h-11 w-11 rounded-full object-cover" />
+                      <Image src={`/marketplace/mentor-${id}.png`} alt="" width={44} height={44} className="h-11 w-11 rounded-full object-cover" />
                       <span className="min-w-0 flex-1">
                         <span className="flex items-baseline justify-between gap-2">
                           <span className="truncate font-[family-name:var(--font-fredoka)] text-[15px] font-bold">{person.name}</span>

@@ -30,7 +30,7 @@ export default function MentorProfilePage() {
       <main className="mx-auto grid max-w-5xl gap-5 px-4 py-8 lg:grid-cols-[0.82fr_1.18fr]">
         <article className="overflow-hidden rounded-[28px] border-[3px] border-white bg-white shadow-[8px_8px_0_rgba(0,0,0,0.12)]">
           <div className="relative h-[320px]" style={{ background: mentor.wash }}>
-            <Image src={`/marketplace/mentor-${mentor.id}.jpg`} alt={mentor.name} fill className="object-cover object-[center_16%]" />
+            <Image src={`/marketplace/mentor-${mentor.id}.png`} alt={mentor.name} fill className="object-cover object-[center_18%]" />
           </div>
           <div className="p-5">
             <span className="rounded-full bg-[#FFEB3B] px-3 py-1 text-[12px] font-bold">{mentor.badge}</span>

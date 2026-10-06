@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useState } from "react";
-import { COHORTS, FACULTIES, MENTORS, readSession, rupiah, type MarketplaceSession, type Mentor } from "./data";
+import { COHORTS, FACULTIES, LEVEL1_MAX, MENTORS, readSession, rupiah, type MarketplaceSession, type Mentor } from "./data";
 import { ChatDock } from "./Inbox";
 import { MentorHome } from "./MentorHome";
 import { MarketplaceLoading, MarketplaceShell, popClass } from "./Shell";
@@ -30,10 +30,10 @@ function Listing({ mentor, delay }: { mentor: Mentor; delay: number }) {
     >
       <div className="relative h-[230px]" style={{ background: mentor.wash }}>
         <Image
-          src={`/marketplace/mentor-${mentor.id}.jpg`}
+          src={`/marketplace/mentor-${mentor.id}.png`}
           alt={mentor.name}
           fill
-          className="object-cover object-[center_16%] transition duration-500 group-hover:scale-[1.03]"
+          className="object-cover object-[center_18%] transition duration-500 group-hover:scale-[1.03]"
           sizes="(min-width: 1024px) 320px, 100vw"
         />
         <span className="absolute left-3 top-3 rounded-full border-2 border-white bg-[#FFEB3B] px-3 py-1 font-[family-name:var(--font-fredoka)] text-[12px] font-semibold text-[#263238] shadow-[3px_3px_0_rgba(0,0,0,0.1)]">
@@ -43,7 +43,7 @@ function Listing({ mentor, delay }: { mentor: Mentor; delay: number }) {
       <div className="flex flex-1 flex-col p-4">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h2 className="font-[family-name:var(--font-fredoka)] text-[22px] font-bold leading-none text-[#263238]">{mentor.name}</h2>
+            <h2 className="line-clamp-2 min-h-[2.4em] font-[family-name:var(--font-fredoka)] text-[22px] font-bold leading-tight text-[#263238]">{mentor.name}</h2>
             <p className="mt-1 text-[12px] font-semibold text-[#607D8B]">S1 {mentor.prodi} · Angkatan {mentor.angkatan}</p>
           </div>
           <p className="text-right font-[family-name:var(--font-fredoka)] text-[18px] font-bold leading-none text-[#0288D1]">
@@ -57,7 +57,7 @@ function Listing({ mentor, delay }: { mentor: Mentor; delay: number }) {
             <span key={method} className="rounded-full bg-[#F5F7F8] px-2.5 py-1 text-[11px] font-semibold text-[#546E7A]">{method}</span>
           ))}
         </div>
-        <p className="mt-3 text-[13px] font-medium leading-relaxed text-[#546E7A]">{mentor.focus}</p>
+        <p className="mt-3 line-clamp-2 min-h-[2.6em] text-[13px] font-medium leading-relaxed text-[#546E7A]">{mentor.focus}</p>
         <div className="mt-auto flex items-center justify-between pt-4 text-[12px] font-semibold text-[#78909C]">
           <span className="flex items-center gap-1.5"><Stars value={mentor.rating} /> {mentor.rating.toFixed(1)}</span>
           <span>{mentor.sessions} sesi</span>
@@ -119,8 +119,8 @@ function Directory() {
   const [angkatan, setAngkatan] = useState("Semua");
   const [method, setMethod] = useState<(typeof METHODS)[number]>("Semua");
   const [sort, setSort] = useState<SortKey>("sesuai");
-  const [maxPrice, setMaxPrice] = useState(20000);
-  const [priceText, setPriceText] = useState("20000");
+  const [maxPrice, setMaxPrice] = useState(LEVEL1_MAX);
+  const [priceText, setPriceText] = useState(String(LEVEL1_MAX));
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -136,8 +136,8 @@ function Directory() {
   function commitPrice(raw: string) {
     const digits = Number(raw.replace(/\D/g, ""));
     const snapped = Number.isFinite(digits)
-      ? Math.min(20000, Math.max(1000, Math.round(digits / 1000) * 1000))
-      : 20000;
+      ? Math.min(LEVEL1_MAX, Math.max(1000, Math.round(digits / 1000) * 1000))
+      : LEVEL1_MAX;
     setMaxPrice(snapped);
     setPriceText(String(snapped));
   }
@@ -237,7 +237,7 @@ function Directory() {
                 <input
                   type="range"
                   min={1000}
-                  max={20000}
+                  max={LEVEL1_MAX}
                   step={1000}
                   value={maxPrice}
                   aria-label="Tarif maksimum per sesi"
@@ -261,7 +261,7 @@ function Directory() {
                     className="mt-1 h-10 w-full rounded-xl border-2 border-[#B3E5FC] px-3 font-[family-name:var(--font-fredoka)] text-[15px] text-[#263238] outline-none focus:border-[#0288D1]"
                   />
                 </label>
-                <p className="mt-1 text-[11px] font-medium text-[#90A4AE]">Kelipatan Rp1.000, dari Rp1.000 sampai Rp20.000.</p>
+                <p className="mt-1 text-[11px] font-medium text-[#90A4AE]">Kelipatan Rp1.000, dari Rp1.000 sampai {rupiah(LEVEL1_MAX)}.</p>
               </div>
               <p className="text-[13px] font-semibold text-[#0288D1]">{visible.length} mentor ditampilkan</p>
             </aside>
@@ -271,7 +271,7 @@ function Directory() {
                 Tidak ada mentor yang sesuai dengan saringan ini.
               </div>
             ) : (
-              <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="grid items-stretch gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {visible.map((mentor, index) => (
                   <Listing key={mentor.id} mentor={mentor} delay={index * 60} />
                 ))}

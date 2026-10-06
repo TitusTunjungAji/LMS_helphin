@@ -43,7 +43,7 @@ export function ChatPane({ mentor, className = "" }: { mentor: Mentor; className
   return (
     <section className={`flex h-[560px] flex-col overflow-hidden rounded-[28px] border-[3px] border-white bg-[#E8F7FC] shadow-[8px_8px_0_rgba(0,0,0,0.12)] ${className}`}>
       <header className="flex items-center gap-3 bg-[#0288D1] px-4 py-3 text-white">
-        <Image src={`/marketplace/mentor-${mentor.id}.jpg`} alt="" width={42} height={42} className="h-10 w-10 rounded-full border-2 border-white object-cover" />
+        <Image src={`/marketplace/mentor-${mentor.id}.png`} alt="" width={42} height={42} className="h-10 w-10 rounded-full border-2 border-white object-cover" />
         <div>
           <p className="font-[family-name:var(--font-fredoka)] text-[16px] font-bold leading-none">{mentor.name}</p>
           <p className="mt-1 text-[12px] text-white/80">{mentor.course} · S1 {mentor.prodi}</p>

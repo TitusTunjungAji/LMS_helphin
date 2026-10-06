@@ -9,7 +9,7 @@ import { db, client } from "../db";
 import { marketplaceAccounts, roles, users } from "../schema";
 import { signJwt, verifyJwt } from "../jwt";
 import { downloadFromFirebase, getFirebaseBucket } from "../firebase";
-import { COHORTS, DUMMY_SSO, FACULTIES } from "../../app/marketplace/data";
+import { COHORTS, DUMMY_SSO, FACULTIES, LEVEL1_MAX } from "../../app/marketplace/data";
 
 const marketplace = new Hono();
 const PRIVATE_DIR = path.join(process.cwd(), "data", "marketplace-private");
@@ -410,8 +410,8 @@ marketplace.post("/mentor", async (c) => {
   const angkatan = String(form.get("angkatan") || "");
   const photo = form.get("photo");
   const ktm = form.get("ktm");
-  if (!course || !focus || !Number.isInteger(price) || price < 1000 || price > 20000 || price % 1000 !== 0) {
-    return c.json({ success: false, message: "Mentor level 1 dapat menetapkan tarif paling tinggi Rp20.000, kelipatan Rp1.000." }, 400);
+  if (!course || !focus || !Number.isInteger(price) || price < 1000 || price > LEVEL1_MAX || price % 1000 !== 0) {
+    return c.json({ success: false, message: "Mentor level 1 dapat menetapkan tarif paling tinggi Rp100.000, kelipatan Rp1.000." }, 400);
   }
   const faculty = FACULTIES.find((item) => item.name === fakultas);
   if (!faculty || !faculty.prodi.includes(prodi) || !COHORTS.map(String).includes(angkatan)) {

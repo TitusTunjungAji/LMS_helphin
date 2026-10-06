@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { rupiah, LEVEL1_MAX } from "../data";
 import { MarketplaceShell } from "../Shell";
 
 export default function KetentuanPage() {
@@ -9,7 +10,7 @@ export default function KetentuanPage() {
           <h1 className="font-[family-name:var(--font-fredoka)] text-[32px] font-bold">Ketentuan penggunaan</h1>
           <div className="mt-4 space-y-3 text-[14px] font-medium leading-relaxed text-[#455A64]">
             <p>Marketplace Mentor disediakan oleh UKM helPhin bagi mahasiswa Telkom University.</p>
-            <p>Mentor menetapkan tarif sesinya sendiri. Tarif tidak boleh melebihi Rp20.000 dan harus berkelipatan Rp1.000.</p>
+            <p>Mentor menetapkan tarif sesinya sendiri. Tarif tidak boleh melebihi {rupiah(LEVEL1_MAX)} dan harus berkelipatan Rp1.000.</p>
             <p>Pendampingan membahas pemahaman mata kuliah. Pengerjaan tugas, kuis, atau ujian atas nama mahasiswa lain tidak diperkenankan.</p>
             <p>Pertemuan tatap muka hanya dilakukan di lingkungan kampus.</p>
           </div>

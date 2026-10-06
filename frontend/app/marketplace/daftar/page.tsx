@@ -69,7 +69,7 @@ export default function DaftarMentorPage() {
           <label className="mt-3 block text-[13px] font-semibold text-[#455A64]">
             Tarif per sesi
             <span className="mt-0.5 block font-medium leading-relaxed text-[#0277BD]">{TARIF_HINT}</span>
-            <input name="price" inputMode="numeric" required placeholder="20000" className="mt-1 h-11 w-full rounded-xl border-2 border-[#B3E5FC] px-3 outline-none focus:border-[#0288D1]" />
+            <input name="price" inputMode="numeric" required placeholder="100000" className="mt-1 h-11 w-full rounded-xl border-2 border-[#B3E5FC] px-3 outline-none focus:border-[#0288D1]" />
           </label>
           <label className="mt-3 block text-[13px] font-semibold text-[#455A64]">
             Bidang pendampingan
