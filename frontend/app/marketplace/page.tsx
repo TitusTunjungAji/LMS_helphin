@@ -7,7 +7,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import { COHORTS, FACULTIES, LEVEL1_MAX, MENTORS, readSession, rupiah, type MarketplaceSession, type Mentor } from "./data";
 import { ChatDock } from "./Inbox";
 import { MentorHome } from "./MentorHome";
-import { MarketplaceLoading, MarketplaceShell, popClass } from "./Shell";
+import { MarketplaceLoading, MarketplaceShell } from "./Shell";
 
 const METHODS = ["Semua", "Daring", "Tatap muka"] as const;
 
@@ -62,9 +62,9 @@ function Listing({ mentor, delay }: { mentor: Mentor; delay: number }) {
           <span className="flex items-center gap-1.5"><Stars value={mentor.rating} /> {mentor.rating.toFixed(1)}</span>
           <span>{mentor.sessions} sesi</span>
         </div>
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          <Link href={`/marketplace/mentor/${mentor.id}`} className={popClass("white", "px-3 py-2 text-[14px]")}>Lihat profil</Link>
-          <Link href={`/marketplace/mentor/${mentor.id}?beli=1`} className={popClass("yellow", "px-3 py-2 text-[14px]")}>Beli sesi</Link>
+        <div className="mt-4 flex gap-2">
+          <Link href={`/marketplace/mentor/${mentor.id}`} className="flex h-11 flex-1 items-center justify-center whitespace-nowrap rounded-full border-2 border-[#0288D1] bg-white px-3 font-[family-name:var(--font-fredoka)] text-[14px] font-semibold leading-none text-[#0288D1] transition hover:bg-[#E1F5FE]">Lihat profil</Link>
+          <Link href={`/marketplace/mentor/${mentor.id}?beli=1`} className="flex h-11 flex-1 items-center justify-center whitespace-nowrap rounded-full border-2 border-[#F9A825] bg-[#FFEB3B] px-3 font-[family-name:var(--font-fredoka)] text-[14px] font-semibold leading-none text-[#263238] transition hover:bg-[#FDD835]">Beli sesi</Link>
         </div>
       </div>
     </article>
@@ -162,7 +162,7 @@ function Directory() {
 
   return (
     <MarketplaceShell home="user" query={query} onQuery={setQuery}>
-      <main className="mx-auto max-w-6xl px-4 py-6 md:px-5 md:py-8">
+      <main className="mx-auto w-full max-w-[1440px] px-4 py-6 md:px-6 md:py-8">
         <form className="mb-4 md:hidden" onSubmit={(e) => e.preventDefault()}>
           <input
             value={query}

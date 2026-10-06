@@ -66,7 +66,7 @@ export function MarketplaceShell({
     <div className="min-h-screen font-[family-name:var(--font-outfit)] text-[#263238]">
       <Atmosphere />
       <header className="sticky top-0 z-30 border-b-[3px] border-white/80 bg-[#E1F5FE]/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3 md:px-5">
+        <div className="mx-auto flex w-full max-w-[1440px] items-center gap-4 px-4 py-3 md:px-6">
           <Link href="/marketplace" className="flex shrink-0 items-center gap-2 rounded-full border-[3px] border-white bg-white py-1 pl-2 pr-3 shadow-[4px_4px_0_rgba(0,0,0,0.12)]">
             <Image src="/helphin/telkom-university.png" alt="Telkom University" width={148} height={40} className="h-9 w-auto" />
             <span className="font-[family-name:var(--font-fredoka)] text-[18px] font-bold text-[#0288D1]" aria-hidden>×</span>
@@ -113,8 +113,8 @@ export function MarketplaceShell({
         </div>
       </header>
       <div className="relative z-20">{ready ? children : <MarketplaceLoading />}</div>
-      <footer className="relative z-[2] px-4 pb-10 pt-4 md:px-5">
-        <div className="mx-auto max-w-6xl overflow-hidden rounded-[32px] border-[3px] border-white bg-white shadow-[8px_8px_0_rgba(0,0,0,0.12)]">
+      <footer className="relative z-[2] px-4 pb-10 pt-4 md:px-6">
+        <div className="mx-auto w-full max-w-[1440px] overflow-hidden rounded-[32px] border-[3px] border-white bg-white shadow-[8px_8px_0_rgba(0,0,0,0.12)]">
           <div className="relative overflow-hidden bg-[#0288D1] px-6 pb-10 pt-5 text-white">
             <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div className="flex w-fit items-center gap-2 rounded-full border-[3px] border-white bg-white px-3 py-1 shadow-[4px_4px_0_rgba(0,0,0,0.12)]">

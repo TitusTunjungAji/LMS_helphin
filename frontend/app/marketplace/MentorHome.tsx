@@ -54,7 +54,7 @@ export function MentorHome({ session }: { session: MarketplaceSession }) {
 
   return (
     <MarketplaceShell home="mentor">
-      <main className="mx-auto max-w-6xl px-4 py-6 md:px-5 md:py-8">
+      <main className="mx-auto w-full max-w-[1440px] px-4 py-6 md:px-6 md:py-8">
         <section className="rounded-[28px] border-[3px] border-white bg-white p-6 shadow-[8px_8px_0_rgba(0,0,0,0.12)]">
           <div className="flex flex-wrap items-center gap-2">
             <span className="rounded-full bg-[#FFEB3B] px-3 py-1 font-[family-name:var(--font-fredoka)] text-[13px] font-semibold text-[#263238]">Level 1</span>
