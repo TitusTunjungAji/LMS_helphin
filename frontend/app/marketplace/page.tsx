@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { COHORTS, FACULTIES, MENTORS, readSession, rupiah, type MarketplaceSession, type Mentor } from "./data";
 import { ChatDock } from "./Inbox";
 import { MentorHome } from "./MentorHome";
@@ -69,6 +69,14 @@ function Listing({ mentor, delay }: { mentor: Mentor; delay: number }) {
 }
 
 export default function MarketplacePage() {
+  return (
+    <Suspense fallback={<MarketplaceShell><main className="min-h-[60vh]" /></MarketplaceShell>}>
+      <MarketplaceHome />
+    </Suspense>
+  );
+}
+
+function MarketplaceHome() {
   const search = useSearchParams();
   const asDirectory = search.get("tampilan") === "direktori" || search.has("metode");
   const [gate, setGate] = useState<"wait" | "mentor" | "directory">("wait");
