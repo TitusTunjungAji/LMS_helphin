@@ -6,6 +6,13 @@ import { useState } from "react";
 import { DUMMY_SSO, sessionFromAccount, writeReviewState, writeSession } from "../data";
 import { MarketplaceShell, popClass } from "../Shell";
 
+function takeReturnPath(fallback: string) {
+  const next = sessionStorage.getItem("helphin-marketplace-next") || "";
+  sessionStorage.removeItem("helphin-marketplace-next");
+  if (next.startsWith("/marketplace/") && !next.startsWith("//")) return next;
+  return fallback;
+}
+
 export default function MasukPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -29,7 +36,7 @@ export default function MasukPage() {
       return;
     }
     writeSession(sessionFromAccount(body.data, body.data.token));
-    router.push("/marketplace?tampilan=direktori");
+    router.push(takeReturnPath("/marketplace?tampilan=direktori"));
   }
 
   async function staff(event: React.FormEvent) {
@@ -64,7 +71,8 @@ export default function MasukPage() {
       return;
     }
     writeSession(sessionFromAccount(body.data, body.data.token));
-    router.push(body.data.mentorCourse && body.data.status === "disetujui" ? "/marketplace" : "/marketplace?tampilan=direktori");
+    const home = body.data.mentorCourse && body.data.status === "disetujui" ? "/marketplace" : "/marketplace?tampilan=direktori";
+    router.push(takeReturnPath(home));
   }
 
   return (

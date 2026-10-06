@@ -62,7 +62,10 @@ function Listing({ mentor, delay }: { mentor: Mentor; delay: number }) {
           <span className="flex items-center gap-1.5"><Stars value={mentor.rating} /> {mentor.rating.toFixed(1)}</span>
           <span>{mentor.sessions} sesi</span>
         </div>
-        <Link href={`/marketplace/mentor/${mentor.id}`} className={popClass("ocean", "mt-3 w-full")}>Lihat profil</Link>
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          <Link href={`/marketplace/mentor/${mentor.id}`} className={popClass("white", "px-3 py-2 text-[14px]")}>Lihat profil</Link>
+          <Link href={`/marketplace/mentor/${mentor.id}?beli=1`} className={popClass("yellow", "px-3 py-2 text-[14px]")}>Beli sesi</Link>
+        </div>
       </div>
     </article>
   );

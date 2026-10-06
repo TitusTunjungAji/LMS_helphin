@@ -139,8 +139,10 @@ export function MarketplaceShell({
             <FooterCol title="Keanggotaan" links={session?.mentor ? [
               ["Halaman pengguna", "/marketplace?tampilan=direktori"],
               ["Dashboard mentor", "/marketplace"],
+              ["Pesanan saya", "/marketplace/pesanan"],
               ["Setelan akun", "/marketplace/setelan"],
             ] : session ? [
+              ["Pesanan saya", "/marketplace/pesanan"],
               ["Menjadi mentor", "/marketplace/daftar"],
               ["Setelan akun", "/marketplace/setelan"],
             ] : [
@@ -199,6 +201,9 @@ function ProfileMenu({ mentor, onLogout }: { mentor: boolean; onLogout: () => vo
               Halaman pengguna
             </Link>
           ) : null}
+          <Link href="/marketplace/pesanan" onClick={() => setOpen(false)} className="block rounded-xl px-3 py-2 text-[13px] font-semibold text-[#263238] hover:bg-[#E1F5FE]">
+            Pesanan saya
+          </Link>
           <Link href="/marketplace/setelan" onClick={() => setOpen(false)} className="block rounded-xl px-3 py-2 text-[13px] font-semibold text-[#263238] hover:bg-[#E1F5FE]">
             Setelan akun
           </Link>
