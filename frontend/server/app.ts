@@ -8,6 +8,7 @@ import mataKuliahRoutes from "./routes/mata-kuliah";
 import { materialRoutes, bankSoalRoutes } from "./routes/content";
 import { videoRoutes, responsiRoutes, supportRoutes } from "./routes/media";
 import dashboardRoutes from "./routes/dashboard";
+import marketplaceRoutes from "./routes/marketplace";
 
 const app = new Hono().basePath("/api");
 
@@ -42,10 +43,11 @@ app.route("/videos", videoRoutes);
 app.route("/responsi", responsiRoutes);
 app.route("/support", supportRoutes);
 app.route("/dashboard", dashboardRoutes);
+app.route("/marketplace", marketplaceRoutes);
 
 // Global error handler
 app.onError((err, c) => {
-    console.error("[API ERROR]", err.message);
+    console.error("[API ERROR]", (err as { code?: string }).code || "", err.message);
     if (err.message.includes("Unauthorized")) return c.json({ success: false, message: "Unauthorized" }, 401);
     if (err.message.includes("Forbidden")) return c.json({ success: false, message: err.message }, 403);
     return c.json({ success: false, message: err.message || "Internal server error" }, 500);

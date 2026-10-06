@@ -220,6 +220,31 @@ export const pinnedMataKuliah = pgTable("pinned_mata_kuliah", {
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// Marketplace: akun mahasiswa menunggu tinjauan kemahasiswaan
+export const marketplaceAccounts = pgTable("marketplace_accounts", {
+    id: uuid("id").primaryKey(),
+    userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }),
+    name: varchar("name", { length: 255 }).notNull(),
+    email: varchar("email", { length: 255 }).notNull().unique(),
+    nim: varchar("nim", { length: 50 }).notNull().unique(),
+    phone: varchar("phone", { length: 30 }).notNull(),
+    passwordHash: varchar("password_hash", { length: 255 }).notNull(),
+    fakultas: varchar("fakultas", { length: 255 }).notNull(),
+    prodi: varchar("prodi", { length: 255 }).notNull(),
+    angkatan: varchar("angkatan", { length: 10 }).notNull(),
+    bio: text("bio"),
+    photoPath: text("photo_path").notNull(),
+    ktmPath: text("ktm_path").notNull(),
+    status: varchar("status", { length: 20 }).notNull().default("menunggu"),
+    reviewNote: text("review_note"),
+    reviewedAt: timestamp("reviewed_at"),
+    mentorCourse: varchar("mentor_course", { length: 255 }),
+    mentorPrice: integer("mentor_price"),
+    mentorFocus: text("mentor_focus"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // OTPs
 export const otps = pgTable("otps", {
     id: uuid("id").primaryKey().defaultRandom(),

@@ -33,6 +33,10 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# berkas verifikasi mahasiswa marketplace
+/data/marketplace-private
+/data/marketplace.sqlite
+
 # vercel
 .vercel
 
