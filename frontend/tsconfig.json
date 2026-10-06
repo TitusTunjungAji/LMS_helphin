@@ -28,7 +28,9 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts"
-, "app/buat-akun-prodi/page.jsx"  ],
+    "**/*.mts",
+    "types/**/*.d.ts",
+    "app/buat-akun-prodi/page.jsx"
+  ],
   "exclude": ["node_modules"]
 }
