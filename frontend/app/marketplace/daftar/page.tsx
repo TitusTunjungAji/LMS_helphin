@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { COHORTS, FACULTIES, parseTarif, readSession, TARIF_HINT, writeReviewState } from "../data";
 import { MarketplaceShell, popClass } from "../Shell";
 
@@ -75,19 +75,51 @@ export default function DaftarMentorPage() {
             Bidang pendampingan
             <textarea name="focus" required rows={3} className="mt-1 w-full rounded-xl border-2 border-[#B3E5FC] px-3 py-2 outline-none focus:border-[#0288D1]" />
           </label>
-          <label className="mt-3 block text-[13px] font-semibold text-[#455A64]">
-            Foto profil
-            <input name="photo" type="file" accept="image/jpeg,image/png,image/webp" required className="mt-1 block w-full text-[13px]" />
-          </label>
-          <label className="mt-3 block text-[13px] font-semibold text-[#455A64]">
-            Foto KTM
-            <input name="ktm" type="file" accept="image/jpeg,image/png,image/webp" required className="mt-1 block w-full text-[13px]" />
-          </label>
+          <PhotoField name="photo" label="Foto profil" />
+          <PhotoField name="ktm" label="Foto KTM" />
           {error ? <p className="mt-3 text-[13px] font-semibold text-[#C62828]">{error}</p> : null}
           <button type="submit" className={popClass("ocean", "mt-5 w-full")}>Kirim pengajuan mentor</button>
         </form>
       </main>
     </MarketplaceShell>
+  );
+}
+
+function PhotoField({ name, label }: { name: string; label: string }) {
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState("");
+
+  useEffect(() => {
+    if (!file) {
+      setPreview("");
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    setPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
+
+  return (
+    <div className="mt-4">
+      <p className="text-[13px] font-semibold text-[#455A64]">{label}</p>
+      <div className="mt-2 flex flex-wrap items-center gap-3">
+        {preview ? (
+          <img src={preview} alt="" className="h-16 w-16 rounded-2xl border-[3px] border-white object-cover shadow-[3px_3px_0_rgba(0,0,0,0.12)]" />
+        ) : null}
+        <label className={popClass("ocean", "relative cursor-pointer px-5 py-2.5 text-[15px]")}>
+          {file ? "Ganti foto" : "Pilih foto"}
+          <input
+            name={name}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            required
+            className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+            onChange={(event) => setFile(event.target.files?.[0] ?? null)}
+          />
+        </label>
+      </div>
+      <p className="mt-2 text-[12px] font-medium text-[#78909C]">{file ? file.name : "JPG, PNG, atau WebP"}</p>
+    </div>
   );
 }
 

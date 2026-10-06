@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { readSession, type MarketplaceSession } from "../data";
 import { MentorHome } from "../MentorHome";
-import { MarketplaceShell, popClass } from "../Shell";
+import { MarketplaceLoading, MarketplaceShell, popClass } from "../Shell";
 
 export default function MentorDashboardPage() {
   const [session, setSession] = useState<MarketplaceSession | null>(null);
@@ -21,7 +21,7 @@ export default function MentorDashboardPage() {
   if (!ready) {
     return (
       <MarketplaceShell>
-        <main className="min-h-[60vh]" />
+        <MarketplaceLoading />
       </MarketplaceShell>
     );
   }

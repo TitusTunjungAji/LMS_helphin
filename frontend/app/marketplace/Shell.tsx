@@ -112,7 +112,7 @@ export function MarketplaceShell({
           </nav>
         </div>
       </header>
-      <div className="relative z-20">{ready ? children : <main className="min-h-[60vh]" />}</div>
+      <div className="relative z-20">{ready ? children : <MarketplaceLoading />}</div>
       <footer className="relative z-[2] px-4 pb-10 pt-4 md:px-5">
         <div className="mx-auto max-w-6xl overflow-hidden rounded-[32px] border-[3px] border-white bg-white shadow-[8px_8px_0_rgba(0,0,0,0.12)]">
           <div className="relative overflow-hidden bg-[#0288D1] px-6 pb-10 pt-5 text-white">
@@ -158,6 +158,21 @@ export function MarketplaceShell({
         </div>
       </footer>
     </div>
+  );
+}
+
+export function MarketplaceLoading() {
+  return (
+    <main className="flex min-h-[60vh] items-center justify-center px-4 py-16" aria-busy="true" aria-live="polite">
+      <div className="flex flex-col items-center rounded-[28px] border-[3px] border-white bg-white px-10 py-8 shadow-[8px_8px_0_rgba(0,0,0,0.12)]">
+        <div className="flex items-end gap-2.5" aria-hidden>
+          <span className="mp-load-dot bg-[#0288D1]" />
+          <span className="mp-load-dot bg-[#FFEB3B]" style={{ animationDelay: "0.15s" }} />
+          <span className="mp-load-dot bg-[#FF7043]" style={{ animationDelay: "0.3s" }} />
+        </div>
+        <p className="mt-4 font-[family-name:var(--font-fredoka)] text-[20px] font-bold text-[#0277BD]">Memuat</p>
+      </div>
+    </main>
   );
 }
 

@@ -7,7 +7,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import { COHORTS, FACULTIES, MENTORS, readSession, rupiah, type MarketplaceSession, type Mentor } from "./data";
 import { ChatDock } from "./Inbox";
 import { MentorHome } from "./MentorHome";
-import { MarketplaceShell, popClass } from "./Shell";
+import { MarketplaceLoading, MarketplaceShell, popClass } from "./Shell";
 
 const METHODS = ["Semua", "Daring", "Tatap muka"] as const;
 
@@ -70,7 +70,7 @@ function Listing({ mentor, delay }: { mentor: Mentor; delay: number }) {
 
 export default function MarketplacePage() {
   return (
-    <Suspense fallback={<MarketplaceShell><main className="min-h-[60vh]" /></MarketplaceShell>}>
+    <Suspense fallback={<MarketplaceShell><MarketplaceLoading /></MarketplaceShell>}>
       <MarketplaceHome />
     </Suspense>
   );
@@ -101,7 +101,7 @@ function MarketplaceHome() {
   if (gate === "wait") {
     return (
       <MarketplaceShell>
-        <main className="min-h-[60vh]" />
+        <MarketplaceLoading />
       </MarketplaceShell>
     );
   }
